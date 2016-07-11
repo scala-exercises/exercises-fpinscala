@@ -4,7 +4,7 @@ import org.scalaexercises.definitions._
 
 /** Set of exercises based on Manning's "Functional Programming in Scala" (aka "The Red Book")
   *
-  * @param name fpinscala
+  * @param name fp_in_scala
   */
 object FPinScalaLibrary extends Library {
   override def owner = "scala-exercises"
