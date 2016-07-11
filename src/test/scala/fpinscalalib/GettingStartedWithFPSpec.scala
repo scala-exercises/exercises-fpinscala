@@ -1,12 +1,11 @@
-package exercises
+package fpinscalalib
 
-import fpinscalalib._
-import fpinscalalib.GettingStartedWithFPSection
-import shapeless.HNil
-import org.scalatest.Spec
-import org.scalatest.prop.Checkers
 import org.scalacheck.Shapeless._
 import org.scalacheck.{Arbitrary, Gen}
+import org.scalaexercises.Test
+import org.scalatest.Spec
+import org.scalatest.prop.Checkers
+import shapeless.HNil
 
 class GettingStartedWithFPSpec extends Spec with Checkers {
   def `fibonacci asserts` = {
