@@ -145,8 +145,75 @@ object GettingStartedWithFPSection extends FlatSpec with Matchers with org.scala
     }
 
     isSorted(Array(1, 3, 5, 7), (x: Int, y: Int) => x > y) shouldBe res0
-    isSorted(Array(7, 5, 3, 1), (x: Int, y: Int) => x < y) shouldBe res1
+    isSorted(Array(7, 5, 1, 3), (x: Int, y: Int) => x < y) shouldBe res1
     isSorted(Array("Scala", "Exercises"), (x: String, y: String) => x.length > y.length) shouldBe res2
+  }
+
+  /**
+    * Currying is a transformation which converts a function `f` of two arguments into a function of one argument that
+    * partially applies `f`. Taking into account its signature, there's only one possible implementation that compiles.
+    * Take a look at it:
+    *
+    * {{{
+    *   def curry[A,B,C](f: (A, B) => C): A => (B => C) =
+    *     a => b => f(a, b)
+    * }}}
+    *
+    * Let's verify if this principle holds true in the following exercise:
+    */
+  def curryAssert(res0: Boolean, res1: Boolean): Unit = {
+    def curry[A,B,C](f: (A, B) => C): A => (B => C) =
+      a => b => f(a, b)
+
+    def f(a: Int, b: Int): Int = a + b
+    def g(a: Int)(b: Int): Int = a + b
+
+    curry(f)(1)(1) == f(1, 1) shouldBe res0
+    curry(f)(1)(1) == g(1)(1) shouldBe res1
+
+  }
+
+  /**
+    * Uncurrying is the reverse transformation of curry. Take a look at its straightforward implementation:
+    * {{{
+    *   def uncurry[A,B,C](f: A => B => C): (A, B) => C =
+    *     (a, b) => f(a)(b)
+    * }}}
+    *
+    * Check by yourself if this principle holds true in the next exercise:
+    */
+  def uncurryAssert(res0: Boolean, res1: Boolean): Unit = {
+    def uncurry[A,B,C](f: A => B => C): (A, B) => C =
+      (a, b) => f(a)(b)
+
+    def f(a: Int, b: Int): Int = a + b
+    def g(a: Int)(b: Int): Int = a + b
+
+    uncurry(g)(1, 1) == g(1)(1) shouldBe res0
+    uncurry(g)(1, 1) == f(1, 1) shouldBe res1
+  }
+
+  /**
+    * Function composition can be implemented in the same fashion, just by following the types of its signature. In this
+    * case we want to feed the output of one function to the input of another function.
+    *
+    * {{{
+    *   def compose[A,B,C](f: B => C, g: A => B): A => C =
+    *     a => f(g(a))
+    * }}}
+    *
+    * Finally, let's check how this `compose` function behaves in the following exercise:
+    */
+  def composeAssert(res0: Boolean, res1: Int, res2: Int): Unit = {
+    def compose[A,B,C](f: B => C, g: A => B): A => C =
+      a => f(g(a))
+
+    def f(b: Int): Int = b / 2
+    def g(a: Int): Int = a + 2
+
+    compose(f, g)(0) == compose(g, f)(0) shouldBe res0
+    compose(f, g)(2) shouldBe res1
+    compose(g, f)(2) shouldBe res2
   }
 }
 
