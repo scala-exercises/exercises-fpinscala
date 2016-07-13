@@ -14,6 +14,18 @@ class GettingStartedWithFPSpec extends Spec with Checkers {
   }
 
   def `isSorted asserts` = {
-    check(Test.testSuccess(GettingStartedWithFPSection.isSortedAssert _, true :: true :: true :: HNil))
+    check(Test.testSuccess(GettingStartedWithFPSection.isSortedAssert _, true :: false :: true :: HNil))
+  }
+
+  def `currying asserts` = {
+    check(Test.testSuccess(GettingStartedWithFPSection.curryAssert _, true :: true :: HNil))
+  }
+
+  def `uncurrying asserts` = {
+    check(Test.testSuccess(GettingStartedWithFPSection.uncurryAssert _, true :: true :: HNil))
+  }
+
+  def `composing asserts` = {
+    check(Test.testSuccess(GettingStartedWithFPSection.composeAssert _, false :: 2 :: 3 :: HNil))
   }
 }
