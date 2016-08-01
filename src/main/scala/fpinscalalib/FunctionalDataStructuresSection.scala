@@ -93,5 +93,111 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     }
     x shouldBe res0
   }
+
+  /**
+    * Let's try implementing a few different functions for modifying lists in different ways. First, we'll implement the
+    * function `tail` for removing the first element of a `List`. Also take a look at how we handle the use of `take` on
+    * `Nil` lists:
+    *
+    * {{{
+    *   def tail[A](l: List[A]): List[A] =
+    *     l match {
+    *     case Nil => sys.error("tail of empty list")
+    *     case Cons(_,t) => t
+    *     }
+    * }}}
+    *
+    * Taking a look at its implementation, check its behaviour on the following cases:
+    */
+
+  def listTakeAssert(res0: List[Int], res1: List[Int]) {
+    List.tail(List(1, 2, 3)) shouldBe res0
+    List.tail(List(1)) shouldBe res1
+  }
+
+  /**
+    * Using the same idea, we can implement the function `setHead` for replacing the first element of a List with a
+    * a different value:
+    *
+    * {{{
+    *   def setHead[A](l: List[A], h: A): List[A] = l match {
+    *     case Nil => sys.error("setHead on empty list")
+    *     case Cons(_,t) => Cons(h,t)
+    *   }
+    * }}}
+    *
+    * Let's see how it behaves:
+    */
+
+  def listSetHeadAssert(res0: List[Int], res1: List[String]) {
+    List.setHead(List(1, 2, 3), 3) shouldBe res0
+    List.setHead(List("a", "b"), "c") shouldBe res1
+  }
+
+  /**
+    * We can generalize `take` to the function `drop`, which removes the first `n` elements from a list.
+    *
+    * {{{
+    *   def drop[A](l: List[A], n: Int): List[A] =
+    *     if (n <= 0) l
+    *     else l match {
+    *       case Nil => Nil
+    *       case Cons(_,t) => drop(t, n-1)
+    *     }
+    * }}}
+    *
+    * Again, we can see its behaviour with the following exercises:
+    */
+
+  def listDropAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int], res4: List[Int]) {
+    List.drop(List(1, 2, 3), 1) shouldBe res0
+    List.drop(List(1, 2, 3), 0) shouldBe res1
+    List.drop(List("a", "b"), 2) shouldBe res2
+    List.drop(List(1, 2), 3) shouldBe res3
+    List.drop(Nil, 1) shouldBe res4
+  }
+
+  /**
+    * `dropWhile` extends the behaviour of `drop`, removing elements from the `List` prefix as long as they match a
+    * predicate
+    *
+    * {{{
+    *   def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
+    *     l match {
+    *       case Cons(h,t) if f(h) => dropWhile(t, f)
+    *       case _ => l
+    *     }
+    * }}}
+    *
+    * Check how it works with the following examples:
+    */
+
+  def listDropWhileAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int]) {
+    List.dropWhile(List(1, 2, 3), (x: Int) => x < 2) shouldBe res0
+    List.dropWhile(List(1, 2, 3), (x: Int) => x > 2) shouldBe res1
+    List.dropWhile(List(1, 2, 3), (x: Int) => x > 0) shouldBe res2
+    List.dropWhile(Nil, (x: Int) => x > 0) shouldBe res3
+  }
+
+  /**
+    * In the same fashion, let's implement another function `init` that returns a `List` consisting of all but the last
+    * element of a `List`. Take a note that this function can't be implemented in constant time like `tail`.
+    *
+    * {{{
+    *   def init[A](l: List[A]): List[A] =
+    *     l match {
+    *       case Nil => sys.error("init of empty list")
+    *       case Cons(_,Nil) => Nil
+    *       case Cons(h,t) => Cons(h,init(t))
+    *     }
+    * }}}
+    *
+    * Let's look at how it works:
+    */
+
+  def listInitAssert(res0: List[Int], res1: List[Int]) {
+    List.init(List(1, 2, 3)) shouldBe res0
+    List.init(List(1)) shouldBe res1
+  }
 }
 

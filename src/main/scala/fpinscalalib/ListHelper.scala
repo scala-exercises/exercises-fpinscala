@@ -1,5 +1,11 @@
 package fpinscalalib
 
+// The following implementation of the singly linked list is provided by Manning as a solution to the multiple implementation
+// exercises found in the "Functional Programming in Scala" book. We'll use this one (instead of Scala's List), in our
+// sections related to chapter 3: "Functional Data Structures". The original code can be found in the following URL:
+//
+// https://github.com/fpinscala/fpinscala/blob/bc3ad01ef23c6ebf18c5181a03e23b736375048f/answers/src/main/scala/fpinscala/datastructures/List.scala
+
 sealed trait List[+A] // `List` data type, parameterized on a type, `A`
 case object Nil extends List[Nothing] // A `List` data constructor representing the empty list
 /* Another data constructor, representing nonempty lists. Note that `tail` is another `List[A]`,
