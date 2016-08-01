@@ -12,7 +12,8 @@ object FPinScalaLibrary extends Library {
 
   override def color = Some("#E22D34")
 
-  override def sections = List(
-    GettingStartedWithFPSection
+  override def sections = scala.collection.immutable.List(
+    GettingStartedWithFPSection,
+    FunctionalDataStructuresSection
   )
 }
