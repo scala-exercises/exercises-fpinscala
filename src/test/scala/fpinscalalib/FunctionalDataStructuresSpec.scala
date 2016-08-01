@@ -39,4 +39,17 @@ class FunctionalDataStructuresSpec extends Spec with Checkers {
     check(Test.testSuccess(FunctionalDataStructuresSection.listInitAssert _,
       List(1, 2) :: List[Int]() :: HNil))
   }
+
+  def `list foldRight sum asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listFoldRightSumAssert _,
+      1 :: 1 :: 2 :: 1 :: 2 :: 3 :: List[Int]() :: 1 :: 2 :: 3 :: 0 :: HNil))
+  }
+
+  def `list foldRight cons nil asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listFoldRightNilConsAssert _, List(1, 2, 3) :: HNil))
+  }
+
+  def `list length with foldRight asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listLengthAssert _, 0 :: 1 :: HNil))
+  }
 }

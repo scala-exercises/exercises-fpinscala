@@ -199,5 +199,82 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     List.init(List(1, 2, 3)) shouldBe res0
     List.init(List(1)) shouldBe res1
   }
+
+  /**
+    * = Recursion over lists and generalizing to higher-order functions =
+    *
+    * Let’s look again at the implementations of sum and product. We’ve simplified the product implementation slightly,
+    * so as not to include the “short-circuiting” logic of checking for 0.0:
+    *
+    * {{{
+    * def sum(ints: List[Int]): Int = ints match {
+    *   case Nil => 0
+    *   case Cons(x,xs) => x + sum(xs)
+    *   }
+    *
+    * def product(ds: List[Double]): Double = ds match {
+    *   case Nil => 1.0
+    *   case Cons(x, xs) => x * product(xs)
+    *   }
+    * }}}
+    *
+    * Note how similar these two definitions are. They’re operating on different types (List[Int] versus List[Double]),
+    * but aside from this, the only differences are the value to return in the case that the list is empty (0 in the case
+    * of sum, 1.0 in the case of product), and the operation to combine results (+ in the case of sum, * in the case of
+    * product).
+    *
+    * We can do better by generalizing those functions, by implementing a `foldRight`. This function will take as
+    * arguments the value to return in the case of the empty list, and the function to add an element to the result in
+    * the case of a nonempty list:
+    *
+    * {{{
+    * def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B =
+    *   as match {
+    *     case Nil => z
+    *     case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    *   }
+    *
+    * def sum2(ns: List[Int]) = foldRight(ns, 0)((x,y) => x + y)
+    * def product2(ns: List[Double]) = foldRight(ns, 1.0)(_ * _)
+    * }}}
+    *
+    * `foldRight` replaces the constructors of the list, `Nil` and `Cons`, with `z` and `f`, illustrated here:
+    *
+    * {{{
+    *   Cons(1, Cons(2, Nil))
+    *   f   (1, f   (2, z  ))
+    * }}}
+    *
+    * Let's run through the steps that `foldRight` will follow in our new implementation of `sum2`:
+    *
+    */
+
+  def listFoldRightSumAssert(res0: Int,res1: Int, res2: Int, res3: Int, res4: Int, res5: Int, res6: List[Int], res7: Int, res8: Int, res9: Int, res10: Int) {
+    List.foldRight(Cons(1, Cons(2, Cons(3, Nil))), 0)((x,y) => x + y) shouldBe 6
+    res0 + List.foldRight(Cons(2, Cons(3, Nil)), 0)((x,y) => x + y) shouldBe 6
+    res1 + res2 + List.foldRight(Cons(3, Nil), 0)((x,y) => x + y) shouldBe 6
+    res3 + res4 + res5 + List.foldRight(res6, 0)((x,y) => x + y) shouldBe 6
+    res7 + res8 + res9 + res10 shouldBe 6
+  }
+
+  /**
+    * Now that we know how `foldRight` works, try to think what happens when you pass `Nil` and `Cons` themselves to
+    * `foldRight`.
+    */
+
+  def listFoldRightNilConsAssert(res0: List[Int]) {
+    List.foldRight(List(1, 2, 3), Nil:List[Int])(Cons(_, _)) shouldBe res0
+  }
+
+  /**
+    * Let's try to use `foldRight` to calculate the length of a list. Try to fill the gaps in our implementation:
+    */
+
+  def listLengthAssert(res0: Int, res1: Int): Unit = {
+    def l = List(1, 2, 3, 4, 5)
+    def length[A](as: List[A]): Int = List.foldRight(l, res0)((_, acc) => acc + res1)
+
+    length(l) shouldBe 5
+  }
 }
 
