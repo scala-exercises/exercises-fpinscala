@@ -52,4 +52,34 @@ class FunctionalDataStructuresSpec extends Spec with Checkers {
   def `list length with foldRight asserts` = {
     check(Test.testSuccess(FunctionalDataStructuresSection.listLengthAssert _, 0 :: 1 :: HNil))
   }
+
+  def `list foldLeft sum product length asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listFoldLeftSumProductLengthAssert _, 0 :: 1.0 :: 0 :: 1 :: HNil))
+  }
+
+  def `list foldLeft append asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listAppendAssert _,
+      List(1, 2, 3, 1, 2) :: List(1, 2, 3) :: List(1, 2) :: List[Int]() :: HNil))
+  }
+
+  def `list add 1 asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listAdd1Assert _, 1 :: HNil))
+  }
+
+  def `list remove odds asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listRemoveOdds _, 2 :: 0 :: HNil))
+  }
+
+  def `list flatMap asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listFlatMapAssert _, List(1, 1, 2, 2, 3, 3) :: HNil))
+  }
+
+  def `list zipWith asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listZipWithAssert _,
+      List("aA", "bB", "cC") :: List("14", "25", "36") :: HNil))
+  }
+
+  def `list hasSubsequence asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.listHasSubsequenceAssert _, true :: false :: true :: HNil))
+  }
 }
