@@ -82,4 +82,22 @@ class FunctionalDataStructuresSpec extends Spec with Checkers {
   def `list hasSubsequence asserts` = {
     check(Test.testSuccess(FunctionalDataStructuresSection.listHasSubsequenceAssert _, true :: false :: true :: HNil))
   }
+
+  def `tree size asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.treeSizeAssert _, 1 :: 1 :: HNil))
+  }
+
+  def `tree depth asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.treeDepthAssert _, 0 :: 1 :: HNil))
+  }
+
+  def `tree map asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.treeMapAssert _,
+      Branch[Int](Branch[Int](Leaf[Int](2), Leaf[Int](4)), Leaf[Int](6)) :: HNil))
+  }
+
+  def `tree fold asserts` = {
+    check(Test.testSuccess(FunctionalDataStructuresSection.treeFoldAssert _,
+      1 :: 1 :: 0 :: 1 :: Branch(Branch(Leaf(false), Leaf(true)), Leaf(false)) :: HNil))
+  }
 }

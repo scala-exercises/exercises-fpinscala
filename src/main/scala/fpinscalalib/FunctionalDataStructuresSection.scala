@@ -2,6 +2,7 @@ package fpinscalalib
 
 import org.scalatest.{FlatSpec, Matchers}
 import fpinscalalib.List._
+import fpinscalalib.Tree._
 
 /** @param name functional_data_structures
   */
@@ -520,6 +521,114 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     hasSubsequence(l, List(2, 3)) shouldBe res0
     hasSubsequence(l, List(0, 1)) shouldBe res1
     hasSubsequence(l, Nil) shouldBe res2
+  }
+
+  /**
+    * = Trees =
+    *
+    * List is just one example of what’s called an algebraic data type (ADT). An ADT is just a data type defined by one
+    * or more data constructors, each of which may contain zero or more arguments. We say that the data type is the sum
+    * or union of its data constructors, and each data constructor is the product of its arguments, hence the name
+    * algebraic data type.
+    *
+    * Algebraic data types can be used to define other data structures. Let’s define a simple binary tree data structure:
+    *
+    * {{{
+    *   sealed trait Tree[+A]
+    *   case class Leaf[A](value: A) extends Tree[A]
+    *   case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
+    * }}}
+    *
+    * Pattern matching again provides a convenient way of operating over elements of our ADT. Let’s try writing a few
+    * functions. For starters, let's try to implement a function `size` to count the number of nodes (leaves and branches)
+    * in a tree:
+    */
+
+  def treeSizeAssert(res0: Int, res1: Int): Unit = {
+    def size[A](t: Tree[A]): Int = t match {
+      case Leaf(_) => res0
+      case Branch(l, r) => res1 + size(l) + size(r)
+    }
+
+    def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
+    size(t) shouldBe 5
+  }
+
+  /**
+    * Following a similar implementation, we can write a function `maximum` that returns the maximum element in a
+    * Tree[Int]:
+    *
+    * {{{
+    *   def maximum(t: Tree[Int]): Int = t match {
+    *     case Leaf(n) => n
+    *     case Branch(l,r) => maximum(l) max maximum(r)
+    *   }
+    * }}}
+    *
+    * In the same fashion, let's implement a function `depth` that returns the maximum path length from the root of a
+    * tree to any leaf.
+    */
+
+  def treeDepthAssert(res0: Int, res1: Int): Unit = {
+    def depth[A](t: Tree[A]): Int = t match {
+      case Leaf(_) => res0
+      case Branch(l,r) => res1 + (depth(l) max depth(r))
+    }
+    def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
+    depth(t) shouldBe 2
+  }
+
+  /**
+    * We can also write a function `map`, analogous to the method of the same name on `List`, that modifies each element
+    * in a tree with a given function:
+    *
+    * {{{
+    *   def map[A,B](t: Tree[A])(f: A => B): Tree[B] = t match {
+    *     case Leaf(a) => Leaf(f(a))
+    *     case Branch(l,r) => Branch(map(l)(f), map(r)(f))
+    *   }
+    * }}}
+    *
+    * Let's try it out in the following exercise:
+    */
+
+  def treeMapAssert(res0: Branch[Int]): Unit = {
+    def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
+    Tree.map(t)(_ * 2) shouldBe res0
+  }
+
+  /**
+    * To wrap this section up, let's generalize `size`, `maximum`, `depth` and `map`, writing a new function `fold` that
+    * abstracts over their similarities:
+    *
+    * {{{
+    *   def fold[A,B](t: Tree[A])(f: A => B)(g: (B,B) => B): B = t match {
+    *     case Leaf(a) => f(a)
+    *     case Branch(l,r) => g(fold(l)(f)(g), fold(r)(f)(g))
+    *   }
+    * }}}
+    *
+    * Let's try to reimplement `size`, `maximum`, `depth`, and `map` in terms of this more general function:
+    */
+
+  def treeFoldAssert(res0: Int, res1: Int, res2: Int, res3: Int, res4: Branch[Boolean]): Unit = {
+    def sizeViaFold[A](t: Tree[A]): Int =
+      fold(t)(a => res0)(res1 + _ + _)
+
+    def maximumViaFold(t: Tree[Int]): Int =
+      fold(t)(a => a)(_ max _)
+
+    def depthViaFold[A](t: Tree[A]): Int =
+      fold(t)(a => res2)((d1,d2) => res3 + (d1 max d2))
+
+    def mapViaFold[A,B](t: Tree[A])(f: A => B): Tree[B] =
+      fold(t)(a => Leaf(f(a)): Tree[B])(Branch(_,_))
+
+    def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
+    sizeViaFold(t) shouldBe 5
+    maximumViaFold(t) shouldBe 3
+    depthViaFold(t) shouldBe 2
+    mapViaFold(t)(_ % 2 == 0) shouldBe res4
   }
 }
 
