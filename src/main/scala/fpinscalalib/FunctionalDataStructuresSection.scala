@@ -1,8 +1,10 @@
 package fpinscalalib
 
 import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.List._
-import fpinscalalib.Tree._
+import fpinscalalib.customlib._
+import fpinscalalib.customlib.functionaldatastructures._
+import fpinscalalib.customlib.functionaldatastructures.List._
+import Tree._
 
 /** @param name functional_data_structures
   */

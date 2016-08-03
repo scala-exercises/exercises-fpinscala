@@ -1,16 +1,18 @@
 package fpinscalalib
 
+import fpinscalalib.customlib.functionaldatastructures.{Branch, Leaf}
 import org.scalacheck.Shapeless._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalaexercises.Test
 import org.scalatest.Spec
 import org.scalatest.prop.Checkers
 import shapeless.HNil
+import fpinscalalib.customlib.functionaldatastructures._
 
 class FunctionalDataStructuresSpec extends Spec with Checkers {
   def `pattern matching 101 asserts` = {
     check(Test.testSuccess(FunctionalDataStructuresSection.patternMatching101Assert _,
-      42 :: 1 :: fpinscalalib.List(2, 3) :: HNil))
+      42 :: 1 :: List(2, 3) :: HNil))
   }
 
   def `complex pattern matching asserts` = {
