@@ -1,4 +1,4 @@
-package fpinscalalib.customlib.FunctionalDataStructures
+package fpinscalalib.customlib.functionaldatastructures
 
 // The following implementation of the singly linked list is provided by Manning as a solution to the multiple implementation
 // exercises found in the "Functional Programming in Scala" book. We'll use this one (instead of Scala's List), in our
