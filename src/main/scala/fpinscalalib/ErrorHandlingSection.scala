@@ -5,7 +5,7 @@ import fpinscalalib.customlib.errorhandling.Option._
 import fpinscalalib.customlib.errorhandling.ExampleHelper._
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.util.{Success, Try}
+import scala.util.Success
 
 /** @param name handling_error_without_exceptions
   */
@@ -122,12 +122,9 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     * }}}
     */
 
-  def optionOrElseAssert(res0: Some[String], res1: Some[String], res2: Some[String]): Unit = {
-    def getManager(employee: Option[Employee]): Option[String] = employee.flatMap(_.manager)
-
-    getManager(lookupByName("Joe")).orElse(Some("Mr. CEO")) shouldBe res0
-    getManager(lookupByName("Mary")).orElse(Some("Mr. CEO")) shouldBe res1
-    getManager(lookupByName("Foo")).orElse(Some("Mr. CEO")) shouldBe res2
+  def optionOrElseAssert(res0: Some[Int], res1: Some[Int]): Unit = {
+    Try("1".toInt).orElse(Some(0)) shouldBe res0
+    Try("IV".toInt).orElse(Some(0)) shouldBe res1
   }
 
    /** Finally, we can implement a `filter` function that will turn any `Option` into a `None` if it doesn't satisfy the
@@ -143,10 +140,9 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     * Try it out to discard those employees who belong to the IT department:
     */
 
-  def optionFilterAssert(res0: Some[Employee], res1: Option[Employee], res2: Option[Employee]): Unit = {
-     lookupByName("Joe").filter(_.department != "IT") shouldBe res0
-     lookupByName("Mary").filter(_.department != "IT") shouldBe res1
-     lookupByName("Foo").filter(_.department != "IT") shouldBe res2
+  def optionFilterAssert(res0: Some[Int], res1: Option[Int]): Unit = {
+     Try("1".toInt).filter(_ % 2 != 0) shouldBe res0
+     Try("10".toInt).filter(_ % 2 != 0) shouldBe res1
   }
 
   /**
@@ -242,13 +238,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     val list1 = List("1", "2", "3")
     val list2 = List("I", "II", "III", "IV")
 
-    def parseInt(a: String): Option[Int] = Try(a.toInt) match {
-      case Success(r) => Some(r)
-      case _ => None
-    }
-
-    traverse(list1)(i => parseInt(i)) shouldBe res0
-    traverse(list2)(i => parseInt(i)) shouldBe res1
+    traverse(list1)(i => Try(i.toInt)) shouldBe res0
+    traverse(list2)(i => Try(i.toInt)) shouldBe res1
   }
 
   /**
@@ -318,22 +309,24 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
-    * `flatMap` behaves the same in `Either` as in `Option`, allowing us to chain operations that may also fail. Use it
-    * to try to obtain the managers from each employee. Note that when calling our `getManager` function, we can find
-    * two different errors in its execution:
+    * `flatMap` behaves the same in `Either` as in `Option`, allowing us to chain operations that may also fail. To test
+    * this, we'll rewrite the previously seen `Try` function, to return `Either`:
+    *
+    * {{{
+    *   def TryEither[A](a: => A): Either[String, A] =
+    *     try Right(a)
+    *     catch { case e: Exception => Left(e.getMessage) }
+    * }}}
+    *
+    * In this re-implementation, `TryEither` will return a positive `Right` result when the provided value is a correct
+    * one, or a `Left` containing the exception message if there was an error. Let's try it out. (Hint: the exception
+    * message for a division by zero will be "/ by zero").
     */
 
-  def eitherFlatMapAssert(res0: Right[String], res1: Left[String], res2: Left[String]): Unit = {
-    def getManager(employee: Either[String, Employee]): Either[String, String] = employee.flatMap(e =>
-      e.manager match {
-        case Some(e) => Right(e)
-        case _ => Left("Manager not found")
-      }
-    )
+  def eitherFlatMapAssert(res0: Right[Int], res1: Left[String]): Unit = {
+    TryEither("10".toInt).flatMap(i => TryEither(i / 2)) shouldBe res0
+    TryEither("0".toInt).flatMap(i => TryEither(i / 0)) shouldBe res1
 
-    getManager(lookupByNameViaEither("Joe")) shouldBe res0
-    getManager(lookupByNameViaEither("Mary")) shouldBe res1
-    getManager(lookupByNameViaEither("Foo")) shouldBe res2
   }
 
   /**
@@ -347,21 +340,13 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   }
     * }}}
     *
-    * Let's check how it behaves. Let's assume that everyone inside our company ends up responding to a "Mr. CEO"
-    * manager. We can provide that logic with `orElse`:
+    * To check how it behaves, let's use `orElse` to create our own error messages for certain operations, instead of
+    * relying on the default ones:
     */
 
-  def eitherOrElseAssert(res0: Right[String], res1: Right[String], res2: Right[String]): Unit = {
-    def getManager(employee: Either[String, Employee]): Either[String, String] = employee.flatMap(e =>
-      e.manager match {
-        case Some(e) => Right(e)
-        case _ => Left("Manager not found")
-      }
-    )
-
-    getManager(lookupByNameViaEither("Joe")).orElse(Right("Mr. CEO")) shouldBe res0
-    getManager(lookupByNameViaEither("Mary")).orElse(Right("Mr. CEO")) shouldBe res1
-    getManager(lookupByNameViaEither("Foo")).orElse(Right("Mr. CEO")) shouldBe res2
+  def eitherOrElseAssert(res0: Right[Int], res1: Left[String], res2: Right[Int], res3: Left[String]): Unit = {
+    TryEither("IV".toInt).orElse(Left("Parsing error")) shouldBe res1
+    TryEither(10 / 0).orElse(Left("Division by zero error")) shouldBe res3
   }
 
   /**

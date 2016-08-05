@@ -43,13 +43,13 @@ class ErrorHandlingSpec extends Spec with Checkers {
 
   def `option orElse asserts` = {
     check(Test.testSuccess(ErrorHandlingSection.optionOrElseAssert _,
-      Some("Julie") :: Some("Mr. CEO") :: Some("Mr. CEO") :: HNil))
+      Some(1) :: Some(0) :: HNil))
   }
 
   def `option filter asserts` = {
-    val none : Option[Employee] = None
+    val none : Option[Int] = None
     check(Test.testSuccess(ErrorHandlingSection.optionFilterAssert _,
-      Some(joe) :: none :: none :: HNil))
+      Some(1) :: none :: HNil))
   }
 
   def `option sequence asserts` = {
@@ -74,12 +74,12 @@ class ErrorHandlingSpec extends Spec with Checkers {
 
   def `either flatMap asserts` = {
     check(Test.testSuccess(ErrorHandlingSection.eitherFlatMapAssert _,
-      Right("Julie") :: Left("Manager not found") :: Left("Employee not found") :: HNil))
+      Right(5) :: Left("/ by zero") :: HNil))
   }
 
   def `either orElse asserts` = {
     check(Test.testSuccess(ErrorHandlingSection.eitherOrElseAssert _,
-      Right("Julie") :: Right("Mr. CEO") :: Right("Mr. CEO") :: HNil))
+      Right(1) :: Left("Parsing error") :: Right(5) :: Left("Division by zero error") :: HNil))
   }
 
   def `either map2 asserts` = {
@@ -94,7 +94,7 @@ class ErrorHandlingSpec extends Spec with Checkers {
   }
 
   def `either sequence asserts` = {
-    val list = List(joe, mary, izumi)
+    val list = List(joe, mary)
     check(Test.testSuccess(ErrorHandlingSection.eitherSequenceAssert _,
       Right(list) :: Left("Employee not found") :: HNil))
   }

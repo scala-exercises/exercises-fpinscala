@@ -20,4 +20,12 @@ object ExampleHelper {
     case "Izumi" => Right(izumi)
     case _ => Left("Employee not found")
   }
+
+  def Try[A](a: => A): Option[A] =
+    try Some(a)
+    catch { case e: Exception => None }
+
+  def TryEither[A](a: => A): Either[String, A] =
+    try Right(a)
+    catch { case e: Exception => Left(e.getMessage) }
 }
