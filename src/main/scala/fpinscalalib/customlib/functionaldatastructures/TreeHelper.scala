@@ -1,9 +1,9 @@
-package fpinscalalib
+package fpinscalalib.customlib.functionaldatastructures
 
 // The following implementation of the binary tree is provided by Manning as a solution to the multiple implementation
 // exercises found in the "Functional Programming in Scala" book. The original code can be found in the following URL:
 //
-// https://github.com/fpinscala/fpinscala/commit/5bf1138f3aa71ff91babaa99613313fb9ac48b27
+// https://github.com/fpinscala/fpinscala/blob/5bf1138f3aa71ff91babaa99613313fb9ac48b27/answers/src/main/scala/fpinscala/datastructures/Tree.scala
 
 sealed trait Tree[+A]
 case class Leaf[A](value: A) extends Tree[A]
