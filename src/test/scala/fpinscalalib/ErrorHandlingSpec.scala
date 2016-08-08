@@ -11,18 +11,6 @@ import fpinscalalib.customlib.errorhandling.Employee
 import fpinscalalib.customlib.errorhandling.ExampleHelper._
 
 class ErrorHandlingSpec extends Spec with Checkers {
-  import Gen.{const, sized, frequency, resize}
-  import Arbitrary._
-
-  implicit def arbOptionAlternative[T](implicit a: Arbitrary[T]): Arbitrary[Option[T]] = {
-    Arbitrary(sized(n =>
-      frequency(
-        (n, resize(n / 2, arbitrary[T]).map(Some(_))),
-        (1, const(None)))))
-  }
-
-  implicit def arbOptionNil = Arbitrary(Some(Nil))
-
   def `option mean asserts` = {
     val none : Option[Double] = None
 
@@ -43,13 +31,13 @@ class ErrorHandlingSpec extends Spec with Checkers {
 
   def `option orElse asserts` = {
     check(Test.testSuccess(ErrorHandlingSection.optionOrElseAssert _,
-      Some(1) :: Some(0) :: HNil))
+      Some("Julie") :: Some("Mr. CEO") :: Some("Mr. CEO") :: HNil))
   }
 
   def `option filter asserts` = {
-    val none : Option[Int] = None
+    val none : Option[Employee] = None
     check(Test.testSuccess(ErrorHandlingSection.optionFilterAssert _,
-      Some(1) :: none :: HNil))
+      Some(joe) :: none :: none :: HNil))
   }
 
   def `option sequence asserts` = {
@@ -74,12 +62,12 @@ class ErrorHandlingSpec extends Spec with Checkers {
 
   def `either flatMap asserts` = {
     check(Test.testSuccess(ErrorHandlingSection.eitherFlatMapAssert _,
-      Right(5) :: Left("/ by zero") :: HNil))
+      Right("Julie") :: Left("Manager not found") :: Left("Employee not found") :: HNil))
   }
 
   def `either orElse asserts` = {
     check(Test.testSuccess(ErrorHandlingSection.eitherOrElseAssert _,
-      Right(1) :: Left("Parsing error") :: Right(5) :: Left("Division by zero error") :: HNil))
+      Right("Julie") :: Right("Mr. CEO") :: Right("Mr. CEO") :: HNil))
   }
 
   def `either map2 asserts` = {
