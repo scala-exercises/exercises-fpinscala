@@ -15,6 +15,7 @@ object FPinScalaLibrary extends Library {
   override def sections = scala.collection.immutable.List(
     GettingStartedWithFPSection,
     FunctionalDataStructuresSection,
-    ErrorHandlingSection
+    ErrorHandlingSection,
+    StrictnessAndLazinessSection
   )
 }
