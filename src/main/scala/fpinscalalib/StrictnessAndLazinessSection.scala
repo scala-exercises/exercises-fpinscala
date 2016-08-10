@@ -328,4 +328,211 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     step7 shouldBe step8
     step8 shouldBe finalStep
   }
+
+  /**
+    * = Infinite streams and corecursion =
+    *
+    * Because they’re incremental, the functions we’ve written also work for `infinite streams`. Here’s an example of
+    * an infinite `Stream` of `1`s:
+    *
+    * {{{
+    *   val ones: Stream[Int] = Stream.cons(1, ones)
+    * }}}
+    *
+    * Although ones is infinite, the functions we’ve written so far only inspect the portion of the stream needed to
+    * generate the demanded output. For example:
+    */
+
+  def streamOnesAssert(res0: List[Int], res1: Boolean, res2: Boolean, res3: Boolean): Unit = {
+    ones.take(5).toList shouldBe res0
+    ones.exists(_ % 2 != 0) shouldBe res1
+    ones.map(_ + 1).exists(_ % 2 == 0) shouldBe res2
+    ones.forAll(_ != 1) shouldBe res3
+  }
+
+  /**
+    * Let's generalize `ones` slightly to the function `constant`, which returns an infinite `Stream` of a given value:
+    *
+    * {{{
+    *   def constant[A](a: A): Stream[A] = {
+    *     lazy val tail: Stream[A] = Cons(() => a, () => tail)
+    *     tail
+    *   }
+    * }}}
+    *
+    * Of course, we can generate `number series` with `Stream`s. For example, let's write a function that generates an
+    * infinite stream of integers (n, n + 1, n + 2...):
+    */
+
+  def streamIntegersAssert(res0: Int): Unit = {
+    def from(n: Int): Stream[Int] =
+      cons(n, from(n + res0))
+
+    from(100).take(5).toList shouldBe List(100, 101, 102, 103, 104)
+  }
+
+  /**
+    * We can also create a function `fibs` that generates the infinite stream of Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8...
+    */
+
+  def streamFibsAssert(res0: Int, res1: Int): Unit = {
+    val fibs = {
+      def go(f0: Int, f1: Int): Stream[Int] =
+        cons(f0, go(f1, f0+f1))
+      go(res0, res1)
+    }
+
+    fibs.take(7).toList shouldBe List(0, 1, 1, 2, 3, 5, 8)
+  }
+
+  /**
+    * Now we're going to write a more general stream-building function called `unfold`. It takes an initial state, and
+    * a function for producing both the next state and the next value in the generated stream:
+    *
+    * {{{
+    *   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = f(z) match {
+    *     case Some((h,s)) => cons(h, unfold(s)(f))
+    *     case None => empty
+    *   }
+    * }}}
+    *
+    * `Option` is used to indicate when the `Stream` should be terminated, if at all. Now that we have `unfold`, let's
+    * re-write our previous generator functions based on it, starting from `fibs`:
+    */
+
+  def streamFibsViaUnfoldAssert(res0: Int, res1: Int): Unit = {
+    val fibsViaUnfold =
+      unfold((res0, res1)) { case (f0,f1) => Some((f0, (f1, f0+f1))) }
+
+    fibsViaUnfold.take(7).toList shouldBe List(0, 1, 1, 2, 3, 5, 8)
+  }
+
+  /**
+    * `from` follows a similar principle, albeit a little bit more simple:
+    */
+
+  def streamFromViaUnfoldAssert(res0: Int): Unit = {
+    def fromViaUnfold(n: Int) = unfold(n)(n => Some((n, n + res0)))
+
+    fromViaUnfold(100).take(5).toList shouldBe List(100, 101, 102, 103, 104)
+  }
+
+  /**
+    * Again, `constant` can be implemented in terms of `unfold` in a very similar way:
+    *
+    * {{{
+    *   def constantViaUnfold[A](a: A) = unfold(a)(_ => Some((a,a)))
+    * }}}
+    *
+    * Follow the same pattern to implement `ones` using `unfold`:
+    */
+
+  def streamOnesViaUnfoldAssert(res0: Some[(Int, Int)]): Unit = {
+    val onesViaUnfold = unfold(1)(_ => res0)
+
+    onesViaUnfold.take(10).toList shouldBe List(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+  }
+
+  /**
+    * Now we're going to re-implement some of the higher-order functions for `Stream`s, starting with map:
+    *
+    * {{{
+    *   def mapViaUnfold[B](f: A => B): Stream[B] = unfold(this) {
+    *     case Cons(h,t) => Some((f(h()), t()))
+    *     case _ => None
+    *     }
+    * }}}
+    *
+    * `take` can also be re-written via `unfold`, let's try it:
+    */
+
+  def streamTakeViaUnfold(res0: Int, res1: Int): Unit = {
+    def takeViaUnfold[A](s: Stream[A], n: Int): Stream[A] =
+      unfold((s, n)) {
+        case (Cons(h,t), 1) => Some((h(), (Stream.empty, res0)))
+        case (Cons(h,t), n) if n > 1 => Some((h(), (t(), n - 1)))
+        case _ => None
+      }
+
+    takeViaUnfold(Stream(1, 2, 3, 4, 5), 5).toList shouldBe List(1, 2, 3, 4, 5)
+  }
+
+  /**
+    * Let's continue by re-writting `takeWhile` in terms of `unfold`:
+    *
+    * {{{
+    *   def takeWhileViaUnfold(f: A => Boolean): Stream[A] = unfold(this) {
+    *     case Cons(h,t) if f(h()) => Some((h(), t()))
+    *     case _ => None
+    *   }
+    * }}}
+    *
+    * We can also bring back functions we saw with `List`s, as `zipWith`:
+    *
+    * {{{
+    *   def zipWith[B,C](s2: Stream[B])(f: (A,B) => C): Stream[C] = unfold((this, s2)) {
+    *     case (Cons(h1,t1), Cons(h2,t2)) =>
+    *       Some((f(h1(), h2()), (t1(), t2())))
+    *     case _ => None
+    *   }
+    * }}}
+    *
+    * `zipAll` can also be implemented using `unfold`. Note that it should continue the traversal as long as either
+    * stream has more elements - it uses `Option` to indicate whether each stream has been exhausted:
+    *
+    * {{{
+    *   def zipAll[B](s2: Stream[B]): Stream[(Option[A],Option[B])] = zipWithAll(s2)((_,_))
+    *
+    *   def zipWithAll[B, C](s2: Stream[B])(f: (Option[A], Option[B]) => C): Stream[C] =
+    *     Stream.unfold((this, s2)) {
+    *       case (Empty, Empty) => None
+    *       case (Cons(h, t), Empty) => Some(f(Some(h()), Option.empty[B]) -> (t(), empty[B]))
+    *       case (Empty, Cons(h, t)) => Some(f(Option.empty[A], Some(h())) -> (empty[A] -> t()))
+    *       case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
+    *   }
+    * }}}
+    *
+    * Now we're going to try to implement `startsWith` using the functions we've seen so far:
+    *
+    * {{{
+    *   def startsWith[A](s: Stream[A]): Boolean =
+    *     zipAll(s).takeWhile(!_._2.isEmpty) forAll {
+    *       case (h,h2) => h == h2
+    *     }
+    * }}}
+    *
+    * We can also write `tails` using `unfold`. For a given Stream, `tails` returns the `Stream` of suffixes of the input
+    * sequence, starting with the original `Stream`. For example, given `Stream(1,2,3)`, it would return
+    * `Stream(Stream(1,2,3), Stream(2,3), Stream(3), Stream())`.
+    */
+
+  def streamTailsAssert(res0: Int): Unit = {
+    def tails[A](s: Stream[A]): Stream[Stream[A]] =
+      unfold(s) {
+        case Empty => None
+        case s1 => Some((s1, s1 drop res0))
+      } append Stream(Stream.empty)
+
+    tails(Stream(1, 2, 3)).toList.map(_.toList) shouldBe List(List(1, 2, 3), List(2, 3), List(3), List())
+  }
+
+  /**
+    * We can generalize tails to the function scanRight, which is like a `foldRight` that returns a stream of the
+    * intermediate results:
+    *
+    * {{{
+    *   def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] =
+    *     foldRight((z, Stream(z)))((a, p0) => {
+    *       lazy val p1 = p0
+    *       val b2 = f(a, p1._1)
+    *       (b2, cons(b2, p1._2))
+    *    })._2
+    * }}}
+    *
+    * For example:
+    */
+
+  def streamScanRightAssert(res0: List[Int]): Unit = {
+    Stream(1, 2, 3).scanRight(0)(_ + _).toList shouldBe res0
+  }
 }
