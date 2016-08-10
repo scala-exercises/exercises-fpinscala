@@ -76,7 +76,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     *   if2(false, sys.error("fail"), 3)
     * }}}
     *
-    * With either syntax, an argument that’s passed unevaluated to a function will be evalu- ated once for each place
+    * With either syntax, an argument that’s passed unevaluated to a function will be evaluated once for each place
     * it’s referenced in the body of the function. That is, Scala won’t (by default) cache the result of evaluating an
     * argument:
     *
@@ -450,7 +450,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     def takeViaUnfold[A](s: Stream[A], n: Int): Stream[A] =
       unfold((s, n)) {
         case (Cons(h,t), 1) => Some((h(), (Stream.empty, res0)))
-        case (Cons(h,t), n) if n > 1 => Some((h(), (t(), n - 1)))
+        case (Cons(h,t), n) if n > 1 => Some((h(), (t(), n - res1)))
         case _ => None
       }
 
