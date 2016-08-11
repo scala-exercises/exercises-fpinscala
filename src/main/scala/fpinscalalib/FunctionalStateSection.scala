@@ -349,4 +349,118 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     d2 should be < 6
     d1 should not be d2
   }
+
+  import fpinscalalib.customlib.state.Machine
+  import fpinscalalib.customlib.state.State
+  import fpinscalalib.customlib.state.State._
+
+  /**
+    * The functions we’ve just written — `unit`, `map`, `map2`, `flatMap`, and `sequence` — aren’t really specific to
+    * random number generation at all. They’re general-purpose functions for working with state actions, and don’t care
+    * about the type of the state. For instance, we can give `map` a more general signature:
+    *
+    * {{{
+    *   def map[S,A,B](a: S => (A,S))(f: A => B): S => (B,S)
+    * }}}
+    *
+    * This new version of `map` still retains the same implementation. We should then come up with a more general type
+    * than `Rand`, for handling any type of state:
+    *
+    * {{{
+    *   case class State[S,+A](run: S => (A,S))
+    * }}}
+    *
+    * Now we have a single, general-purpose type, and using this type we can write general-purpose functions for
+    * capturing common patterns of stateful programs. We can now just make `Rand` a type alias for `State`:
+    *
+    * {{{
+    *   type Rand[A] = State[RNG, A]
+    * }}}
+    *
+    * We can also generalize the functions `unit`, `map`, `map2`, `flatMap` and `sequence`:
+    *
+    * {{{
+    *   def unit[S, A](a: A): State[S, A] = State(s => (a, s))
+    *
+    *   def map[B](f: A => B): State[S, B] = flatMap(a => unit(f(a)))
+    *
+    *   def flatMap[B](f: A => State[S, B]): State[S, B] = State(s => {
+    *     val (a, s1) = run(s)
+    *     f(a).run(s1)
+    *   })
+    *
+    *   def map2[B, C](sb: State[S, B])(f: (A, B) => C): State[S, C] =
+    *     flatMap(a => sb.map(b => f(a, b)))
+    *
+    *   def sequence[S, A](sas: List[State[S, A]]): State[S, List[A]] =
+    *     sas.foldRight(unit[S, List[A]](List()))((f, acc) => f.map2(acc)(_ :: _))
+    * }}}
+    *
+    * As a final showcase of the uses of `State`, let's implement a finite state automaton that models a simple candy
+    * dispenser. The machine has two types of input: you can insert a coin, or you can turn the knob to dispense candy.
+    * It can be in one of two states: locked or unlocked. It also tracks how many candies are left and how many coins
+    * it contains.
+    *
+    * {{{
+    *   sealed trait Input
+    *   case object Coin extends Input
+    *   case object Turn extends Input
+    *   case class Machine(locked: Boolean, candies: Int, coins: Int)
+    * }}}
+    *
+    * The rules of the machine are as follows:
+    *
+    * - Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
+    * - Turning the knob on an unlocked machine will cause it to dispense candy and become locked.
+    * - Turning the knob on a locked machine or inserting a coin into an unlocked machine does nothing.
+    * - A machine that’s out of candy ignores all inputs.
+    *
+    * The method `simulateMachine` should operate the machine based on the list of inputs and return the number of coins
+    * and candies left in the machine at the end. For example, if the input `Machine` has 10 coins and 5 candies, and a
+    * total of 4 candies are successfully bought, the output should be `(14, 1)`.
+    */
+
+  def candyMachineAssert(res0: Int, res1: Int): Unit = {
+    object Candy {
+      def update = (i: Input) => (s: Machine) =>
+        (i, s) match {
+          case (_, Machine(_, 0, _)) => s
+          case (Coin, Machine(false, _, _)) => s
+          case (Turn, Machine(true, _, _)) => s
+          case (Coin, Machine(true, candy, coin)) =>
+            Machine(false, candy, coin + res0)
+          case (Turn, Machine(false, candy, coin)) =>
+            Machine(true, candy - res1, coin)
+        }
+
+      def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
+        _ <- sequence(inputs map (modify[Machine] _ compose update))
+        s <- get
+      } yield (s.coins, s.candies)
+    }
+
+    import Candy._
+
+    val inputCoin = List(Coin)
+    val inputTurn = List(Turn)
+
+    // Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
+    val m1 = Machine(true, 1, 0)
+    simulateMachine(inputCoin).run(m1)._2.locked shouldBe false
+
+    // Turning the knob on an unlocked machine will cause it to dispense candy and become locked.
+    val m2 = Machine(false, 1, 1)
+    val m2Result = simulateMachine(inputTurn).run(m2)
+    m2Result._2.locked shouldBe true
+    m2Result._2.candies shouldBe 0
+
+    // Turning the knob on a locked machine or inserting a coin into an unlocked machine does nothing.
+    simulateMachine(inputTurn).run(m1)._2.locked shouldBe m1.locked
+    simulateMachine(inputCoin).run(m2)._2.locked shouldBe m2.locked
+
+    // A machine that’s out of candy ignores all inputs.
+    val m3 = Machine(true, 0, 1)
+    simulateMachine(inputTurn).run(m3)._2.locked shouldBe m3.locked
+    simulateMachine(inputCoin).run(m3)._2.locked shouldBe m3.locked
+  }
 }

@@ -35,4 +35,8 @@ class FunctionalStateSpec extends Spec with Checkers {
   def `random roll die asserts` = {
     FunctionalStateSection.randomRollDie(1)
   }
+
+  def `candy machine asserts` = {
+    FunctionalStateSection.candyMachineAssert(1, 1)
+  }
 }
