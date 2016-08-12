@@ -107,12 +107,12 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     }
 
     val rng = Simple(47)
-    val (r1, rng1) = nonNegativeInt(rng)
-    val r2 = nonNegativeInt(rng1)._1
+    val (result1, rng1) = nonNegativeInt(rng)
+    val result2 = nonNegativeInt(rng1)._1
 
-    r1 should be >= 0
-    r2 should be >= 0
-    r1 should not be r2
+    result1 should be >= 0
+    result2 should be >= 0
+    result1 should not be result2
   }
 
   /**
@@ -127,12 +127,12 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     }
 
     val rng = Simple(47)
-    val (d1, rng1) = double(rng)
-    val d2 = double(rng1)._1
+    val (double1, rng1) = double(rng)
+    val double2 = double(rng1)._1
 
-    d1.toInt should be >= 0
-    d2.toInt should be >= 0
-    d1 should not be d2
+    double1.toInt should be >= 0
+    double2.toInt should be >= 0
+    double1 should not be double2
   }
 
   /**
@@ -174,10 +174,10 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
         (x :: xs, r2)
       }
 
-    val (l1, r1) = ints(5)(Simple(47))
-    val l2 = ints(5)(r1)._1
-    l1.size shouldBe 5
-    l1.headOption should not be l2
+    val (list1, rng1) = ints(5)(Simple(47))
+    val list2 = ints(5)(rng1)._1
+    list1.size shouldBe 5
+    list1.headOption should not be list2
   }
 
   /**
@@ -221,12 +221,12 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
   def randomNonNegativeEvenAssert(res0: Int): Unit = {
     def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % res0)
 
-    val (r1, rng1) = nonNegativeEven(Simple(47))
-    val r2 = nonNegativeEven(rng1)._1
+    val (result1, rng1) = nonNegativeEven(Simple(47))
+    val result2 = nonNegativeEven(rng1)._1
 
-    r1 % 2 shouldBe 0
-    r2 % 2 shouldBe 0
-    r1 should not be r2
+    result1 % 2 shouldBe 0
+    result2 % 2 shouldBe 0
+    result1 should not be result2
   }
 
   /**
@@ -238,12 +238,12 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
       map(nonNegativeInt)(_ / (Int.MaxValue.toDouble + res0))
 
     val rng = Simple(47)
-    val (d1, rng1) = double(rng)
-    val d2 = double(rng1)._1
+    val (double1, rng2) = double(rng)
+    val double2 = double(rng2)._1
 
-    d1.toInt should be >= 0
-    d2.toInt should be >= 0
-    d1 should not be d2
+    double1.toInt should be >= 0
+    double2.toInt should be >= 0
+    double1 should not be double2
   }
 
   /**
@@ -313,14 +313,14 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
       }
     }
 
-    val (r1, rng1) = nonNegativeLessThan(10)(Simple(47))
-    val r2 = nonNegativeLessThan(10)(rng1)._1
+    val (result1, rng1) = nonNegativeLessThan(10)(Simple(47))
+    val result2 = nonNegativeLessThan(10)(rng1)._1
 
-    r1 should be >= 0
-    r1 should be < 10
-    r2 should be >= 0
-    r2 should be < 10
-    r1 should not be r2
+    result1 should be >= 0
+    result1 should be < 10
+    result2 should be >= 0
+    result2 should be < 10
+    result1 should not be result2
   }
 
   /**
@@ -341,13 +341,13 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
   def randomRollDie(res0: Int): Unit = {
     def rollDie: Rand[Int] = map(nonNegativeLessThan(6))(_ + res0)
 
-    val (d1, r1) = rollDie(Simple(47))
-    val d2 = rollDie(r1)._1
-    d1 should be > 0
-    d1 should be < 6
-    d2 should be > 0
-    d2 should be < 6
-    d1 should not be d2
+    val (dice1, rng1) = rollDie(Simple(47))
+    val dice2 = rollDie(rng1)._1
+    dice1 should be > 0
+    dice1 should be < 6
+    dice2 should be > 0
+    dice2 should be < 6
+    dice1 should not be dice2
   }
 
   import fpinscalalib.customlib.state.Machine
@@ -445,22 +445,22 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     val inputTurn = List(Turn)
 
     // Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
-    val m1 = Machine(true, 1, 0)
-    simulateMachine(inputCoin).run(m1)._2.locked shouldBe false
+    val machine1 = Machine(true, 1, 0)
+    simulateMachine(inputCoin).run(machine1)._2.locked shouldBe false
 
     // Turning the knob on an unlocked machine will cause it to dispense candy and become locked.
-    val m2 = Machine(false, 1, 1)
-    val m2Result = simulateMachine(inputTurn).run(m2)
+    val machine2 = Machine(false, 1, 1)
+    val m2Result = simulateMachine(inputTurn).run(machine2)
     m2Result._2.locked shouldBe true
     m2Result._2.candies shouldBe 0
 
     // Turning the knob on a locked machine or inserting a coin into an unlocked machine does nothing.
-    simulateMachine(inputTurn).run(m1)._2.locked shouldBe m1.locked
-    simulateMachine(inputCoin).run(m2)._2.locked shouldBe m2.locked
+    simulateMachine(inputTurn).run(machine1)._2.locked shouldBe machine1.locked
+    simulateMachine(inputCoin).run(machine2)._2.locked shouldBe machine2.locked
 
     // A machine that’s out of candy ignores all inputs.
-    val m3 = Machine(true, 0, 1)
-    simulateMachine(inputTurn).run(m3)._2.locked shouldBe m3.locked
-    simulateMachine(inputCoin).run(m3)._2.locked shouldBe m3.locked
+    val machine3 = Machine(true, 0, 1)
+    simulateMachine(inputTurn).run(machine3)._2.locked shouldBe machine3.locked
+    simulateMachine(inputCoin).run(machine3)._2.locked shouldBe machine3.locked
   }
 }
