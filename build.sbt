@@ -5,7 +5,7 @@ lazy val fpinscala = (project in file("."))
   organization := "org.scala-exercises",
   name         := "exercises-fpinscala",
   scalaVersion := "2.11.8",
-  version := "0.2.2-SNAPSHOT",
+  version := "0.2.3-SNAPSHOT",
   resolvers ++= Seq(
     Resolver.sonatypeRepo("snapshots"),
     Resolver.sonatypeRepo("releases")
