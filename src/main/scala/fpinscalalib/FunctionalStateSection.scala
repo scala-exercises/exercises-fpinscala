@@ -74,8 +74,8 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     *
     * = Making stateful APIs pure =
     *
-    * This problem of making seemingly stateful APIs pure comes up frequently, and we can always deal with it in this
-    * same way. For instance:
+    * Making seemingly stateful APIs pure is a problem that comes up frequently. We can always handle this in the same
+    * way, for instance:
     *
     * {{{
     *   class Foo {
@@ -324,8 +324,8 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
   }
 
   /**
-    * We can also rewrite `map` and `map2` in terms of `flatMap`. The fact that this is possible is what we’re referring
-    * to when we say that `flatMap` is more powerful than `map` and `map2`.
+    * We can also rewrite `map` and `map2` in terms of `flatMap`. The fact that this is possible is why we say that
+    * `flatMap` is more powerful than `map` and `map2`.
     *
     * {{{
     *   def _map[A,B](s: Rand[A])(f: A => B): Rand[B] =
@@ -334,8 +334,8 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     *     flatMap(ra)(a => map(rb)(b => f(a, b)))
     * }}}
     *
-    * As a final example, let's revisit our previously written functions to implement a function that roll a six-sided
-    * die:
+    * As a final example, let’s revisit the functions we previously wrote and implement a function that will roll a
+    * six-sided die:
     */
 
   def randomRollDie(res0: Int): Unit = {
@@ -370,8 +370,8 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     *   case class State[S,+A](run: S => (A,S))
     * }}}
     *
-    * Now we have a single, general-purpose type, and using this type we can write general-purpose functions for
-    * capturing common patterns of stateful programs. We can now just make `Rand` a type alias for `State`:
+    * Now we have a single, general-purpose type and can use it to write general-purpose functions for capturing common
+    * patterns of stateful programs. We can now  make `Rand` a type alias for `State`:
     *
     * {{{
     *   type Rand[A] = State[RNG, A]
@@ -411,7 +411,7 @@ object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexerc
     * The rules of the machine are as follows:
     *
     * - Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
-    * - Turning the knob on an unlocked machine will cause it to dispense candy and become locked.
+    * - Turning the knob on an unlocked machine will cause it to dispense candy and then lock.
     * - Turning the knob on a locked machine or inserting a coin into an unlocked machine does nothing.
     * - A machine that’s out of candy ignores all inputs.
     *
