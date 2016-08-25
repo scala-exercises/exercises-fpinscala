@@ -17,6 +17,7 @@ object FPinScalaLibrary extends Library {
     FunctionalDataStructuresSection,
     ErrorHandlingSection,
     StrictnessAndLazinessSection,
-    FunctionalStateSection
+    FunctionalStateSection,
+    FunctionalParallelismSection
   )
 }
