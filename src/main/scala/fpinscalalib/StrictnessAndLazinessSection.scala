@@ -52,9 +52,8 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     *     if (cond) onTrue() else onFalse()
     * }}}
     *
-    *
-    *
-    * Play a little bit with it, note what happens when you force a `true` or a `false` condition on the `if2` call:
+    * Play around with it for a bit and note what happens when you force a `true` or a `false` condition on the `if2`
+    * call:
     */
 
   def if2Assert(res0: Boolean): Unit = {
@@ -106,8 +105,8 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     * }}}
     *
     * Adding the `lazy` keyword to a `val` declaration will cause Scala to delay evaluation of the right-hand side of that
-    * `lazy val` declaration until it’s first referenced. It will also cache the result so that subsequent references to
-    * it don’t trigger repeated evaluation.
+    * `lazy val` declaration until it’s first referenced. It will also cache the result so that any subsequent references
+    * to it won’t trigger repeat evaluations.
     *
     * = Lazy lists =
     *
@@ -159,8 +158,8 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
   }
 
   /**
-    * Let's continue by writing the function `take` for returning the fist `n` elements of a `Stream`. Note that in the
-    * following implementation we're using `Stream`'s smart constructors `cons` and `empty`, defined as follows:
+    * Let's continue by writing the function `take` for returning the first `n` elements of a `Stream`. Note that in the
+    * following implementation, we're using `Stream`'s smart constructors `cons` and `empty`, defined as follows:
     *
     * {{{
     *   def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = {
@@ -184,7 +183,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
   }
 
   /**
-    * `drop` is similar to `take`, but instead skips the first `n` elements of a `Stream`:
+    * `drop` is similar to `take`, but skips the first `n` elements of a `Stream` instead:
     */
 
   def streamDropAssert(res0: Int): Unit = {
@@ -197,7 +196,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
   }
 
   /**
-    * We can also implement `takeWhile` for returning all starting elements of a `Stream` that match the given predicate:
+    * We can also implement `takeWhile` to return all starting elements of a `Stream` that match the given predicate:
     */
 
   def streamTakeWhileAssert(res0: List[Int], res1: List[Int]): Unit = {
@@ -247,7 +246,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     * }}}
     *
     * Let's use this to implement `forAll`, which checks that all elements in the `Stream` match a given predicate. Note
-    * that the implementation will terminate the traversal as soon as it encounters a nonmatching value.
+    * that the implementation will terminate the traversal as soon as it encounters a non-matching value.
     */
 
   def streamForAllAssert(res0: Boolean): Unit = {
@@ -288,15 +287,15 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     *   def flatMap[B](f: A => Stream[B]): Stream[B] = foldRight(empty[B])((h,t) => f(h) append t)
     * }}}
     *
-    * Note that these implementations are incremental — they don’t fully generate their answers. It’s not until some
-    * other computation looks at the elements of the resulting `Stream` that the computation to generate that `Stream`
+    * Note that these implementations are incremental — they don’t fully generate their answers. It’s not until another
+    * computation looks at the elements of the resulting `Stream` that the computation to generate that `Stream`
     * actually takes place. Let's look at a simplified program trace for the next piece of code.
     *
     * {{{
     *   Stream(1, 2, 3, 4).map(_ + 10).filter(_ % 2 == 0)
     * }}}
     *
-    * We'll convert that expression to a `List` to force evaluation. Try to follow what's happening in each step:
+    * We'll convert that expression to a `List` to force evaluation. Try to follow with what's happening in each step:
     */
 
   def streamTraceAssert(res0: Int, res1: Stream[Int], res2: Stream[Int], res3: Int, res4: Stream[Int], res5: Int): Unit = {
@@ -397,7 +396,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     * }}}
     *
     * `Option` is used to indicate when the `Stream` should be terminated, if at all. Now that we have `unfold`, let's
-    * re-write our previous generator functions based on it, starting from `fibs`:
+    * rewrite our previous generator functions based on it, starting from `fibs`:
     */
 
   def streamFibsViaUnfoldAssert(res0: Int, res1: Int): Unit = {
@@ -408,7 +407,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
   }
 
   /**
-    * `from` follows a similar principle, albeit a little bit more simple:
+    * `from` follows a similar principle, albeit a little simpler:
     */
 
   def streamFromViaUnfoldAssert(res0: Int): Unit = {
@@ -443,7 +442,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     *     }
     * }}}
     *
-    * `take` can also be re-written via `unfold`, let's try it:
+    * `take` can also be rewritten via `unfold`, let's try it:
     */
 
   def streamTakeViaUnfold(res0: Int, res1: Int): Unit = {
@@ -458,7 +457,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
   }
 
   /**
-    * Let's continue by re-writting `takeWhile` in terms of `unfold`:
+    * Let's continue by rewritting `takeWhile` in terms of `unfold`:
     *
     * {{{
     *   def takeWhileViaUnfold(f: A => Boolean): Stream[A] = unfold(this) {
@@ -467,7 +466,7 @@ object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scal
     *   }
     * }}}
     *
-    * We can also bring back functions we saw with `List`s, as `zipWith`:
+    * We can also bring back functions we saw previously with `List`s, as `zipWith`:
     *
     * {{{
     *   def zipWith[B,C](s2: Stream[B])(f: (A,B) => C): Stream[C] = unfold((this, s2)) {

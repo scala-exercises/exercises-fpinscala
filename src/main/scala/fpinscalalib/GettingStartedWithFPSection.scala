@@ -9,8 +9,8 @@ object GettingStartedWithFPSection extends FlatSpec with Matchers with org.scala
   /**
     * = Tail-recursive functions =
     *
-    * We're going to introduce some of the basic techniques for how to write functional programs. Let's start by writing
-    * loops using tail-recursive functions. For instance, let's take a look on how to functionally write a function that
+    * We're going to introduce some of the basic techniques for writing functional programs. Let's start by writing
+    * loops using tail-recursive functions. For instance, let's take a look at how to functionally write a function that
     * calculates the factorial of a given number.
     *
     * {{{
@@ -23,16 +23,16 @@ object GettingStartedWithFPSection extends FlatSpec with Matchers with org.scala
     * }
     * }}}
     *
-    * We're defining a recursive helper function inside the body of the `functional` function. We often call these helper
-    * functions `go` or `loop`. Since it's local, the `go` function can only be referred to from within the body of the
-    * `factorial` function, just like a local variable would.
+    * In this example, we’re defining a recursive helper function inside the body of the functional function. We often
+    * refer these helper functions as `go` or `loop`. Since it’s local the `go` function can only be referred to from
+    * within the body of the factorial function, just like a local variable would.
     *
-    * The arguments to `go` are the state for the loop. In this case, they're the remaining value `n`, and the current
+    * The arguments to `go` are the state for the loop. In this case, they're the remaining value `n` and the current
     * accumulated factorial `acc`. To advance to the next iteration, we simply call `go` recursively with the new loop
     * state: `go(n-1, n*acc)`, and to exit from the loop we return a value without a recursive call (in this case, we
     * return the value of `acc` if `n <= 0`).
     *
-    * Scala is able to detect this sort of self-recursion and compiles it to the same sort of bytecode as would be emitted
+    * Scala can detect this sort of self-recursion and compiles it to the same sort of bytecode as would be emitted
     * by a `while` loop, as long as the recursive call is in tail position. The basic idea is that this optimization
     * (tail call elimination) is applied when there's no additional work left to do after the recursive call returns.
     *
@@ -70,7 +70,7 @@ object GettingStartedWithFPSection extends FlatSpec with Matchers with org.scala
   /**
     * = Polymorphic and higher-order functions =
     *
-    * Polymorphic functions allow us to write code that works for any type it's given. For instance, take a look at
+    * Polymorphic functions allow us to write code that works for any type it's given. For example, take a look at
     * `findFirst`, a function that finds the first index in an array where the key occurs (or `-1` if it doesn't exist),
     * implemented more generally by accepting a function to use for testing a particular `A` value.
     *
@@ -119,8 +119,8 @@ object GettingStartedWithFPSection extends FlatSpec with Matchers with org.scala
     *    }
     * }}}
     *
-    * When using HOFs, it's often convenient to be able to call these functions with anonymous functions, rather than
-    * having to supply some existing named function. For instance, using the previously implemented `findFirst`:
+    * When using HOFs, it's convenient to be able to call these functions with anonymous functions, rather than
+    * having to supply an existing named function. For instance, using the previously implemented `findFirst`:
     *
     * {{{
     *   findFirst(Array(7, 9, 13), (x: Int) => x == 9)
@@ -180,7 +180,7 @@ object GettingStartedWithFPSection extends FlatSpec with Matchers with org.scala
     *     (a, b) => f(a)(b)
     * }}}
     *
-    * Check by yourself if this principle holds true in the next exercise:
+    * In this next exercise, check to see if this principle holds true:
     */
   def uncurryAssert(res0: Boolean, res1: Boolean): Unit = {
     def uncurry[A,B,C](f: A => B => C): (A, B) => C =
