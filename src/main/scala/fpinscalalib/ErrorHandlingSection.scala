@@ -21,8 +21,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     * of using error codes, we introduce a new generic type for these “possibly defined values” and use higher-order
     * functions to encapsulate common patterns of handling and propagating errors.
     *
-    * We introduce a new type, `Option`. As with the previously explored `List`, this type also exists in the Scala
-    * standard library, but we're re-creating it here for pedagogical purposes:
+    * We're going to introduce a new type, `Option`. As with the previously explored `List`, this type also exists in
+    * the Scala standard library, but we're re-creating it here for pedagogical purposes:
     *
     * {{{
     *   sealed trait Option[+A]
@@ -33,8 +33,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     * Option has two cases: it can be defined, in which case it will be a `Some`, or it can be undefined, in which case
     * it will be `None`.
     *
-    * Let's consider an example to use our new type. We're defining a function `mean` that computes the mean of a list,
-    * which is undefined if the list is empty:
+    * Let's consider an example on how we can use our new type. We're defining a function `mean` that computes the mean
+    * of a list, which is undefined if the list is empty:
     */
 
   def optionMeanAssert(res0: Option[Double]): Unit = {
@@ -89,7 +89,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   def flatMap[B](f: A => Option[B]): Option[B] = map(f) getOrElse None
     * }}}
     *
-    * By using `flatMap` we can chain operations that also can fail, as in the following example. Try to find out who is
+    * By using `flatMap` we can chain operations that can also fail, as in the following example. Try to find out who is
     * managing each employee, if applicable:
     */
 
@@ -102,7 +102,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
-    * The function `getOrElse` used above, tries to get the value contained in the Option, but if it's a `None` will
+    * The function `getOrElse` used above, tries to get the value contained in the Option, but if it's a `None`, it will
     * return the default value provided by the caller. The `B >: A` in the declaration tells that the `B` type parameter
     * must be a supertype of `A`. Furthermore, `default : => B` indicates that the argument is of type B, but won’t be
     * evaluated until it’s needed by the function.
@@ -140,7 +140,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   }
     * }}}
     *
-    * Try it out to discard those employees who belong to the IT department:
+    * Test it out by discarding those employees who belong to the IT department:
     */
 
   def optionFilterAssert(res0: Some[Employee], res1: Option[Employee], res2: Option[Employee]): Unit = {
@@ -189,7 +189,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     */
 
   /**
-    * Let's continue looking at a few other similar cases. For instance, the `sequence` function, which combines a list
+    * Let's continue by looking at a few other similar cases. For instance, the `sequence` function, which combines a list
     * of `Option`s into one `Option` containing a list of all the `Some` values in the original list. If the original
     * list contains `None` even once, the result of the function should be `None`. Otherwise the result should be a `Some`
     * with a list of all the values:
@@ -201,7 +201,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   }
     * }}}
     *
-    * After taking a look at the implementation, check how it works in the following exercise:
+    * After taking a look at the implementation, see how it works in the following exercise:
     */
 
   def optionSequenceAssert(res0: Some[List[Int]], res1: Option[List[Int]]): Unit = {
@@ -268,7 +268,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   case class Right[+A](value: A) extends Either[Nothing, A]
     * }}}
     *
-    * `Either` has only two cases, just like `Option`. The essential difference is that both cases carry a value. When
+    * `Either` only has two cases, just like `Option`. The essential difference is that both cases carry a value. When
     * we use it to indicate success or failure, by convention the `Right` constructor is reserved for the success case
     * (a pun on “right,” meaning correct), and `Left` is used for failure.
     *
@@ -297,7 +297,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   }
     * }}}
     *
-    * In the same fashion as `Option`, `map` allow us to chain operations on an `Either` without worrying about the
+    * In the same fashion as `Option`, `map` allows us to chain operations on an `Either` without worrying about the
     * possible errors that may arise, as the chain will stop if any error occurs. Let's try it out, by improving the
     * employee lookup function we implemented before, to use `Either` instead of `Option`. Try to use `map` on the
     * `Either` type to obtain the department of each employee:
@@ -318,9 +318,9 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
-    * `flatMap` behaves the same in `Either` as in `Option`, allowing us to chain operations that may also fail. Use it
-    * to try to obtain the managers from each employee. Note that when calling our `getManager` function, we can find
-    * two different errors in its execution:
+    * `flatMap` behaves the same in `Either` as it does in `Option`, allowing us to chain operations that may also fail.
+    * Use it to try to obtain the managers from each employee. Note that when calling our `getManager` function, we can
+    * find two different errors in its execution:
     */
 
   def eitherFlatMapAssert(res0: Right[String], res1: Left[String], res2: Left[String]): Unit = {
@@ -347,7 +347,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   }
     * }}}
     *
-    * Let's check how it behaves. Let's assume that everyone inside our company ends up responding to a "Mr. CEO"
+    * Let's check out how it behaves. Let's assume that everyone inside our company ends up responding to a "Mr. CEO"
     * manager. We can provide that logic with `orElse`:
     */
 
@@ -376,7 +376,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   } yield f(a,b1)
     * }}}
     *
-    * In this implementation, we can't report errors on both sides. To do that, we would need a new data type that could
+    * In this implementation, we can't report errors on both sides. To do that, we would need a new data type that can
     * hold a list of errors:
     *
     * {{{
@@ -414,7 +414,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   def sequence[E,A](es: List[Either[E,A]]): Either[E,List[A]] = traverse(es)(x => x)
     * }}}
     *
-    * We can try to lookup through a list of employee names to obtain a list of `Employees`:
+    * We can attempt to obtain a record of employees names by looking up a list of `Employees`:
     */
 
   def eitherTraverseAssert(res0: Right[List[Employee]], res1: Left[String]): Unit = {
@@ -426,8 +426,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
-    * As for `sequence`, we can create a `List` of employees we looked up by using the `lookupByNameViaEither`, and
-    * find out if we were looking for some missing person:
+    * As for `sequence`, we can create a `List` of the employees we looked up by using the `lookupByNameViaEither`, and
+    * find out if we were looking for a missing person:
     */
 
   def eitherSequenceAssert(res0: Right[List[Employee]], res1: Left[String]): Unit = {

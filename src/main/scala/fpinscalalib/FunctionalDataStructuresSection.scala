@@ -13,7 +13,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
   /**
     * = Singly linked lists =
     *
-    * First let's examine what's probably the most ubiquitous functional data structure, the singly linked list. The
+    * Let's examine what's probably the most ubiquitous functional data structure, the singly-linked list to start. The
     * definition here is identical in spirit to (though simpler than) the `List` data type defined in Scala's standard
     * library.
     *
@@ -40,7 +40,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     * }}}
     *
     * The definition of the data type begins with the keywords `sealed trait`. In general, we introduce a data type with
-    * the `trait` keyword. A `trait` is a an abstract interface that may optionally contain implementations of some
+    * the `trait` keyword. A `trait` is an abstract interface that may optionally contain implementations of some
     * methods. There are two such implementations, or data constructors, of `List`, to represent the two possible forms a
     * `List` can take. A `List` can be empty (denoted by the data constructor `Nil`), or it can be nonempty, denoted by
     * the data constructor `Cons` (traditionally short for `construct`). A nonempty list consists of an initial element,
@@ -53,7 +53,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     * `List`. Both definitions make use of pattern matching.
     *
     * As you might expect, the `sum` function states that the sum of an empty list is 0, and the sum of a nonempty list
-    * is the first element, `x`, plus the sum of the remaining elements, `xs`. Likewise the `product` definition states
+    * is the first element, `x`, plus the sum of the remaining elements, `xs`. Likewise, the `product` definition states
     * that the product of an empty list is `1.0`, the product of any other nonempty list starting with `0.0` is `0.0`,
     * and the product of any other nonempty list is the first element multiplied by the product of the remaining elements.
     *
@@ -111,7 +111,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     *     }
     * }}}
     *
-    * Taking a look at its implementation, check its behaviour on the following cases:
+    * After taking a look at its implementation, check out its behaviour on the following cases:
     */
 
   def listTakeAssert(res0: List[Int], res1: List[Int]) {
@@ -121,7 +121,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
 
   /**
     * Using the same idea, we can implement the function `setHead` for replacing the first element of a List with a
-    * a different value:
+    * different value:
     *
     * {{{
     *   def setHead[A](l: List[A], h: A): List[A] = l match {
@@ -173,7 +173,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     *     }
     * }}}
     *
-    * Check how it works with the following examples:
+    * See how it works with the following examples:
     */
 
   def listDropWhileAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int]) {
@@ -185,7 +185,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
 
   /**
     * In the same fashion, let's implement another function `init` that returns a `List` consisting of all but the last
-    * element of a `List`. Take a note that this function can't be implemented in constant time like `tail`.
+    * element of a `List`. It should be noted that this function cannot be implemented in constant time like `tail`.
     *
     * {{{
     *   def init[A](l: List[A]): List[A] =
@@ -207,8 +207,8 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
   /**
     * = Recursion over lists and generalizing to higher-order functions =
     *
-    * Let’s look again at the implementations of sum and product. We’ve simplified the product implementation slightly,
-    * so as not to include the “short-circuiting” logic of checking for 0.0:
+    * Once again, let’s take a look at the implementations of `sum` and `product`. We’ve simplified the product
+    * implementation slightly, so as not to include the “short-circuiting” logic of checking for 0.0:
     *
     * {{{
     * def sum(ints: List[Int]): Int = ints match {
@@ -227,7 +227,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     * of sum, 1.0 in the case of product), and the operation to combine results (+ in the case of sum, * in the case of
     * product).
     *
-    * We can do better by generalizing those functions, by implementing a `foldRight`. This function will take as
+    * We can improve things by generalizing those functions, by implementing a `foldRight`. This function will take on as
     * arguments the value to return in the case of the empty list, and the function to add an element to the result in
     * the case of a nonempty list:
     *
@@ -262,8 +262,8 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
   }
 
   /**
-    * Now that we know how `foldRight` works, try to think what happens when you pass `Nil` and `Cons` themselves to
-    * `foldRight`.
+    * Now that we know how `foldRight` works, try to think about what happens when you pass `Nil` and `Cons` themselves
+    * to `foldRight`.
     */
 
   def listFoldRightNilConsAssert(res0: List[Int]) {
@@ -414,8 +414,8 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     */
 
   /**
-    * Let's apply the same principle as in `map` to remove elements from a list, starting with a function to remove all
-    * odd numbers from a List[Int]:
+    * Let's apply the same principle as we use in `map` to remove elements from a list, starting with a function to
+    * remove all odd numbers from a List[Int]:
     */
   def listRemoveOdds(res0: Int, res1: Int): Unit = {
     def removeOdds(l: List[Int]): List[Int] =
@@ -494,7 +494,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
   }
 
   /**
-    * As a final example to work with lists, let's implement a `hasSubsequence` function for checking whether a `List`
+    * As a final example for working with lists, let's implement a `hasSubsequence` function for checking whether a `List`
     * contains another `List` as a subsequence. For instance, `List(1, 2, 3, 4)` would have `List(1, 2)`, `List(2, 3)`
     * and `List(4)` as subsequences, among others:
     *
@@ -514,7 +514,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
     *   }
     * }}}
     *
-    * Take a deep look at the implementation of this function, and then try it out in the next exercise:
+    * Take a thorough look at the implementation of this function, and then try it out in the next exercise:
     */
 
   def listHasSubsequenceAssert(res0: Boolean, res1: Boolean, res2: Boolean): Unit = {
