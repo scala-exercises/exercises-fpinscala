@@ -13,6 +13,18 @@ class FunctionalParalellismSpec extends Spec with Checkers {
   }
 
   def `par sortPar asserts` = {
-    FunctionalParallelismSection.parSortPar((l: List[Int]) => l.sorted)
+    FunctionalParallelismSection.parSortParAssert((l: List[Int]) => l.sorted)
+  }
+
+  def `par filter asserts` = {
+    FunctionalParallelismSection.parFilterAssert(List(1, 2, 3))
+  }
+
+  def `par law mapping asserts` = {
+    FunctionalParallelismSection.parLawMappingAssert(2)
+  }
+
+  def `par equal asserts` = {
+    FunctionalParallelismSection.parEqualAssert(true)
   }
 }
