@@ -27,4 +27,28 @@ class FunctionalParalellismSpec extends Spec with Checkers {
   def `par equal asserts` = {
     FunctionalParallelismSection.parEqualAssert(true)
   }
+
+  def `par choiceN asserts` = {
+    FunctionalParallelismSection.parChoiceNAssert(1)
+  }
+
+  def `par choiceMap asserts` = {
+    FunctionalParallelismSection.parChoiceMapAssert(2)
+  }
+
+  def `par chooser asserts` = {
+    FunctionalParallelismSection.parChooserAssert("odd")
+  }
+
+  def `par choice via flatMap asserts` = {
+    FunctionalParallelismSection.parChoiceViaFlatMapAssert("a")
+  }
+
+  def `par choiceN via flatMap asserts` = {
+    FunctionalParallelismSection.parChoiceNViaFlatMapAssert("c")
+  }
+
+  def `par flatMap and join asserts` = {
+    FunctionalParallelismSection.parFlatMapJoinAssert("foo")
+  }
 }

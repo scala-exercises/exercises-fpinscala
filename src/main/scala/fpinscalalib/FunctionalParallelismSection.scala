@@ -406,5 +406,151 @@ object FunctionalParallelismSection extends FlatSpec with Matchers with org.scal
     *
     * But we’d really like to be able to run arbitrary computations over fixed-size thread pools. In order to do that,
     * we’ll need to pick a different representation of `Par`.
+    *
+    * = Refining combinators to their most general form =
+    *
+    * Functional design is an iterative process. After you write down your API and have at least a prototype
+    * implementation, try using it for progressively more complex or realistic scenarios. Sometimes you’ll find that
+    * these scenarios require new combinators. But before jumping right to implementation, it’s a good idea to see if
+    * you can refine the combinator you need to its most general form. It may be that what you need is just a specific
+    * case of some more general combinator.
+    *
+    * Let’s look at an example of this. Suppose we want a function to choose between two forking computations based on
+    * the result of an initial computation:
+    *
+    * {{{
+    *   def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A]
+    * }}}
+    *
+    * This constructs a computation that proceeds with `t` if `cond` results in `true`, or `f` if `cond` results in
+    * `false`. We can certainly implement this by blocking on the result of the `cond`, and then using this result to
+    * determine whether to run `t` or `f`. Here’s a simple blocking implementation:
+    *
+    * {{{
+    *   def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
+    *     es =>
+    *       // Notice we are blocking on the result of cond:
+    *       if (run(es)(cond).get) t(es)
+    *       else f(es)
+    * }}}
+    *
+    * Let’s see if we can think of some variations to get at the essence of this combinator. There’s something rather
+    * arbitrary about the use of Boolean here, and the fact that we’re only selecting among two possible parallel
+    * computations, `t` and `f`. Why just two? If it’s useful to be able to choose between two parallel computations
+    * based on the results of a first, it should be certainly be useful to choose between N computations:
+    *
+    * {{{
+    *   def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
+    *     es => {
+    *       val ind = run(es)(n).get
+    *       run(es)(choices(ind))
+    *     }
+    * }}}
+    *
+    * Let's try to implement `choice` via the more general `choiceN`:
     */
+  def parChoiceNAssert(res0: Int): Unit = {
+    def choiceViaChoiceN[A](a: Par[Boolean])(ifTrue: Par[A], ifFalse: Par[A]): Par[A] =
+      choiceN(map(a)(b => if (b) 0 else res0))(List(ifTrue, ifFalse))
+
+    val executorService = Executors.newFixedThreadPool(2)
+    val choice = choiceViaChoiceN(Par.unit(true))(Par.unit(1), Par.unit(2))
+    choice.apply(executorService).get() shouldBe 1
+  }
+  /**
+    * There’s still something rather arbitrary about `choiceN`. The choice of `List` seems overly specific. Why does it
+    * matter what sort of container we have? For instance, what if, instead of a list of computations, we have a `Map`
+    * of them:
+    */
+
+  def parChoiceMapAssert(res0: Int): Unit = {
+    def choiceMap[K,V](key: Par[K])(choices: Map[K,Par[V]]): Par[V] =
+      es => {
+        val k = Par.run(es)(key).get
+        Par.run(es)(choices(k))
+      }
+
+    val executorService = Executors.newFixedThreadPool(2)
+    val choicesMap = Map("a" -> Par.unit(1), "b" -> Par.unit(2))
+
+    choiceMap(Par.unit("b"))(choicesMap).apply(executorService).get() shouldBe res0
+  }
+
+  /**
+    * Let’s make a more general signature that unifies them all:
+    */
+
+  def parChooserAssert(res0: String): Unit = {
+    def chooser[A,B](p: Par[A])(choices: A => Par[B]): Par[B] =
+      es => {
+        val k = Par.run(es)(p).get
+        Par.run(es)(choices(k))
+      }
+
+    val choices = (a: Int) => {
+      if (a % 2 == 0) Par.unit("even")
+      else Par.unit("odd")
+    }
+
+    val executorService = Executors.newFixedThreadPool(2)
+    chooser(Par.unit(1))(choices).apply(executorService).get() shouldBe res0
+  }
+
+  /**
+    * This primitive `chooser` is usually called `bind` or `flatMap`. Let's use it to re-implement `choice`:
+    */
+
+  def parChoiceViaFlatMapAssert(res0: String): Unit = {
+    def choiceViaFlatMap[A](p: Par[Boolean])(f: Par[A], t: Par[A]): Par[A] =
+      flatMap(p)(b => if (b) t else f)
+
+    val executorService = Executors.newFixedThreadPool(2)
+    val choice = choiceViaFlatMap(Par.unit(false))(Par.unit("a"), Par.unit("b"))
+    choice.apply(executorService).get() shouldBe res0
+  }
+
+  /**
+    * We can also re-implement `choiceN` in terms of `flatMap`:
+    */
+
+  def parChoiceNViaFlatMapAssert(res0: String): Unit = {
+    def choiceNViaFlatMap[A](p: Par[Int])(choices: List[Par[A]]): Par[A] =
+      flatMap(p)(i => choices(i))
+
+    val executorService = Executors.newFixedThreadPool(2)
+    val choices = List(Par.unit("a"), Par.unit("b"), Par.unit("c"))
+    choiceNViaFlatMap(Par.unit(2))(choices).apply(executorService).get() shouldBe res0
+  }
+
+  /**
+    * Is `flatMap` really the most primitive possible function, or can we generalize further? Let’s play around with it
+    * a bit more. The name `flatMap` is suggestive of the fact that this operation could be decomposed into two steps:
+    * mapping `f: A => Par[B]` over our `Par[A]`, which generates a `Par[Par[B]]`, and then flattening this nested
+    * `Par[Par[B]]` to a `Par[B]`. But this is interesting — it suggests that all we needed to do was add an even simpler
+    * combinator, let’s call it `join`, for converting a Par[Par[X]] to Par[X] for any choice of X:
+    *
+    * {{{
+    *   def join[A](a: Par[Par[A]]): Par[A] =
+    *     es => run(es)(run(es)(a).get())
+    * }}}
+    *
+    * We can implement `flatMap` using `join`, and vice-versa:
+    *
+    * {{{
+    *   def flatMapViaJoin[A,B](p: Par[A])(f: A => Par[B]): Par[B] =
+    *     join(map(p)(f))
+    *
+    *   def joinViaFlatMap[A](a: Par[Par[A]]): Par[A] =
+    *     flatMap(a)(x => x)
+    * }}}
+    *
+    * Let's try this last combinator:
+    */
+
+  def parFlatMapJoinAssert(res0: String): Unit = {
+    val nestedPar = Par.unit(Par.unit("foo"))
+    val executorService = Executors.newFixedThreadPool(2)
+
+    joinViaFlatMap(nestedPar)(executorService).get() shouldBe res0
+  }
 }
