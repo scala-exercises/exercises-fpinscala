@@ -159,7 +159,7 @@ object FunctionalParallelismSection extends FlatSpec with Matchers with org.scal
     *   def run[A](a: Par[A]): A
     * }}}
     *
-    * We know run needs to execute asynchronous tasks somehow. We could write our own low-level API, but there’s already
+    * We know `run` needs to execute asynchronous tasks somehow. We could write our own low-level API, but there’s already
     * a class that we can use in the Java Standard Library, `java.util.concurrent.ExecutorService`. `ExecutorService`
     * lets us submit a `Callable` value (in Scala we’d probably just use a lazy argument to submit) and get back a
     * corresponding `Future` that’s a handle to a computation that’s potentially running in a separate thread. We can
