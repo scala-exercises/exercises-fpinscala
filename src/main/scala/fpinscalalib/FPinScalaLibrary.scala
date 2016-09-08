@@ -20,4 +20,6 @@ object FPinScalaLibrary extends Library {
     FunctionalStateSection,
     FunctionalParallelismSection
   )
+
+  override def logoPath = "fp_in_scala"
 }
