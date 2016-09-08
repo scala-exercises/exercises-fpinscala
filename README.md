@@ -14,7 +14,7 @@ Scala Exercises is available at [scala-exercises.org](https://scala-exercises.or
 
 ##Contributing
 
-Contributions welcome! Please join our [Gitter channel](https://gitter.im/scala-exercises/scala-exercises)
+Contributions are welcome! Please join our [Gitter channel](https://gitter.im/scala-exercises/scala-exercises)
 to get involved, or visit our [GitHub site](https://github.com/scala-exercises).
 
 ##License
