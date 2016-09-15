@@ -20,10 +20,6 @@ class FunctionalStateSpec extends Spec with Checkers {
     FunctionalStateSection.randomIntListAssert(0, 1)
   }
 
-  def `random not negative even integer asserts` = {
-    FunctionalStateSection.randomNonNegativeEvenAssert(2)
-  }
-
   def `random doubles via map asserts` = {
     FunctionalStateSection.randomDoubleViaMap(1)
   }
