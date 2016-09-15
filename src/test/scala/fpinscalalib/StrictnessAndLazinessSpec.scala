@@ -19,10 +19,6 @@ class StrictnessAndLazinessSpec extends Spec with Checkers {
         (1, const(Stream.empty)))))
   }
 
-  def `if2 asserts` = {
-    check(Test.testSuccess(StrictnessAndLazinessSection.if2Assert _, true :: HNil))
-  }
-
   def `stream toList asserts` = {
     check(Test.testSuccess(StrictnessAndLazinessSection.streamToListAssert _, List(1, 2, 3) :: HNil))
   }

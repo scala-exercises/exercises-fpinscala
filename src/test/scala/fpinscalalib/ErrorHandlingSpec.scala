@@ -11,12 +11,6 @@ import fpinscalalib.customlib.errorhandling.Employee
 import fpinscalalib.customlib.errorhandling.ExampleHelper._
 
 class ErrorHandlingSpec extends Spec with Checkers {
-  def `option mean asserts` = {
-    val none : Option[Double] = None
-
-    check(Test.testSuccess(ErrorHandlingSection.optionMeanAssert _, none :: HNil))
-  }
-
   def `option map asserts` = {
     val f = (e: Option[Employee]) => e.map(_.department)
 
@@ -48,10 +42,6 @@ class ErrorHandlingSpec extends Spec with Checkers {
   def `option traverse asserts` = {
     val none : Option[List[Int]] = None
     check(Test.testSuccess(ErrorHandlingSection.optionTraverseAssert _, Some(List(1, 2, 3)) :: none :: HNil))
-  }
-
-  def `either mean asserts` = {
-    check(Test.testSuccess(ErrorHandlingSection.eitherMeanAssert _, Right(3.0) :: Left("mean of empty list!") :: HNil))
   }
 
   def `either map asserts` = {
