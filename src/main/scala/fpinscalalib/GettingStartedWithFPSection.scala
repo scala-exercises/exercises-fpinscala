@@ -7,6 +7,15 @@ import org.scalatest.{FlatSpec, Matchers}
 object GettingStartedWithFPSection extends FlatSpec with Matchers with org.scalaexercises.definitions.Section {
 
   /**
+    * = Functional programming in Scala =
+    *
+    * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
+    * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
+    * in tandem with the book, although excerpts of the theory needed to complete them have been added to guide you.
+    *
+    * For more information about "Functional Programming in Scala" please visit its
+    * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+    *
     * = Tail-recursive functions =
     *
     * We're going to introduce some of the basic techniques for writing functional programs. Let's start by writing
