@@ -1,8 +1,9 @@
 package fpinscalalib
 
-import fpinscalalib.customlib.state.RNG
+import fpinscalalib.customlib.state.{RNG, State}
 import org.scalatest.{FlatSpec, Matchers}
 import fpinscalalib.customlib.testing.Gen
+import fpinscalalib.customlib.testing.Gen._
 import fpinscalalib.customlib.testing.Prop
 import fpinscalalib.customlib.testing.Prop._
 
@@ -171,4 +172,204 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
     val result = (propA && propB).run(100, 100, RNG.Simple(System.currentTimeMillis))
     result shouldBe Passed
   }
+
+  /**
+    * In this representation, `Prop` is nothing more than a non-strict `Boolean`, which can probably be insufficient. If
+    * a property fails, we might want to know how many tests succeeded first, and what arguments produced the failure.
+    * And if a property succeeds, it would be useful to know how many tests it ran. Let’s try returning an `Either` to
+    * indicate success or failure:
+    *
+    * {{{
+    *   object Prop {
+    *     // Type aliases like this can help the readability of an API.
+    *     type FailedCase = String
+    *     type SuccessCount = Int
+    *   }
+    *   trait Prop { def check: Either[((FailedCase, SuccessCount)), SuccessCount] }
+    * }}}
+    *
+    * Regarding the tupe to be returned in a failure case, we don't really care about the type of the value that caused
+    * a property to fail. For values that we're going to show to human beings (we're just going to end up printing those
+    * to the screen for inspection by the person running the tests), a `String` is absolutely appropiate.
+    *
+    * In the case of failure, check returns a `Left((s,n))`, where `s` is some `String` that represents the value that
+    * caused the property to fail, and `nv is the number of cases that succeeded before the failure occurred.
+    *
+    * = The meaning and API of generators =
+    *
+    * We determined earlier that a `Gen[A]` was something that knows how to generate values of type `A`. What are some
+    * ways it could do that? Well, it could randomly generate these values. Look back at the example from chapter 6 —
+    * there, we gave an interface for a purely functional random number generator `RNG` and showed how to make it
+    * convenient to combine computations that made use of it. We could just make `Gen` a type that wraps a `State`
+    * transition over a random number generator:
+    *
+    * {{{
+    *   case class Gen[A](sample: State[RNG, A])
+    * }}}
+    *
+    * Let's implement `Gen.choose` using this representation of `Gen`. It should generate integers in the range `start`
+    * to `stopExclusive`:
+    */
+
+  def genChooseIntAssert(res0: Int, res1: Int, res2: Int, res3: Int): Unit = {
+    def choose(start: Int, stopExclusive: Int): Gen[Int] =
+      Gen(State(RNG.nonNegativeInt).map(n => start + n % (stopExclusive - start)))
+
+    val rng = RNG.Simple(47)
+    // We use sample on the Gen instance to generate a State containing a RNG and an Int value. We can then run it and
+    // obtain both the random-generated number and a new generator to keep generating more.
+    choose(res0, 10).sample.run(rng)._1 should be >= res1
+    choose(0, res2).sample.run(rng)._1 should be < res3
+  }
+
+  /**
+    * We can implement other functions based on this representation of `Gen`. Let's look at them, starting by `unit`,
+    * that always generates the same value:
+    */
+
+  def genUnitAssert(res0: Int, res1: String): Unit = {
+    def unit[A](a: => A): Gen[A] = Gen(State.unit(a))
+
+    val rng = RNG.Simple(47)
+    unit(42).sample.run(rng)._1 shouldBe res0
+    unit("foo").sample.run(rng)._1 shouldBe res1
+  }
+
+  /**
+    * `boolean` generates random `Boolean` values:
+    *
+    * {{{
+    *   val boolean: Gen[Boolean] = Gen(State(RNG.boolean))
+    * }}}
+    *
+    * We can also implement `listOfN`, a function that generates lists of length `n` using the provided generator:
+    */
+
+  def genListOfN(res0: Int, res1: List[Int]): Unit = {
+    def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
+      Gen(State.sequence(List.fill(n)(g.sample)))
+
+    val rng = RNG.Simple(47)
+    val listOfBooleans = listOfN(10, Gen.boolean).sample.run(rng)._1
+    listOfBooleans.size shouldBe res0
+
+    listOfN(3, Gen.unit(42)).sample.run(rng)._1 shouldBe res1
+  }
+
+  /**
+    * = Generators that depend on generated values =
+    *
+    * Suppose we’d like a `Gen[(String,String)]` that generates pairs where the second string contains only characters
+    * from the first. Or that we had a `Gen[Int]` that chooses an integer between `0` and `11`, and we’d like to make a
+    * `Gen[List[Double]]` that then generates lists of whatever length is chosen. In both of these cases there’s a
+    * dependency — we generate a value, and then use that value to determine what generator to use next. For this we need
+    * `flatMap`, which lets one generator depend on another.
+    *
+    * {{{
+    *   def flatMap[B](f: A => Gen[B]): Gen[B] =
+    *     Gen(sample.flatMap(a => f(a).sample))
+    * }}}
+    *
+    * We can use `flatMap` to implement a more dynamic version of `listOfN`:
+    */
+
+  def genListOfNViaFlatMap(res0: Int, res1: Int, res2: List[Int]): Unit = {
+    def listOfN_1[A](size: Gen[Int], g: Gen[A]): Gen[List[A]] =
+      size flatMap (n => Gen.listOfN(n, g))
+
+    val rng = RNG.Simple(47)
+    val intGen = choose(0, 10)
+    val generatedList = listOfN_1(intGen, unit(42)).sample.run(rng)._1
+    generatedList.size should be >= res0
+    generatedList.size should be < res1
+
+    listOfN_1(Gen.unit(1), Gen.unit(42)).sample.run(rng)._1 shouldBe res2
+  }
+
+  /**
+    * Through the use of `flatMap` we can implement `union`, a function to combine two generators of the same type into
+    * one, by pulling values from each one with equal likelihood:
+    *
+    * {{{
+    *   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
+    *     boolean.flatMap(b => if (b) g1 else g2)
+    * }}}
+    *
+    * Following a similar principle we can implement `weighted`, a version of `union` that accepts a weight for each
+    * `Gen` and generates values from each `Gen` with probability proportional to its weight:
+    *
+    * {{{
+    *   def weighted[A](g1: (Gen[A],Double), g2: (Gen[A],Double)): Gen[A] = {
+    *     // The probability we should pull from `g1`.
+    *     val g1Threshold = g1._2.abs / (g1._2.abs + g2._2.abs)
+    *     Gen(State(RNG.double).flatMap(d => if (d < g1Threshold) g1._1.sample else g2._1.sample))
+    *   }
+    * }}}
+    *
+    * = Refining the Prop data type =
+    *
+    * Now that we know more about our representation of generators, let’s return to our definition of `Prop`. Our `Gen`
+    * representation has revealed information about the requirements for `Prop`. Our current definition of `Prop` looks
+    * like this:
+    *
+    * {{{
+    *   trait Prop {
+    *     def check: Either[(FailedCase, SuccessCount), SuccessCount]
+    *   }
+    * }}}
+    *
+    * `Prop` is nothing more than a non-strict `Either`. But it’s missing some information. We have the number of
+    * successful test cases in `SuccessCount`, but we haven’t specified how many test cases to examine before we consider
+    * the property to have passed the test. We can abstract over this dependency. Moreover, note that when a property
+    * passes, the user won't need to know how many tests have been executed. Let's create a new data type to express this:
+    *
+    * {{{
+    *   sealed trait Result {
+    *     def isFalsified: Boolean
+    *   }
+    *
+    *   // Indicates that all tests passed:
+    *   case object Passed extends Result {
+    *     def isFalsified = false
+    *   }
+    *
+    *   // Indicates that one of the test cases falsified the property:
+    *   case class Falsified(failure: FailedCase, successes: SuccessCount) extends Result {
+    *     def isFalsified = true
+    *   }
+    * }}}
+    *
+    * To be able to implement `forAll`, we still need to generate random test cases using our current representation of
+    * `Gen`. That means it's going to need an `RNG`. We can go ahead and propagate that dependency to `Prop`:
+    *
+    * {{{
+    *   case class Prop(run: (TestCases,RNG) => Result)
+    * }}}
+    *
+    * We now have enough information to actually implement `forAll`. Here’s a simple implementation.
+    *
+    * {{{
+    *   /* Produce an infinite random stream from a `Gen` and a starting `RNG`.
+    *   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
+    *     (n,rng) => randomStream(as)(rng).zip(Stream.from(0)).take(n).map {
+    *       // A stream of pairs (a, i) where a is a random value and i is its index in the stream.
+    *       case (a, i) => try {
+    *         // When a test fails, record the failed case and its index so we know how many tests succeeded before it.
+    *         if (f(a)) Passed else Falsified(a.toString, i)
+    *
+    *         // If a test case generates an exception, record it in the result.
+    *       } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
+    *     }.find(_.isFalsified).getOrElse(Passed)
+    *   }
+    *
+    *   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
+    *     // Generates an infinite stream of A values by repeatedly sampling a generator.
+    *     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
+    *
+    *   def buildMsg[A](s: A, e: Exception): String =
+    *     s"test case: $s\n" +
+    *     s"generated an exception: ${e.getMessage}\n" +
+    *     s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
+    * }}}
+    */
 }

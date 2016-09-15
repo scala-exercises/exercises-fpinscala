@@ -172,9 +172,9 @@ case class Gen[+A](sample: State[RNG,A]) {
 
   def map2[B,C](g: Gen[B])(f: (A,B) => C): Gen[C] =
     Gen(sample.map2(g.sample)(f))
-
   def flatMap[B](f: A => Gen[B]): Gen[B] =
     Gen(sample.flatMap(a => f(a).sample))
+
 
   /* A method alias for the function we wrote earlier. */
   def listOfN(size: Int): Gen[List[A]] =
