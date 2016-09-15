@@ -4,7 +4,8 @@
 
 ------------------------
 
-This repository hosts a content library for the [Scala Exercises](https://www.scala-exercises.org/) platform, that includes interactive exercises related to the "Functional Programming in Scala" book by Manning.
+This repository hosts a content library for the [Scala Exercises](https://www.scala-exercises.org/) platform, that includes interactive exercises related to the "Functional Programming in Scala" book by written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+This content library is meant to be used in tandem with the book, although excerpts of the theory needed to complete them have been added to guide you. For more information about "Functional Programming in Scala" please visit its [official website](https://www.manning.com/books/functional-programming-in-scala).
 
 ##About Scala exercises
 

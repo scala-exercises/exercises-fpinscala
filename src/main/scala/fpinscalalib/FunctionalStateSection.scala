@@ -11,7 +11,16 @@ import fpinscalalib.customlib.state._
 object FunctionalStateSection extends FlatSpec with Matchers with org.scalaexercises.definitions.Section {
 
   /**
-    * == Purely functional random number generation =
+    * = Functional programming in Scala =
+    *
+    * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
+    * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
+    * in tandem with the book, although excerpts of the theory needed to complete them have been added to guide you.
+    *
+    * For more information about "Functional Programming in Scala" please visit its
+    * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+    *
+    * = Purely functional random number generation =
     *
     * If you need to generate random numbers in Scala, there’s a class in the standard library, `scala.util.Random`,
     * with a pretty typical imperative API that relies on side effects. Here’s an example of its use:
