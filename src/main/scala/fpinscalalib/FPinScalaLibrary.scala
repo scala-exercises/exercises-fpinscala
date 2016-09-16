@@ -18,7 +18,8 @@ object FPinScalaLibrary extends Library {
     ErrorHandlingSection,
     StrictnessAndLazinessSection,
     FunctionalStateSection,
-    FunctionalParallelismSection
+    FunctionalParallelismSection,
+    PropertyBasedTestingSection
   )
 
   override def logoPath = "fp_in_scala"

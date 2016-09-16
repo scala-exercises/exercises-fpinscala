@@ -5,15 +5,15 @@ lazy val fpinscala = (project in file("."))
   organization := "org.scala-exercises",
   name         := "exercises-fpinscala",
   scalaVersion := "2.11.8",
-  version := "0.2.5-SNAPSHOT",
+  version := "0.2.6-SNAPSHOT",
   resolvers ++= Seq(
     Resolver.sonatypeRepo("snapshots"),
     Resolver.sonatypeRepo("releases")
   ),
   libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % "2.2.4",
-    "org.scala-exercises" %% "exercise-compiler" % version.value,
-    "org.scala-exercises" %% "definitions" % version.value,
+    "org.scala-exercises" %% "exercise-compiler" % "0.2.5-SNAPSHOT",
+    "org.scala-exercises" %% "definitions" % "0.2.5-SNAPSHOT",
     "org.scalacheck" %% "scalacheck" % "1.12.5",
     "com.github.alexarchambault" %% "scalacheck-shapeless_1.12" % "0.3.1",
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.7.1")
