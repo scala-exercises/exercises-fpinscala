@@ -10,10 +10,6 @@ import shapeless.HNil
 import fpinscalalib.customlib.functionaldatastructures._
 
 class FunctionalDataStructuresSpec extends Spec with Checkers {
-  def `pattern matching 101 asserts` = {
-    check(Test.testSuccess(FunctionalDataStructuresSection.patternMatching101Assert _,
-      42 :: 1 :: List(2, 3) :: HNil))
-  }
 
   def `complex pattern matching asserts` = {
     check(Test.testSuccess(FunctionalDataStructuresSection.complexPatternAssert _, 3 :: HNil))

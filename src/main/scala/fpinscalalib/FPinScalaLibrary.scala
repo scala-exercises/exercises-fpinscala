@@ -2,7 +2,7 @@ package fpinscalalib
 
 import org.scalaexercises.definitions._
 
-/** Set of exercises based on Manning's "Functional Programming in Scala" (aka "The Red Book")
+/** Exercises based on Manning's "Functional Programming in Scala" book by Paul Chiusano and Rúnar Bjarnason.
   *
   * @param name fp_in_scala
   */
@@ -21,4 +21,6 @@ object FPinScalaLibrary extends Library {
     FunctionalParallelismSection,
     PropertyBasedTestingSection
   )
+
+  override def logoPath = "fp_in_scala"
 }

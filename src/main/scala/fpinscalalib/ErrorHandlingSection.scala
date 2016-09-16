@@ -11,45 +11,21 @@ import scala.util.{Success, Try}
   */
 object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercises.definitions.Section {
   /**
+    * = Functional programming in Scala =
+    *
+    * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
+    * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
+    * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+    *
+    * For more information about "Functional Programming in Scala" please visit its
+    * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+    *
     * = The Option data type =
     *
-    * Exceptions break referential transparency and introduce context dependence. Moreover, they are not type-safe,
-    * hiding information about the fact that they may occur, to the developer and the compiler. We're going to explore
-    * an alternative to exceptions without these drawbacks, without losing out on the primary benefit of exceptions:
-    * they allow us to `consolidate and centralize error-handling logic`. The technique we use is based on an old idea:
-    * instead of throwing an exception, we return a value indicating that an exceptional condition has occurred. instead
-    * of using error codes, we introduce a new generic type for these “possibly defined values” and use higher-order
-    * functions to encapsulate common patterns of handling and propagating errors.
+    * <b>Exercise 4.1</b>:
     *
-    * We're going to introduce a new type, `Option`. As with the previously explored `List`, this type also exists in
-    * the Scala standard library, but we're re-creating it here for pedagogical purposes:
-    *
-    * {{{
-    *   sealed trait Option[+A]
-    *   case class Some[+A](get: A) extends Option[A]
-    *   case object None extends Option[Nothing]
-    * }}}
-    *
-    * Option has two cases: it can be defined, in which case it will be a `Some`, or it can be undefined, in which case
-    * it will be `None`.
-    *
-    * Let's consider an example on how we can use our new type. We're defining a function `mean` that computes the mean
-    * of a list, which is undefined if the list is empty:
-    */
-
-  def optionMeanAssert(res0: Option[Double]): Unit = {
-    def mean(xs: Seq[Double]): Option[Double] =
-      if (xs.isEmpty) None
-      else Some(xs.sum / xs.length)
-
-    mean(Seq(1, 2, 3, 4, 5)) shouldBe Some(3.0)
-    mean(Seq.empty) shouldBe res0
-  }
-
-  /**
-    * `Option` can be thought of like a `List` that can contain at most one element, and many of the `List` functions we
-    * saw earlier have analogous functions on `Option`. We're going to look at some of these functions, starting by `map`,
-    * that applies a function `f` in the `Option` is not `None`:
+    * We're going to look at some of the functions available in the `Option`, starting by `map`, that applies a function
+    * `f` in the `Option` is not `None`:
     *
     * {{{
     *   def map[B](f: A => B): Option[B] = this match {
@@ -89,8 +65,7 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     *   def flatMap[B](f: A => Option[B]): Option[B] = map(f) getOrElse None
     * }}}
     *
-    * By using `flatMap` we can chain operations that can also fail, as in the following example. Try to find out who is
-    * managing each employee, if applicable:
+    * Try to find out who is managing each employee, if applicable:
     */
 
   def optionFlatMapAssert(res0: (Option[Employee]) => Option[String]): Unit = {
@@ -102,10 +77,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
-    * The function `getOrElse` used above, tries to get the value contained in the Option, but if it's a `None`, it will
-    * return the default value provided by the caller. The `B >: A` in the declaration tells that the `B` type parameter
-    * must be a supertype of `A`. Furthermore, `default : => B` indicates that the argument is of type B, but won’t be
-    * evaluated until it’s needed by the function.
+    * The function `getOrElse` tries to get the value contained in the Option, but if it's a `None`, it will
+    * return the default value provided by the caller:
     *
     * {{{
     *   def getOrElse[B>:A](default: => B): B = this match {
@@ -120,6 +93,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     * {{{
     *   def orElse[B>:A](ob: => Option[B]): Option[B] = this map (Some(_)) getOrElse ob
     * }}}
+    *
+    * Check how it works in the following exercise:
     */
 
   def optionOrElseAssert(res0: Some[String], res1: Some[String], res2: Some[String]): Unit = {
@@ -130,7 +105,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     getManager(lookupByName("Foo")).orElse(Some("Mr. CEO")) shouldBe res2
   }
 
-  /** Finally, we can implement a `filter` function that will turn any `Option` into a `None` if it doesn't satisfy the
+  /**
+    * Finally, we can implement a `filter` function that will turn any `Option` into a `None` if it doesn't satisfy the
     * provided predicate:
     *
     * {{{
@@ -150,6 +126,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
+    * <b>Exercise 4.2:</b>
+    *
     * Let's implement the `variance` function in terms of `flatMap`. If the mean of a sequence is `m`, the variance
     * is the mean of `math.pow(x - m, 2)` for each element in the sequence:
     *
@@ -160,39 +138,22 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     */
 
   /**
-    * We may find in some situations when we need to combine two `Option` values using a binary function, so that if any
-    * of those values is `None`, the result value is too; and otherwise it will be the result of applying the provided
-    * function. We'll call this function `map2`, take a look at its implementation:
+    * <b>Exercise 4.3:</b>
+    *
+    * Let's write a generic function to combine two `Option` values , so that if any of those values is `None`, the
+    * result value is too; and otherwise it will be the result of applying the provided function:
     *
     * {{{
     *   def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
     *     a flatMap (aa => b map (bb => f(aa, bb)))
     * }}}
     *
-    * Let's see an example of its use. Let's write a function `parseInsuranceRateQuote` which takes the age and a number
-    * of speeding tickets as strings, and attempts to call another function called `insuranceRateQuote` if parsing both
-    * values is valid:
+    * <b>Exercise 4.4:</b>
     *
-    * {{{
-    *   def Try[A](a: => A): Option[A] =
-    *     try Some(a)
-    *     catch { case e: Exception => None }
-    *
-    *   def parseInsuranceRateQuote( age: String, numberOfSpeedingTickets: String): Option[Double] = {
-    *     val optAge: Option[Int] = Try { age.toInt }
-    *     val optTickets: Option[Int] = Try { numberOfSpeedingTickets.toInt } map2(optAge, optTickes)(insuranceRateQuote)
-    *   }
-    * }}}
-    *
-    * As `Try` will return an `Option` containing the value of the operation it encapsulates (or a `None` if it returns
-    * an exception), to combine both values we need to make use of the new `map2` function we just implemented.
-    */
-
-  /**
     * Let's continue by looking at a few other similar cases. For instance, the `sequence` function, which combines a list
-    * of `Option`s into one `Option` containing a list of all the `Some` values in the original list. If the original
-    * list contains `None` even once, the result of the function should be `None`. Otherwise the result should be a `Some`
-    * with a list of all the values:
+    * of `Option`s into another `Option` containing a list of all the `Some`s in the original one. If the original
+    * list contains `None` at least once, the result of the function should be `None`. If not, the result should be a
+    * `Some` with a list of all the values:
     *
     * {{{
     *   def sequence(a: List[Option[A]]): Option[List[A]] = a match {
@@ -210,10 +171,10 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
+    * <b>Exercise 4.5:</b>
+    *
     * The last `Option` function we're going to explore is `traverse`, that will allow us to map over a list using a
-    * function that might fail, returning `None` if applying it to any element of the list returns `None`. Note that we
-    * want to avoid traversing the list twice (first to apply the provided function to each element, and another to
-    * combine these `Option` values into an optional `List`:
+    * function that might fail, returning `None` if applying it to any element of the list returns `None`:
     *
     * {{{
     *   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = a match {
@@ -254,39 +215,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   /**
     * = The Either data type =
     *
-    * One thing you may have noticed with `Option` is that it doesn’t tell us anything about what went wrong in the case
-    * of an exceptional condition. All it can do is give us `None`, indicating that there’s no value to be had. But
-    * sometimes we want to know more. For example, we might want a `String` that gives more information, or if an
-    * exception was raised, we might want to know what that error actually was.
+    * <b>Exercise 4.6:</b>
     *
-    * In this section, we’ll walk through a simple extension to `Option`, the `Either` data type, which lets us track a
-    * reason for the failure. Let’s look at its definition:
-    *
-    * {{{
-    *   sealed trait Either[+E, +A]
-    *   case class Left[+E](value: E) extends Either[E, Nothing]
-    *   case class Right[+A](value: A) extends Either[Nothing, A]
-    * }}}
-    *
-    * `Either` only has two cases, just like `Option`. The essential difference is that both cases carry a value. When
-    * we use it to indicate success or failure, by convention the `Right` constructor is reserved for the success case
-    * (a pun on “right,” meaning correct), and `Left` is used for failure.
-    *
-    * Let's look at the `mean` example again, this time returning a `String` in case of failure:
-    */
-
-  def eitherMeanAssert(res0: Right[Double], res1: Left[String]): Unit = {
-    def mean(xs: IndexedSeq[Double]): Either[String, Double] =
-      if (xs.isEmpty)
-        Left("mean of empty list!")
-      else
-        Right(xs.sum / xs.length)
-
-    mean(IndexedSeq(1.0, 2.0, 3.0, 4.0, 5.0)) shouldBe res0
-    mean(IndexedSeq.empty) shouldBe res1
-  }
-
-  /**
     * As we did with `Option`, let's implement versions of `map`, `flatMap`, `orElse` and `map2` on `Either` that
     * operate on the `Right` value, starting with `map`:
     *
@@ -400,8 +330,10 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
   }
 
   /**
-    * `sequence` and `traverse` can also be implemented for `Either`. These should return the first error that's
-    * encountered, if there is one.
+    * <b>Exercise 4.7:</b>
+    *
+    * `sequence` and `traverse` can also be implemented for `Either`. Those functions should return the first error that
+    * can be found, if there is one.
     *
     * {{{
     *   def traverse[E,A,B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = es match {
