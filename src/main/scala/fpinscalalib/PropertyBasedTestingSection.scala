@@ -15,6 +15,19 @@ import fpinscalalib.customlib.testing.Prop._
   */
 object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scalaexercises.definitions.Section {
   /**
+    * = Functional programming in Scala =
+    *
+    * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
+    * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
+    * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+    *
+    * For more information about "Functional Programming in Scala" please visit its
+    * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+    *
+    * Note: some of the exercises in this chapter are somewhat open-ended, and weren't included in this section. You can
+    * always head to the <a href="https://github.com/fpinscala/fpinscala/tree/master/answerkey/testing">official repository</a>
+    * containing hints for all exercises available in the book.
+    *
     * = A brief tour of property-based testing =
     *
     * <b>Exercise 8.1</b>
