@@ -1,10 +1,12 @@
 package fpinscalalib
 
+import java.util.concurrent.Executors
+
+import fpinscalalib.customlib.functionalparallelism.Par
 import fpinscalalib.customlib.state.{RNG, State}
 import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.testing.Gen
+import fpinscalalib.customlib.testing.{Gen, Prop, SGen}
 import fpinscalalib.customlib.testing.Gen._
-import fpinscalalib.customlib.testing.Prop
 import fpinscalalib.customlib.testing.Prop._
 
 
@@ -15,50 +17,10 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
   /**
     * = A brief tour of property-based testing =
     *
-    * As an example, in ScalaCheck, a property-based testing library for Scala, a property looks something like this:
+    * <b>Exercise 8.1</b>
     *
-    * {{{
-    *   // A generator of lists of integers between 0 and 100.
-    *   val intList = Gen.listOf(Gen.choose(0,100))
-    *   // A property that specifies the behavior of the List.reverse method.
-    *   val prop =
-    *     // Check that reversing a list twice gives back the original list.
-    *     forAll(intList)(ns => ns.reverse.reverse == ns) &&
-    *     // Check that the first element becomes the last element after reversal.
-    *     forAll(intList)(ns => ns.headOption == ns.reverse.lastOption)
-    *   // A property which is obviously false.
-    *   val failingProp = forAll(intList)(ns => ns.reverse == ns)
-    * }}}
-    *
-    * And we can check properties like so:
-    *
-    * {{{
-    *   scala> prop.check
-    *   + OK, passed 100 tests.
-    *
-    *   scala> failingProp.check
-    *   ! Falsified after 6 passed tests.
-    *   > ARG_0: List(0, 1)
-    * }}}
-    *
-    * Here, `intList` is not a `List[Int]`, but a `Gen[List[Int]]`, which is something that knows how to generate test
-    * data of type `List[Int]`. We can sample from this generator, and it will produce lists of different lengths, filled
-    * with random numbers between 0 and 100.
-    *
-    * The function `forAll` creates a property by combining a generator of type `Gen[A]` with some predicate of type
-    * `A => Boolean`. The property asserts that all values produced by the generator should satisfy the predicate. In
-    * this simple example we’ve used `&&` to combine two properties. The resulting property will hold only if neither
-    * property can be falsified by any of the generated test cases. Together, the two properties form a partial
-    * specification of the correct behavior of the `reverse` method.
-    *
-    * When we invoke `prop.check`, `ScalaCheck` will randomly generate `List[Int]` values to try to find a case that
-    * falsifies the predicates that we’ve supplied. The output indicates that `ScalaCheck` has generated 100 test cases
-    * (of type `List[Int]`) and that they all satisfied the predicates. Properties can of course fail — the output of
-    * `failingProp.check` indicates that the predicate tested false for some input, which is helpfully printed out to
-    * facilitate further testing or debugging.
-    *
-    * To get used to thinking about testing this way, let's try to come up with properties that specify the
-    * implementation of a `sum: List[Int] => Int` function:
+    * To get used to property testing, let's try to figure out the properties that specify the implementation of a
+    * `sum: List[Int] => Int` function:
     *
     * {{{
     *   * The sum of the empty list is 0.
@@ -71,6 +33,7 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
     *   * The sum of 1,2,3...n is `n*(n+1)/2`.
     * }}}
     *
+    * <b>Exercise 8.2</b>
     *
     * Likewise, these would be the properties that specify a function that finds the maximum of a `List[Int]`:
     *
@@ -81,77 +44,15 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
     *   * The max of the empty list is unspecified and should throw an error or return `None`.
     * }}}
     *
-    * ScalaCheck is just one property-based testing library, and we'll be deriving our own library in this chapter from
-    * scratch.
-    *
-    * = Choosing data types and functions =
-    *
-    * Let’s get started. What data types should we use for our testing library? What primitives should we define, and
-    * what might they mean? What laws should our functions satisfy? As before, we can look at a simple example and
-    * “read off” the needed data types and functions, and see what we find. For inspiration, let’s look at the ScalaCheck
-    * example we showed earlier:
-    *
-    * {{{
-    *   val intList = Gen.listOf(Gen.choose(0,100)) val prop =
-    *     forAll(intList)(ns => ns.reverse.reverse == ns) &&
-    *     forAll(intList)(ns => ns.headOption == ns.reverse.lastOption)
-    * }}}
-    *
-    * Without knowing anything about the implementation of `Gen.choose` or `Gen.listOf`, we can guess that whatever data
-    * type they return (let’s call it `Gen`, short for generator) must be parametric in some type. That is,
-    * `Gen.choose(0, 100)` probably returns a `Gen[Int]`, and `Gen.listOf` is then a function with the signature
-    * `Gen[Int] => Gen[List[Int]]`. But since it doesn’t seem like `Gen.listOf` should care about the type of the `Gen`
-    * it receives as input (it would be odd to require separate combinators for creating lists of `Int`, `Double`,
-    * `String`, and so on), let’s go ahead and make it polymorphic:
-    *
-    * {{{
-    *   def listOf[A](a: Gen[A]): Gen[List[A]]
-    * }}}
-    *
-    * Notice that we’re not specifying the size of the list to generate. For this to be implementable, our generator must
-    * therefore either assume or be told the size. Assuming a size seems a bit inflexible - any assumption is unlikely to
-    * be appropriate in all contexts. So it seems that generators must be told the size of test cases to generate. We can
-    * imagine an API where this is made explicit:
-    *
-    * {{{
-    *   def listOfN[A](n: Int, a: Gen[A]): Gen[List[A]]
-    * }}}
-    *
-    * What about the rest of this example? The `forAll` function looks interesting. We can see that it accepts a
-    * `Gen[List[Int]]` and what looks to be a corresponding predicate, `List[Int] => Boolean`. But again, it doesn’t
-    * seem like `forAll` should care about the types of the generator and the predicate, as long as they match up. We
-    * can express this with the type:
-    *
-    * {{{
-    *   def forAll[A](a: Gen[A])(f: A => Boolean): Prop
-    * }}}
-    *
-    * Here, we’ve simply invented a new type, `Prop` (short for property, following the ScalaCheck naming), for the result
-    * of binding a `Gen` to a predicate.
-    *
     * = The meaning and API of properties =
     *
-    * Let’s discuss what we want our types and functions to mean. First, consider `Prop`. We know there exist functions
-    * `forAll` (for creating a property), `&&` (for composing properties), and `check` (for running a property). In
-    * ScalaCheck, this `check` method has a side effect of printing to the console. It’s fine to expose this as a
-    * convenience function, but it’s not a basis for composition. For instance, we couldn’t implement `&&` for `Prop` if
-    * its representation were just the check method:
+    * <b>Exercise 8.3</b>
+    *
+    * Taking this representation of `Prop`, let's implement `&&`:
     *
     * {{{
-    *   trait Prop {
-    *     def check: Unit
-    *     def &&(p: Prop): Prop = ???
-    *   }
-    * }}}
+    *   trait Prop { def check: Boolean }
     *
-    * In order to combine `Prop` values using combinators like `&&`, we need `check` (or whatever function “runs”
-    * properties) to return some meaningful value. What type should that value have? Well, let’s consider what sort of
-    * information we’d like to get out of checking our properties. At a minimum, we need to know whether the property
-    * succeeded or failed. This lets us implement `&&`.
-    *
-    * Assuming the following representation of `Prop`, let's implement `&&` as a method of `Prop`:
-    *
-    * {{{
     *   def &&(p: Prop): Prop = new Prop {
     *     def check = Prop.this.check && p.check
     *   }
@@ -174,41 +75,17 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
   }
 
   /**
-    * In this representation, `Prop` is nothing more than a non-strict `Boolean`, which can probably be insufficient. If
-    * a property fails, we might want to know how many tests succeeded first, and what arguments produced the failure.
-    * And if a property succeeds, it would be useful to know how many tests it ran. Let’s try returning an `Either` to
-    * indicate success or failure:
-    *
-    * {{{
-    *   object Prop {
-    *     // Type aliases like this can help the readability of an API.
-    *     type FailedCase = String
-    *     type SuccessCount = Int
-    *   }
-    *   trait Prop { def check: Either[((FailedCase, SuccessCount)), SuccessCount] }
-    * }}}
-    *
-    * Regarding the tupe to be returned in a failure case, we don't really care about the type of the value that caused
-    * a property to fail. For values that we're going to show to human beings (we're just going to end up printing those
-    * to the screen for inspection by the person running the tests), a `String` is absolutely appropiate.
-    *
-    * In the case of failure, check returns a `Left((s,n))`, where `s` is some `String` that represents the value that
-    * caused the property to fail, and `nv is the number of cases that succeeded before the failure occurred.
-    *
     * = The meaning and API of generators =
     *
-    * We determined earlier that a `Gen[A]` was something that knows how to generate values of type `A`. What are some
-    * ways it could do that? Well, it could randomly generate these values. Look back at the example from chapter 6 —
-    * there, we gave an interface for a purely functional random number generator `RNG` and showed how to make it
-    * convenient to combine computations that made use of it. We could just make `Gen` a type that wraps a `State`
-    * transition over a random number generator:
+    * <b>Exercise 8.4</b>
+    *
+    * Let's implement `Gen.choose` using the following representation for `Gen`:
     *
     * {{{
     *   case class Gen[A](sample: State[RNG, A])
     * }}}
     *
-    * Let's implement `Gen.choose` using this representation of `Gen`. It should generate integers in the range `start`
-    * to `stopExclusive`:
+    * `choose` should generate integers in the range `start` to `stopExclusive`:
     */
 
   def genChooseIntAssert(res0: Int, res1: Int, res2: Int, res3: Int): Unit = {
@@ -223,8 +100,10 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
   }
 
   /**
-    * We can implement other functions based on this representation of `Gen`. Let's look at them, starting by `unit`,
-    * that always generates the same value:
+    * <b>Exercise 8.5</b>
+    *
+    * We can implement other functions for `Gen`. Let's look at them, starting by `unit`, that always generates the same
+    * value:
     */
 
   def genUnitAssert(res0: Int, res1: String): Unit = {
@@ -259,11 +138,9 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
   /**
     * = Generators that depend on generated values =
     *
-    * Suppose we’d like a `Gen[(String,String)]` that generates pairs where the second string contains only characters
-    * from the first. Or that we had a `Gen[Int]` that chooses an integer between `0` and `11`, and we’d like to make a
-    * `Gen[List[Double]]` that then generates lists of whatever length is chosen. In both of these cases there’s a
-    * dependency — we generate a value, and then use that value to determine what generator to use next. For this we need
-    * `flatMap`, which lets one generator depend on another.
+    * <b>Exercise 8.6</b>
+    *
+    * `flatMap`, lets one generator depend on another. This is its implementation:
     *
     * {{{
     *   def flatMap[B](f: A => Gen[B]): Gen[B] =
@@ -287,16 +164,20 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
   }
 
   /**
+    * <b>Exercise 8.7</b>
+    *
     * Through the use of `flatMap` we can implement `union`, a function to combine two generators of the same type into
-    * one, by pulling values from each one with equal likelihood:
+    * one, by pulling values from each one with the same likelihood:
     *
     * {{{
     *   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
     *     boolean.flatMap(b => if (b) g1 else g2)
     * }}}
     *
-    * Following a similar principle we can implement `weighted`, a version of `union` that accepts a weight for each
-    * `Gen` and generates values from each `Gen` with probability proportional to its weight:
+    * <b>Exercise 8.8</b>
+    *
+    * Following a similar principle we can implement `weighted`, a version of `union` accepting a weight for each
+    * `Gen` and generates values from each one with a probability proportional to its weight:
     *
     * {{{
     *   def weighted[A](g1: (Gen[A],Double), g2: (Gen[A],Double)): Gen[A] = {
@@ -306,70 +187,170 @@ object PropertyBasedTestingSection extends FlatSpec with Matchers with org.scala
     *   }
     * }}}
     *
-    * = Refining the Prop data type =
+    * <b>Exercise 8.9</b>
     *
-    * Now that we know more about our representation of generators, let’s return to our definition of `Prop`. Our `Gen`
-    * representation has revealed information about the requirements for `Prop`. Our current definition of `Prop` looks
-    * like this:
+    * Let's implement `&&` and `\\` to compose `Prop` values:
     *
     * {{{
-    *   trait Prop {
-    *     def check: Either[(FailedCase, SuccessCount), SuccessCount]
+    *   def &&(p: Prop) = Prop {
+    *     (max,n,rng) => run(max,n,rng) match {
+    *       case Passed | Proved => p.run(max, n, rng)
+    *       case x => x
+    *     }
+    *   }
+    *
+    *   def ||(p: Prop) = Prop {
+    *     (max,n,rng) => run(max,n,rng) match {
+    *         // In case of failure, run the other prop.
+    *         case Falsified(msg, _) => p.tag(msg).run(max,n,rng)
+    *         case x => x
+    *      }
     *   }
     * }}}
     *
-    * `Prop` is nothing more than a non-strict `Either`. But it’s missing some information. We have the number of
-    * successful test cases in `SuccessCount`, but we haven’t specified how many test cases to examine before we consider
-    * the property to have passed the test. We can abstract over this dependency. Moreover, note that when a property
-    * passes, the user won't need to know how many tests have been executed. Let's create a new data type to express this:
-    *
-    * {{{
-    *   sealed trait Result {
-    *     def isFalsified: Boolean
-    *   }
-    *
-    *   // Indicates that all tests passed:
-    *   case object Passed extends Result {
-    *     def isFalsified = false
-    *   }
-    *
-    *   // Indicates that one of the test cases falsified the property:
-    *   case class Falsified(failure: FailedCase, successes: SuccessCount) extends Result {
-    *     def isFalsified = true
-    *   }
-    * }}}
-    *
-    * To be able to implement `forAll`, we still need to generate random test cases using our current representation of
-    * `Gen`. That means it's going to need an `RNG`. We can go ahead and propagate that dependency to `Prop`:
-    *
-    * {{{
-    *   case class Prop(run: (TestCases,RNG) => Result)
-    * }}}
-    *
-    * We now have enough information to actually implement `forAll`. Here’s a simple implementation.
-    *
-    * {{{
-    *   /* Produce an infinite random stream from a `Gen` and a starting `RNG`.
-    *   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
-    *     (n,rng) => randomStream(as)(rng).zip(Stream.from(0)).take(n).map {
-    *       // A stream of pairs (a, i) where a is a random value and i is its index in the stream.
-    *       case (a, i) => try {
-    *         // When a test fails, record the failed case and its index so we know how many tests succeeded before it.
-    *         if (f(a)) Passed else Falsified(a.toString, i)
-    *
-    *         // If a test case generates an exception, record it in the result.
-    *       } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
-    *     }.find(_.isFalsified).getOrElse(Passed)
-    *   }
-    *
-    *   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
-    *     // Generates an infinite stream of A values by repeatedly sampling a generator.
-    *     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
-    *
-    *   def buildMsg[A](s: A, e: Exception): String =
-    *     s"test case: $s\n" +
-    *     s"generated an exception: ${e.getMessage}\n" +
-    *     s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
-    * }}}
+    * Let's try those out:
     */
+
+  def propAndOrAssert(res0: Result): Unit = {
+    val genZeroToTen = Gen.choose(0, 10)
+    val genElevenToTwenty = Gen.choose(11, 20)
+    val genCombination = Gen.union(genZeroToTen, genElevenToTwenty)
+
+    val combinedProp = (forAll(genCombination)(_ < 10) ||
+                          forAll(genCombination)(_ < 20)) &&
+                          forAll(genCombination)(_ >= 0)
+
+    val result = combinedProp.run(100, 100, RNG.Simple(System.currentTimeMillis))
+    result shouldBe res0
+  }
+
+  /**
+    * = Test case minimization =
+    *
+    * <b>Exercise 8.10</b>
+    *
+    * Let's implement helper functions to convert `Gen` into the new `SGen` type:
+    *
+    * {{{
+    *   case class SGen[+A](forSize: Int => Gen[A])
+    *
+    *   case class Gen[+A](sample: State[RNG,A]) {
+    *     // ...
+    *     def unsized: SGen[A] = SGen(_ => this)
+    *   }
+    * }}}
+    *
+    * <b>Exercise 8.11</b>
+    *
+    * `SGen` supports many of the same operations as `Gen`. Let's define some convenience functions of `SGen` that just
+    * delegate to their counterparts on `Gen`:
+    *
+    * {{{
+    *   case class SGen[+A](g: Int => Gen[A]) {
+    *     def apply(n: Int): Gen[A] = g(n)
+    *
+    *     def map[B](f: A => B): SGen[B] = SGen { g(_) map f }
+    *
+    *     def flatMap[B](f: A => SGen[B]): SGen[B] = {
+    *       val g2: Int => Gen[B] = n => {
+    *         g(n) flatMap { f(_).g(n) }
+    *       }
+    *       SGen(g2)
+    *     }
+    *
+    *     def **[B](s2: SGen[B]): SGen[(A,B)] =
+    *       SGen(n => apply(n) ** s2(n))
+    *     }
+    * }}}
+    *
+    * <b>Exercise 8.12</b>
+    *
+    * We can also implement a `listOf` combinator that doesn't need an explicit size. It should return an `SGen`, and its
+    * implementation should generate lists of the requested size. Let's try it out:
+    */
+
+  def sGenListOfAssert(res0: Int): Unit = {
+    def listOf[A](g: Gen[A]): SGen[List[A]] =
+      SGen(n => g.listOfN(n))
+
+    val gen = Gen.unit(42)
+    val prop = forAll(listOf(gen))(l => l.forall(_ == res0))
+    prop.run(100, 100, RNG.Simple(System.currentTimeMillis)) shouldBe Passed
+  }
+
+  /**
+    * = Using the library and improving its usability =
+    *
+    * <b>Exercise 8.13</b>
+    *
+    * Let's define a `listOf1` function to generate nonempty lists:
+    */
+
+  def sGenListOf1(res0: Int): Unit = {
+    def listOf1[A](g: Gen[A]): SGen[List[A]] =
+      SGen(n => g.listOfN(n max res0))
+
+    val prop = forAll(listOf1(Gen.choose(0, 10)))(l => l.size == 1 && l.forall(_ < 10))
+    prop.run(100, 100, RNG.Simple(System.currentTimeMillis))
+  }
+
+  /**
+    * <b>Exercise 8.14</b>
+    *
+    * Now let's write a property to verify the behavior of `List.sorted`:
+    *
+    * {{{
+    *   val sortedProp = forAll(listOf(smallInt)) { ns =>
+    *     val nss = ns.sorted
+    *     // We specify that every sorted list is either empty, has one element,
+    *     // or has no two consecutive elements `(a,b)` such that `a` is greater than `b`.
+    *     (nss.isEmpty || nss.tail.isEmpty || !nss.zip(nss.tail).exists {
+    *       case (a,b) => a > b
+    *     })
+    *     // Also, the sorted list should have all the elements of the input list,
+    *     && !ns.exists(!nss.contains(_))
+    *     // and it should have no elements not in the input list.
+    *     && !nss.exists(!ns.contains(_))
+    *   }
+    * }}}
+    *
+    * = Writing a test suite for parallel computations =
+    *
+    * <b>Exercise 8.16</b>
+    *
+    * We can write a generator for Par[Int], building deeply nested parallel computations. Take a look:
+    *
+    * {{{
+    *   // A `Gen[Par[Int]]` generated from a list summation that spawns a new parallel
+    *   // computation for each element of the input list summed to produce the final
+    *   // result. This is not the most compelling example, but it provides at least some
+    *   // variation in structure to use for testing.
+    *
+    *   val pint2: Gen[Par[Int]] = choose(-100,100).listOfN(choose(0,20)).map(l =>
+    *     l.foldLeft(Par.unit(0))((p,i) =>
+    *       Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
+    * }}}
+    *
+    * <b>Exercise 8.18</b>
+    *
+    * With `pint2` we can express the property about `fork` from chapter 7 (`fork(x) == x`):
+    *
+    * {{{
+    *   val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
+    * }}}
+    *
+    * == Testing higher-order functions ==
+    *
+    * <b>Exercise 8.18</b>
+    *
+    * Let's show how we can test higher-order functions with `takeWhile` and `dropWhile` from `List`:
+    */
+
+  def propTakeWhileDropWhile(res0: Result): Unit = {
+    val prop = forAll(listOf(Gen.choose(0, 20)))(l => {
+      val index = Gen.choose(0, 20).sample.run(RNG.Simple(47))._1
+      l.takeWhile(_ < index) ++ l.dropWhile(_ < index) == l
+    })
+    prop.run(100, 100, RNG.Simple(System.currentTimeMillis)) shouldBe res0
+  }
 }

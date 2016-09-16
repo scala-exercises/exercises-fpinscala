@@ -1,5 +1,8 @@
 package fpinscalalib
 
+import fpinscalalib.customlib.testing.Prop
+import fpinscalalib.customlib.testing.Prop.{Falsified, Passed, Result}
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalaexercises.Test
 import org.scalacheck.Shapeless._
 import org.scalatest.Spec
@@ -7,6 +10,7 @@ import org.scalatest.prop.Checkers
 import shapeless.HNil
 
 class PropertyBasedTestingSpec extends Spec with Checkers {
+
   def `prop and asserts` = {
     check(Test.testSuccess(PropertyBasedTestingSection.propAndAssert _, 4 :: 4 :: true :: HNil))
   }
@@ -25,5 +29,21 @@ class PropertyBasedTestingSpec extends Spec with Checkers {
 
   def `gen listOfN via flatMap` = {
     check(Test.testSuccess(PropertyBasedTestingSection.genListOfNViaFlatMap _, 0 :: 10 :: List(42) :: HNil))
+  }
+
+  def `prop and or` = {
+    PropertyBasedTestingSection.propAndOrAssert(Passed)
+  }
+
+  def `sgen listOf` = {
+    check(Test.testSuccess(PropertyBasedTestingSection.sGenListOfAssert _, 42 :: HNil))
+  }
+
+  def `sgen listOf1` = {
+    PropertyBasedTestingSection.sGenListOf1(1)
+  }
+
+  def `prop takeWhile dropWhile` = {
+    PropertyBasedTestingSection.propTakeWhileDropWhile(Passed)
   }
 }
