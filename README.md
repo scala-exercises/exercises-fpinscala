@@ -1,5 +1,3 @@
-# exercises-fpinscala
-
 #Scala Exercises - "Functional Programming in Scala" library
 
 ------------------------
