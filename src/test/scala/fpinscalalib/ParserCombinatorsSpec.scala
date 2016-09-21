@@ -22,4 +22,20 @@ class ParserCombinatorsSpec extends Spec with Checkers {
   def `parser flatMap asserts` = {
     ParserCombinatorsSection.parseFlatMapAssert("[0-9]+")
   }
+
+  def `parser string asserts` = {
+    check(Test.testSuccess(ParserCombinatorsSection.parserStringAssert _, "42" :: HNil))
+  }
+
+  def `parser regex asserts` = {
+    ParserCombinatorsSection.parserRegexAssert("[0-9]+")
+  }
+
+  def `parser slice asserts` = {
+    check(Test.testSuccess(ParserCombinatorsSection.parserSliceAssert _, true :: HNil))
+  }
+
+  def `parser json asserts` = {
+    check(Test.testSuccess(ParserCombinatorsSection.parserJSONAssert _, "[]" :: HNil))
+  }
 }
