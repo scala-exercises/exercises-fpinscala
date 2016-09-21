@@ -425,5 +425,4 @@ object ParserCombinatorsSection extends FlatSpec with Matchers with org.scalaexe
 
 trait ReferenceHelper {
   def run[A](p: Parser[A])(s: String) = Reference.run(p)(s)
-  def regex(r: Regex): Parser[String] = Reference.regex(r)
 }
