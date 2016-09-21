@@ -1,5 +1,11 @@
 package fpinscalalib.customlib.parsing
 
+// The following implementation of a Parser is provided by Manning as a solution to exercises found in the
+// "Functional Programming in Scala" book. We'll use it in our section related to chapter 9: "Parser combinators".
+// The original code can be found in the following URL:
+//
+// https://github.com/fpinscala/fpinscala/blob/40c9ec5f7e7c2feef8f1cc5c09dcea006732f320/answers/src/main/scala/fpinscala/parsing/instances/Reference.scala
+
 import ReferenceTypes._
 import scala.util.matching.Regex
 

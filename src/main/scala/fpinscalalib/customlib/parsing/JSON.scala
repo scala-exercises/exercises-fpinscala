@@ -1,8 +1,13 @@
 package fpinscalalib.customlib.parsing
 
+// The following implementation of the JSON Parser is provided by Manning as a solution to exercises found in the
+// "Functional Programming in Scala" book. We'll use it in our section related to chapter 9: "Parser combinators".
+// The original code can be found in the following URL:
+//
+// https://github.com/fpinscala/fpinscala/blob/44e01a7b5cc68cd681f182274b3a605db1bcff6c/answers/src/main/scala/fpinscala/parsing/JSON.scala
+
 import language.higherKinds
 import language.implicitConversions
-
 
 trait JSON
 
