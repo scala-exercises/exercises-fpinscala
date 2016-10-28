@@ -51,6 +51,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
     //
     // _.getOrElse(Employee("John", "Doe", None))
 
+    case class Employee(name: String, department: String, manager: Option[String])
+
     def getDepartment : (Option[Employee]) => Option[String] = res0
 
     getDepartment(lookupByName("Joe")) shouldBe Some("Finances")
