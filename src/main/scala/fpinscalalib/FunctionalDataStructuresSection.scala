@@ -163,7 +163,7 @@ object FunctionalDataStructuresSection extends FlatSpec with Matchers with org.s
 
   def listLengthAssert(res0: Int, res1: Int): Unit = {
     def l = List(1, 2, 3, 4, 5)
-    def length[A](as: List[A]): Int = List.foldRight(l, res0)((_, acc) => acc + res1)
+    def length[A](as: List[A]): Int = List.foldRight(as, res0)((_, acc) => acc + res1)
 
     length(l) shouldBe 5
   }
