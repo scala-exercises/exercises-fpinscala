@@ -6,7 +6,7 @@ import fpinscalalib.customlib.laziness.Stream._
 import org.scalatest.{FlatSpec, Matchers}
 import fpinscalalib.customlib.laziness.ExampleHelper._
 
-/** @param name sctriness_and_laziness
+/** @param name strictness_and_laziness
   */
 object StrictnessAndLazinessSection extends FlatSpec with Matchers with org.scalaexercises.definitions.Section {
 
