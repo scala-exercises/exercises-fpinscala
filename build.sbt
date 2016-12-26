@@ -12,8 +12,8 @@ lazy val fpinscala = (project in file("."))
   ),
   libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % "2.2.4",
-    "org.scala-exercises" %% "exercise-compiler" % "0.2.5-SNAPSHOT",
-    "org.scala-exercises" %% "definitions" % "0.2.5-SNAPSHOT",
+    "org.scala-exercises" %% "exercise-compiler" % version.value,
+    "org.scala-exercises" %% "definitions" % version.value,
     "org.scalacheck" %% "scalacheck" % "1.12.5",
     "com.github.alexarchambault" %% "scalacheck-shapeless_1.12" % "0.3.1",
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.0")
