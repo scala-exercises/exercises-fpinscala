@@ -44,14 +44,18 @@ object ErrorHandlingSection extends FlatSpec with Matchers with org.scalaexercis
       case _ => None
     }
 
-    // We can look for our employees, and try to obtain their departments. We will assume that we won't find any errors,
-    // and if it's the case, we don't have to worry as the computation will end there. Try to use `map` on the result of
-    // calling `lookupByName` to create a function to obtain the department of each employee. Hint: to access the
-    // optional employee, use Scala's underscore notation. i.e.:
-    //
-    // _.getOrElse(Employee("John", "Doe", None))
-
-    case class Employee(name: String, department: String, manager: Option[String])
+    /**
+    * We can look for our employees, and try to obtain their departments. We will assume that we won't find any errors,
+    * and if it's the case, we don't have to worry as the computation will end there. Try to use `map` on the result of
+    * calling `lookupByName` to create a function to obtain the department of each employee. Hint: to access the
+    * optional employee, use Scala's underscore notation. i.e.:
+    *
+    * _.getOrElse(Employee("John", "Doe", None))
+    *
+    * Employee is defined as:
+    *
+    * case class Employee(name: String, department: String, manager: Option[String])
+    */
 
     def getDepartment : (Option[Employee]) => Option[String] = res0
 
