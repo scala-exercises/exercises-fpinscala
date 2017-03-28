@@ -1,13 +1,18 @@
+/*
+ * scala-exercises - exercises-fpinscala
+ * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ */
+
 package fpinscalalib
 
 import org.scalaexercises.definitions._
 
 /** Exercises based on Manning's "Functional Programming in Scala" book by Paul Chiusano and Rúnar Bjarnason.
-  *
-  * @param name fp_in_scala
-  */
+ *
+ * @param name fp_in_scala
+ */
 object FPinScalaLibrary extends Library {
-  override def owner = "scala-exercises"
+  override def owner      = "scala-exercises"
   override def repository = "exercises-fpinscala"
 
   override def color = Some("#E22D34")
