@@ -1,3 +1,8 @@
+/*
+ * scala-exercises - exercises-fpinscala
+ * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ */
+
 package fpinscalalib
 
 import org.scalacheck.Shapeless._
@@ -8,31 +13,24 @@ import org.scalatest.prop.Checkers
 import shapeless.HNil
 
 class FunctionalStateSpec extends Spec with Checkers {
-  def `random non-negative integers asserts` = {
+  def `random non-negative integers asserts` =
     FunctionalStateSection.randomNonNegativeIntAssert(0, 1)
-  }
 
-  def `random doubles asserts` = {
+  def `random doubles asserts` =
     FunctionalStateSection.randomDoubleAssert(1)
-  }
 
-  def `random integers list asserts` = {
+  def `random integers list asserts` =
     FunctionalStateSection.randomIntListAssert(0, 1)
-  }
 
-  def `random doubles via map asserts` = {
+  def `random doubles via map asserts` =
     FunctionalStateSection.randomDoubleViaMap(1)
-  }
 
-  def `random non negative less than asserts` = {
+  def `random non negative less than asserts` =
     FunctionalStateSection.randomNonNegativeLessThan(1, 0)
-  }
 
-  def `random roll die asserts` = {
+  def `random roll die asserts` =
     FunctionalStateSection.randomRollDie(1)
-  }
 
-  def `candy machine asserts` = {
+  def `candy machine asserts` =
     FunctionalStateSection.candyMachineAssert(1, 1)
-  }
 }

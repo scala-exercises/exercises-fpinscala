@@ -1,3 +1,8 @@
+/*
+ * scala-exercises - exercises-fpinscala
+ * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ */
+
 package fpinscalalib.customlib.errorhandling
 
 // The following implementation of the Either type is provided by Manning as a solution to the multiple implementation
@@ -9,28 +14,28 @@ package fpinscalalib.customlib.errorhandling
 
 import scala.{Option => _, Left => _, Right => _, Either => _, _}
 
-sealed trait Either[+E,+A] {
+sealed trait Either[+E, +A] {
   def map[B](f: A => B): Either[E, B] =
     this match {
       case Right(a) => Right(f(a))
-      case Left(e) => Left(e)
+      case Left(e)  => Left(e)
     }
 
   def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] =
     this match {
-      case Left(e) => Left(e)
+      case Left(e)  => Left(e)
       case Right(a) => f(a)
     }
   def orElse[EE >: E, AA >: A](b: => Either[EE, AA]): Either[EE, AA] =
     this match {
-      case Left(_) => b
+      case Left(_)  => b
       case Right(a) => Right(a)
     }
-  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C):
-  Either[EE, C] = for { a <- this; b1 <- b } yield f(a,b1)
+  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] =
+    for { a <- this; b1 <- b } yield f(a, b1)
 }
-case class Left[+E](get: E) extends Either[E,Nothing]
-case class Right[+A](get: A) extends Either[Nothing,A]
+case class Left[+E](get: E)  extends Either[E, Nothing]
+case class Right[+A](get: A) extends Either[Nothing, A]
 
 object Either {
   def mean(xs: IndexedSeq[Double]): Either[String, Double] =
@@ -47,16 +52,16 @@ object Either {
     try Right(a)
     catch { case e: Exception => Left(e) }
 
-  def traverse[E,A,B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
+  def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
     es match {
-      case Nil => Right(Nil)
-      case h::t => (f(h) map2 traverse(t)(f))(_ :: _)
+      case Nil    => Right(Nil)
+      case h :: t => (f(h) map2 traverse(t)(f))(_ :: _)
     }
 
-  def traverse_1[E,A,B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
-    es.foldRight[Either[E,List[B]]](Right(Nil))((a, b) => f(a).map2(b)(_ :: _))
+  def traverse_1[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
+    es.foldRight[Either[E, List[B]]](Right(Nil))((a, b) => f(a).map2(b)(_ :: _))
 
-  def sequence[E,A](es: List[Either[E,A]]): Either[E,List[A]] =
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] =
     traverse(es)(x => x)
 
   /*
@@ -74,5 +79,5 @@ object Either {
 
   It's also possible to use `Either[List[E],_]` directly to accumulate errors, using different implementations of
   helper functions like `map2` and `sequence`.
-  */
+ */
 }

@@ -1,22 +1,21 @@
-#Scala Exercises - "Functional Programming in Scala" library
-
+# Scala Exercises - "Functional Programming in Scala" library
 ------------------------
 
 This repository hosts a content library for the [Scala Exercises](https://www.scala-exercises.org/) platform, that includes interactive exercises related to the "Functional Programming in Scala" book by written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
 This content library is meant to be used in tandem with the book, although excerpts of the theory needed to complete them have been added to guide you. For more information about "Functional Programming in Scala" please visit its [official website](https://www.manning.com/books/functional-programming-in-scala).
 
-##About Scala exercises
+## About Scala exercises
 
 "Scala Exercises" brings exercises for the Stdlib, Cats, Shapeless and many other great libraries for Scala to your browser. Offering hundreds of solvable exercises organized into several categories covering the basics of the Scala language and its most important libraries.
 
 Scala Exercises is available at [scala-exercises.org](https://scala-exercises.org).
 
-##Contributing
+## Contributing
 
 Contributions are welcome! Please join our [Gitter channel](https://gitter.im/scala-exercises/scala-exercises)
 to get involved, or visit our [GitHub site](https://github.com/scala-exercises).
 
-##License
+## License
 
 Copyright (C) 2012 Manning Publications, Co.
 Copyright (C) 2015-2016 47 Degrees, LLC.
