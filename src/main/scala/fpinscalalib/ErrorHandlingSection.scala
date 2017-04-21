@@ -47,9 +47,10 @@ object ErrorHandlingSection
    */
   def optionMapAssert(res0: (Option[Employee]) => Option[String]): Unit = {
     def lookupByName(name: String): Option[Employee] = name match {
-      case "Joe"  => Some(Employee("Joe", "Finances", Some("Julie")))
-      case "Mary" => Some(Employee("Mary", "IT", None))
-      case _      => None
+      case "Joe"   => Some(Employee("Joe", "Finances", Some("Julie")))
+      case "Mary"  => Some(Employee("Mary", "IT", None))
+      case "Izumi" => Some(Employee("Izumi", "IT", Some("Mary")))
+      case _       => None
     }
 
     /**
@@ -244,9 +245,10 @@ object ErrorHandlingSection
    */
   def eitherMapAssert(res0: (Either[String, Employee]) => Either[String, String]): Unit = {
     def lookupByNameViaEither(name: String): Either[String, Employee] = name match {
-      case "Joe"  => Right(Employee("Joe", "Finances", Some("Julie")))
-      case "Mary" => Right(Employee("Mary", "IT", None))
-      case _      => Left("Employee not found")
+      case "Joe"   => Right(Employee("Joe", "Finances", Some("Julie")))
+      case "Mary"  => Right(Employee("Mary", "IT", None))
+      case "Izumi" => Right(Employee("Izumi", "IT", Some("Mary")))
+      case _       => Left("Employee not found")
     }
 
     def getDepartment: (Either[String, Employee]) => Either[String, String] = res0
