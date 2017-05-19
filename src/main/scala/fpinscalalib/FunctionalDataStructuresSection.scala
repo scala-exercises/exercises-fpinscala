@@ -30,6 +30,12 @@ object FunctionalDataStructuresSection
    *
    * = Singly linked lists =
    *
+   * Assume the following functions are available for your reference:
+   *{{{
+   *    sealed trait List[+A]
+   *    case object Nil extends List[Nothing]
+   *    case class Cons[+A](head: A, tail: List[A]) extends List[A]
+   *}}}
    * <b>Exercise 3.1:</b>
    *
    * Examine the next complex match expression. What will be the result?
