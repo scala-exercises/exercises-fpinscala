@@ -37,7 +37,7 @@ object StrictnessAndLazinessSection
    */
   def streamToListAssert(res0: List[Int]): Unit = {
     def toList[A](s: Stream[A]): List[A] = s match {
-      case Cons(h, t) => h() :: t().toListRecursive
+      case Cons(h, t) => h() :: toList(t())
       case _          => List()
     }
 
