@@ -1,5 +1,6 @@
 package fpinscalalib
 
+import fpinscalalib.customlib.monoids.Monoid
 import org.scalatest.Matchers
 import org.scalatest.FlatSpec
 
@@ -17,5 +18,78 @@ object MonoidsSection extends FlatSpec
     * For more information about "Functional Programming in Scala" please visit its
     * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
     *
+    * = What is a monoid? =
+    *
+    * <b>Exercise 10.1</b>
+    *
+    * Give Monoid instances for integer addition and multiplication as well as the Boolean operators
+    *
+    *
+    * Let's implement Monoid instances for integer addition and  multiplication as well as the Boolean operators, taking this representation of `Monoid`:
+    *
+    * {{{
+    *   trait Monoid[A] {
+    *     def op(a1: A, a2: A): A
+    *     def zero: A
+    *   }
+    * }}}
     **/
+  def monoidInstancesAssert(
+    res0: Int,
+    res1: Int,
+    res2: Boolean,
+    res3: Boolean
+  ): Unit = {
+
+    val intAddition: Monoid[Int] = new Monoid[Int] {
+      def op(x: Int, y: Int): Int = x + y
+      def zero: Int = res0
+    }
+
+    val intMultipication: Monoid[Int] = new Monoid[Int] {
+      def op(x: Int, y: Int): Int = x * y
+      def zero: Int = res1
+    }
+
+    val booleanOr: Monoid[Boolean] = new Monoid[Boolean] {
+      def op(x: Boolean, y: Boolean): Boolean = x || y
+      def zero: Boolean = res2
+    }
+
+    def booleanAnd: Monoid[Boolean] = new Monoid[Boolean] {
+      def op(x: Boolean, y: Boolean): Boolean = x && y
+      def zero: Boolean = res3
+    }
+
+    intAddition.op(intAddition.zero, 5) shouldBe 5
+    intAddition.op(5, intAddition.zero) shouldBe 5
+
+    intMultipication.op(intMultipication.zero, 5) shouldBe 5
+    intMultipication.op(5, intMultipication.zero) shouldBe 5
+
+    booleanOr.op(booleanOr.zero, true) shouldBe true
+    booleanOr.op(true, booleanOr.zero) shouldBe true
+    booleanOr.op(booleanOr.zero, false) shouldBe false
+    booleanOr.op(false, booleanOr.zero) shouldBe false
+
+    booleanAnd.op(booleanAnd.zero, true) shouldBe true
+    booleanAnd.op(true, booleanAnd.zero) shouldBe true
+    booleanAnd.op(booleanAnd.zero, false) shouldBe false
+    booleanAnd.op(false, booleanAnd.zero) shouldBe false
+  }
+
+  /**
+    * <b>Exercise 10.2</b>
+    *
+    * Let's give a Monoid instance for combining Option values
+    */
+  def optionMonoidAssert(res0: Option[Int], res1: Option[Int]): Unit = {
+    def optionMonoid[A]: Monoid[Option[A]] = new Monoid[Option[A]] {
+      def op(x: Option[A], y: Option[A]): Option[A] = x.orElse(y)
+      def zero: Option[A] = None
+    }
+
+    optionMonoid[Int].op(Option(2), Option(3)) shouldBe res0
+    optionMonoid[Int].op(Option(2), optionMonoid[Int].zero) shouldBe res1
+  }
 }
