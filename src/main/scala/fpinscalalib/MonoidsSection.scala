@@ -92,4 +92,26 @@ object MonoidsSection extends FlatSpec
     optionMonoid[Int].op(Option(2), Option(3)) shouldBe res0
     optionMonoid[Int].op(Option(2), optionMonoid[Int].zero) shouldBe res1
   }
+
+  /**
+    * <b>Exercise 10.3</b>
+    *
+    * Let's write a monoid for endofunctions (= functions having the same argument and return type)
+    */
+  def endoMonoidAssert(
+    res0: Int,
+    res1: Int,
+    res2: Int,
+    res3: Int
+  ): Unit = {
+    def endoMonoid[A]: Monoid[A => A] = new Monoid[A => A] {
+      def op(f: A => A, g: A => A): A => A = x => f(g(x))
+      def zero: A => A = x => x
+    }
+
+    endoMonoid[Int].op(_ + 1, _ * 2)(10) shouldBe res0
+    endoMonoid[Int].op(_ * 2, _ + 1)(10) shouldBe res1
+    endoMonoid[Int].op(_ + 1, endoMonoid[Int].zero)(10) shouldBe res2
+    endoMonoid[Int].op(endoMonoid[Int].zero, endoMonoid[Int].zero)(10) shouldBe res3
+  }
 }
