@@ -169,7 +169,7 @@ object ErrorHandlingSection
    * `Some` with a list of all the values:
    *
    * {{{
-   *   def sequence(a: List[Option[A]]): Option[List[A]] = a match {
+   *   def sequence[A](a: List[Option[A]]): Option[List[A]] = a match {
    *     case Nil => Some(Nil)
    *     case h :: t => h flatMap (hh => sequence(t) map (hh :: _))
    *   }
