@@ -62,8 +62,8 @@ object GettingStartedWithFPSection
       go(0)
     }
 
-    isSorted(Array(1, 3, 5, 7), (x: Int, y: Int) => x < y) shouldBe res0
-    isSorted(Array(7, 5, 1, 3), (x: Int, y: Int) => x > y) shouldBe res1
+    isSorted(Array(1, 3, 5, 7), (x: Int, y: Int) => x > y) shouldBe res0
+    isSorted(Array(7, 5, 1, 3), (x: Int, y: Int) => x < y) shouldBe res1
     isSorted(Array("Scala", "Exercises"), (x: String, y: String) => x.length > y.length) shouldBe res2
   }
 
