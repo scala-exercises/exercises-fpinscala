@@ -1,16 +1,14 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
 
-import java.util.concurrent.Executors
-
-import fpinscalalib.customlib.functionalparallelism.Par
 import fpinscalalib.customlib.state.{RNG, State}
 import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.testing.{Gen, Prop, SGen}
+import fpinscalalib.customlib.testing.{Gen, SGen}
 import fpinscalalib.customlib.testing.Gen._
 import fpinscalalib.customlib.testing.Prop._
 
