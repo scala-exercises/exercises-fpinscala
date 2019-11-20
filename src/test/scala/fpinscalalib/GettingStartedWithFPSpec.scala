@@ -13,8 +13,8 @@ import org.scalatestplus.scalacheck.Checkers
 import shapeless.HNil
 
 class GettingStartedWithFPSpec extends RefSpec with Checkers {
-  def `fibonacci asserts`() =
-    check(Test.testSuccess(GettingStartedWithFPSection.fibAssert _, 0 :: 1 :: HNil))
+  //def `fibonacci asserts`() =
+  //  check(Test.testSuccess(GettingStartedWithFPSection.fibAssert _, 0 :: 1 :: HNil))
 
   def `isSorted asserts`() =
     check(
