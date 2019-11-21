@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
@@ -9,7 +10,6 @@ import fpinscalalib.customlib.laziness._
 import fpinscalalib.customlib.laziness.Stream
 import fpinscalalib.customlib.laziness.Stream._
 import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.laziness.ExampleHelper._
 
 /** @param name strictness_and_laziness
  */

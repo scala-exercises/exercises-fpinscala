@@ -1,42 +1,43 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
 
-import org.scalacheck.Shapeless._
+import org.scalacheck.ScalacheckShapeless._
 import org.scalaexercises.Test
-import org.scalatest.Spec
-import org.scalatest.prop.Checkers
+import org.scalatest.refspec.RefSpec
+import org.scalatestplus.scalacheck.Checkers
 import shapeless.HNil
 import fpinscalalib.customlib.errorhandling._
 import fpinscalalib.customlib.errorhandling.Employee
 import fpinscalalib.customlib.errorhandling.ExampleHelper._
 import org.scalacheck.{Arbitrary, Gen}
 
-class ErrorHandlingSpec extends Spec with Checkers {
+class ErrorHandlingSpec extends RefSpec with Checkers {
 
-  def `option map asserts` = {
+  def `option map asserts`() = {
     val f = (e: Option[Employee]) => e.map(_.department)
 
     check(Test.testSuccess(ErrorHandlingSection.optionMapAssert _, f :: HNil))
   }
 
-  def `option flatMap asserts` = {
+  def `option flatMap asserts`() = {
     val f = (e: Option[Employee]) => e.flatMap(_.manager)
 
     check(Test.testSuccess(ErrorHandlingSection.optionFlatMapAssert _, f :: HNil))
   }
 
-  def `option orElse asserts` = {
+  def `option orElse asserts`() = {
     check(
       Test.testSuccess(
         ErrorHandlingSection.optionOrElseAssert _,
         Some("Julie") :: Some("Mr. CEO") :: Some("Mr. CEO") :: HNil))
   }
 
-  def `option filter asserts` = {
+  def `option filter asserts`() = {
 
     implicit def optionArbitrary[T](implicit GT: Gen[T]): Arbitrary[Option[T]] = Arbitrary {
       Gen.option[T](GT) map {
@@ -59,7 +60,7 @@ class ErrorHandlingSpec extends Spec with Checkers {
         .testSuccess(ErrorHandlingSection.optionFilterAssert _, Some(joe) :: none :: none :: HNil))
   }
 
-  def `option sequence asserts` = {
+  def `option sequence asserts`() = {
     val none: Option[List[Int]] = None
     check(
       Test.testSuccess(
@@ -67,7 +68,7 @@ class ErrorHandlingSpec extends Spec with Checkers {
         Some(List(1, 2, 3)) :: none :: HNil))
   }
 
-  def `option traverse asserts` = {
+  def `option traverse asserts`() = {
     val none: Option[List[Int]] = None
     check(
       Test.testSuccess(
@@ -75,34 +76,34 @@ class ErrorHandlingSpec extends Spec with Checkers {
         Some(List(1, 2, 3)) :: none :: HNil))
   }
 
-  def `either map asserts` = {
+  def `either map asserts`() = {
     val f = (e: Either[String, Employee]) => e.map(_.department)
 
     check(Test.testSuccess(ErrorHandlingSection.eitherMapAssert _, f :: HNil))
   }
 
-  def `either flatMap asserts` = {
+  def `either flatMap asserts`() = {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherFlatMapAssert _,
         Right("Julie") :: Left("Manager not found") :: Left("Employee not found") :: HNil))
   }
 
-  def `either orElse asserts` = {
+  def `either orElse asserts`() = {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherOrElseAssert _,
         Right("Julie") :: Right("Mr. CEO") :: Right("Mr. CEO") :: HNil))
   }
 
-  def `either map2 asserts` = {
+  def `either map2 asserts`() = {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherMap2Assert _,
         Right(false) :: Right(true) :: Left("Employee not found") :: HNil))
   }
 
-  def `either traverse asserts` = {
+  def `either traverse asserts`() = {
     val list = List(joe, mary)
     check(
       Test.testSuccess(
@@ -110,7 +111,7 @@ class ErrorHandlingSpec extends Spec with Checkers {
         Right(list) :: Left("Employee not found") :: HNil))
   }
 
-  def `either sequence asserts` = {
+  def `either sequence asserts`() = {
     val list = List(joe, mary)
     check(
       Test.testSuccess(

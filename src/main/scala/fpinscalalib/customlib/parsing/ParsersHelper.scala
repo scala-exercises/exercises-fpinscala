@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib.customlib.parsing
@@ -200,7 +201,7 @@ case class Location(input: String, offset: Int = 0) {
 
   /* Returns the line corresponding to this location */
   def currentLine: String =
-    if (input.length > 1) input.lines.drop(line - 1).next
+    if (input.length > 1) input.linesIterator.drop(line - 1).next
     else ""
 
   def columnCaret = (" " * (col - 1)) + "^"
