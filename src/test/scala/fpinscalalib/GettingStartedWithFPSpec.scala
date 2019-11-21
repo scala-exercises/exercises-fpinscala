@@ -7,14 +7,24 @@
 package fpinscalalib
 
 import org.scalacheck.ScalacheckShapeless._
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalaexercises.Test
 import org.scalatest.refspec.RefSpec
 import org.scalatestplus.scalacheck.Checkers
-import shapeless.HNil
+import shapeless._
 
 class GettingStartedWithFPSpec extends RefSpec with Checkers {
-  //def `fibonacci asserts`() =
-  //  check(Test.testSuccess(GettingStartedWithFPSection.fibAssert _, 0 :: 1 :: HNil))
+
+  def `fibonacci asserts`() = {
+    implicit val arb = Arbitrary {
+      for {
+        res0 <- Gen.choose(2, 10)
+        res1 <- Gen.choose(2, 10)
+      } yield res0 :: res1 :: HNil
+    }
+
+    check(Test.testSuccess(GettingStartedWithFPSection.fibAssert _, 0 :: 1 :: HNil))
+  }
 
   def `isSorted asserts`() =
     check(
