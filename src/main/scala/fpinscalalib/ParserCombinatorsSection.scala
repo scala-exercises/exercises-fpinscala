@@ -6,7 +6,8 @@
 
 package fpinscalalib
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import fpinscalalib.customlib.parsing.{JSON, ParseError, Reference}
 import fpinscalalib.customlib.parsing.ReferenceTypes._
 import Reference._
@@ -15,7 +16,7 @@ import scala.util.matching.Regex
 /** @param name parser_combinatorss
  */
 object ParserCombinatorsSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section
     with ReferenceHelper {

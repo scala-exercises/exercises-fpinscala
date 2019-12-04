@@ -9,14 +9,15 @@ package fpinscalalib
 import fpinscalalib.customlib.errorhandling._
 import fpinscalalib.customlib.errorhandling.Option._
 import fpinscalalib.customlib.errorhandling.ExampleHelper._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Success, Try}
 
 /** @param name handling_error_without_exceptions
  */
 object ErrorHandlingSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
