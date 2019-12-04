@@ -7,7 +7,8 @@
 package fpinscalalib
 
 import fpinscalalib.customlib.state.{RNG, State}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import fpinscalalib.customlib.testing.{Gen, SGen}
 import fpinscalalib.customlib.testing.Gen._
 import fpinscalalib.customlib.testing.Prop._
@@ -15,7 +16,7 @@ import fpinscalalib.customlib.testing.Prop._
 /** @param name property_based_testing
  */
 object PropertyBasedTestingSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 

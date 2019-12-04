@@ -8,13 +8,14 @@ package fpinscalalib
 
 import fpinscalalib.customlib.functionalparallelism.Par
 import fpinscalalib.customlib.functionalparallelism.Par._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import java.util.concurrent.Executors
 
 /** @param name purely_functional_parallelism
  */
 object FunctionalParallelismSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 

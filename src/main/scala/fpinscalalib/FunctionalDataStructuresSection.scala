@@ -6,7 +6,8 @@
 
 package fpinscalalib
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import fpinscalalib.customlib.functionaldatastructures._
 import fpinscalalib.customlib.functionaldatastructures.List._
 import Tree._
@@ -14,7 +15,7 @@ import Tree._
 /** @param name functional_data_structures
  */
 object FunctionalDataStructuresSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
