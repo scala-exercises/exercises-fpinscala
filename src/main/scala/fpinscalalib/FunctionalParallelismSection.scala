@@ -72,7 +72,7 @@ object FunctionalParallelismSection
   /**
    * <b>Exercise 7.5:</b>
    *
-   * Remember, `asyncF` converts an `A => B` to an `A => Par[B`] by forking a parallel computation to produce the
+   * Remember, `asyncF` converts an `A => B` to an `A => Par[B]` by forking a parallel computation to produce the
    * result. So we can fork off our N parallel computations pretty easily, but we need some way of collecting their
    * results. Are we stuck? Well, just from inspecting the types, we can see that we need some way of converting our
    * `List[Par[B]]` to the `Par[List[B]]` required by the return type of `parMap`.
