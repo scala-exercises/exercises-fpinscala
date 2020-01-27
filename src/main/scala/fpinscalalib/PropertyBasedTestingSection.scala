@@ -342,7 +342,7 @@ object PropertyBasedTestingSection
    *       Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
    * }}}
    *
-   * <b>Exercise 8.18</b>
+   * <b>Exercise 8.17</b>
    *
    * With `pint2` we can express the property about `fork` from chapter 7 (`fork(x) == x`):
    *
