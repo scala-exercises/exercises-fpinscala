@@ -203,7 +203,7 @@ object PropertyBasedTestingSection
    *
    * <b>Exercise 8.9</b>
    *
-   * Let's implement `&&` and `\\` to compose `Prop` values:
+   * Let's implement `&&` and `||` to compose `Prop` values:
    *
    * {{{
    *   def &&(p: Prop) = Prop {
