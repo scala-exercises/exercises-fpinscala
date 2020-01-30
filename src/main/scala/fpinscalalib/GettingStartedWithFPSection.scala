@@ -33,12 +33,12 @@ object GettingStartedWithFPSection
    * Try to fix the `loop` function inside `fib` so that it returns the correct values for each case in a tail-recursive
    * way. What should the missing expressions for the trivial case and the recursive call be?
    */
-  def fibAssert(res0: Int, res1: Int) {
+  def fibAssert(res0: Int) = {
     def fib(n: Int): Int = {
       @annotation.tailrec
       def loop(n: Int, prev: Int, cur: Int): Int =
         if (n <= res0) prev
-        else loop(n - res1, cur, prev + cur)
+        else loop(n - 1, cur, prev + cur)
       loop(n, 0, 1)
     }
 

@@ -13,7 +13,6 @@ package fpinscalalib.customlib.functionalparallelism
 // https://github.com/fpinscala/fpinscala/blob/a261989ae4e779b45c7176273dbd2349f487b7d1/answers/src/main/scala/fpinscala/parallelism/Par.scala
 
 import java.util.concurrent._
-import language.implicitConversions
 
 object Par {
   type Par[A] = ExecutorService => Future[A]
