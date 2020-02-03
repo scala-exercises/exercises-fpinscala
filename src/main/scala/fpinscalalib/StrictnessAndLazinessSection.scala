@@ -31,6 +31,12 @@ object StrictnessAndLazinessSection
    *
    * = Strict and non-strict functions =
    *
+   * <b>NOTE:</b> This section is only for educational purposes. In Scala 2.13, scala.collection.immutable.Stream
+   * is deprecated and scala.collection.immutable.LazyList is recommended for replacement. For more information,
+   * check the Scala [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/Stream.html Stream]]
+   * and [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/LazyList.html LazyList]]
+   * documentation.
+   *
    * <b>Exercise 5.1:</b>
    *
    * Now let's write a few helper functions to make inspecting streams easier, starting with a function to convert a
