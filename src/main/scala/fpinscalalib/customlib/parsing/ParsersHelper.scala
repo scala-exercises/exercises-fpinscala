@@ -16,8 +16,6 @@ import java.util.regex._
 import scala.util.matching.Regex
 import fpinscalalib.customlib.testing._
 import fpinscalalib.customlib.testing.Prop._
-import language.higherKinds
-import language.implicitConversions
 
 trait Parsers[Parser[+ _]] { self => // so inner classes may call methods of trait
   def run[A](p: Parser[A])(input: String): Either[ParseError, A]
@@ -250,9 +248,9 @@ case class ParseError(stack: List[(Location, String)] = List()) {
    * messages at the same location have their messages merged,
    * separated by semicolons */
   def collapseStack(s: List[(Location, String)]): List[(Location, String)] =
-    s.groupBy(_._1).mapValues(_.map(_._2).mkString("; ")).toList.sortBy(_._1.offset)
+    s.groupBy(_._1).view.mapValues(_.map(_._2).mkString("; ")).toList.sortBy(_._1.offset)
 
-  def formatLoc(l: Location): String = l.line + "." + l.col
+  def formatLoc(l: Location): String = s"${l.line}.${l.col}"
 }
 
 object Parsers {}

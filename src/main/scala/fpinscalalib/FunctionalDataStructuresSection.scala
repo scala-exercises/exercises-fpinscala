@@ -57,7 +57,7 @@ object FunctionalDataStructuresSection
    *
    * Take a look at the implementation of `List`'s `tail` function, and check its behaviour on the following cases:
    */
-  def listTakeAssert(res0: List[Int], res1: List[Int]) {
+  def listTakeAssert(res0: List[Int], res1: List[Int]) = {
     def tail[A](l: List[A]): List[A] =
       l match {
         case Nil        => sys.error("tail of empty list")
@@ -72,7 +72,7 @@ object FunctionalDataStructuresSection
    *
    * `setHead` follows a similar principle. Let's take a look at how it works:
    */
-  def listSetHeadAssert(res0: List[Int], res1: List[String]) {
+  def listSetHeadAssert(res0: List[Int], res1: List[String]) = {
     def setHead[A](l: List[A], h: A): List[A] = l match {
       case Nil        => sys.error("setHead on empty list")
       case Cons(_, t) => Cons(h, t)
@@ -91,7 +91,7 @@ object FunctionalDataStructuresSection
       res1: List[Int],
       res2: List[Int],
       res3: List[Int],
-      res4: List[Int]) {
+      res4: List[Int]) = {
     def drop[A](l: List[A], n: Int): List[A] =
       if (n <= 0) l
       else
@@ -113,7 +113,7 @@ object FunctionalDataStructuresSection
    * `dropWhile` extends the behaviour of `drop`, removing elements from the `List` prefix as long as they match a
    * predicate. Study its implementation and check how it works with the following examples:
    */
-  def listDropWhileAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int]) {
+  def listDropWhileAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int]) = {
     def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
       l match {
         case Cons(h, t) if f(h) => dropWhile(t, f)
@@ -131,7 +131,7 @@ object FunctionalDataStructuresSection
    *
    * `init` can be implemented in the same fashion, but cannot be implemented in constant time like `tail`:
    */
-  def listInitAssert(res0: List[Int], res1: List[Int]) {
+  def listInitAssert(res0: List[Int], res1: List[Int]) = {
     def init[A](l: List[A]): List[A] =
       l match {
         case Nil          => sys.error("init of empty list")
@@ -161,7 +161,7 @@ object FunctionalDataStructuresSection
       res7: Int,
       res8: Int,
       res9: Int,
-      res10: Int) {
+      res10: Int) = {
     foldRight(Cons(1, Cons(2, Cons(3, Nil))), 0)((x, y) => x + y) shouldBe 6
     res0 + foldRight(Cons(2, Cons(3, Nil)), 0)((x, y) => x + y) shouldBe 6
     res1 + res2 + foldRight(Cons(3, Nil), 0)((x, y) => x + y) shouldBe 6
@@ -175,9 +175,8 @@ object FunctionalDataStructuresSection
    * Now that we know how `foldRight` works, try to think about what happens when you pass `Nil` and `Cons` themselves
    * to `foldRight`.
    */
-  def listFoldRightNilConsAssert(res0: List[Int]) {
+  def listFoldRightNilConsAssert(res0: List[Int]) =
     foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _)) shouldBe res0
-  }
 
   /**
    * <b>Exercise 3.9:</b>

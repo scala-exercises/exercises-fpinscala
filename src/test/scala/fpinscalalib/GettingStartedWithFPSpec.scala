@@ -23,7 +23,7 @@ class GettingStartedWithFPSpec extends RefSpec with Checkers {
       } yield res0 :: res1 :: HNil
     }
 
-    check(Test.testSuccess(GettingStartedWithFPSection.fibAssert _, 0 :: 1 :: HNil))
+    check(Test.testSuccess(GettingStartedWithFPSection.fibAssert _, 0 :: HNil))
   }
 
   def `isSorted asserts`() =

@@ -12,9 +12,6 @@ package fpinscalalib.customlib.parsing
 //
 // https://github.com/fpinscala/fpinscala/blob/44e01a7b5cc68cd681f182274b3a605db1bcff6c/answers/src/main/scala/fpinscala/parsing/JSON.scala
 
-import language.higherKinds
-import language.implicitConversions
-
 trait JSON
 
 object JSON {
