@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib.customlib.parsing
@@ -151,8 +152,7 @@ object Reference extends Parsers[Parser] {
    */
   override def many[A](p: Parser[A]): Parser[List[A]] =
     s => {
-      var nConsumed: Int = 0
-      val buf            = new collection.mutable.ListBuffer[A]
+      val buf = new collection.mutable.ListBuffer[A]
       def go(p: Parser[A], offset: Int): Result[List[A]] = {
         p(s.advanceBy(offset)) match {
           case Success(a, n)        => buf += a; go(p, offset + n)

@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
@@ -8,14 +9,15 @@ package fpinscalalib
 import fpinscalalib.customlib.errorhandling._
 import fpinscalalib.customlib.errorhandling.Option._
 import fpinscalalib.customlib.errorhandling.ExampleHelper._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Success, Try}
 
 /** @param name handling_error_without_exceptions
  */
 object ErrorHandlingSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -53,17 +55,17 @@ object ErrorHandlingSection
       case _       => None
     }
 
-    /**
-     * We can look for our employees, and try to obtain their departments. We will assume that we won't find any errors,
-     * and if it's the case, we don't have to worry as the computation will end there. Try to use `map` on the result of
-     * calling `lookupByName` to create a function to obtain the department of each employee. Hint: to access the
-     * optional employee, use Scala's underscore notation. i.e.:
-     *
-     * _.getOrElse(Employee("John", "Doe", None))
-     *
-     * Employee is defined as:
-     *
-     * case class Employee(name: String, department: String, manager: Option[String])
+    /*
+     We can look for our employees, and try to obtain their departments. We will assume that we won't find any errors,
+     and if it's the case, we don't have to worry as the computation will end there. Try to use `map` on the result of
+     calling `lookupByName` to create a function to obtain the department of each employee. Hint: to access the
+     optional employee, use Scala's underscore notation. i.e.:
+
+     _.getOrElse(Employee("John", "Doe", None))
+
+     Employee is defined as:
+
+     case class Employee(name: String, department: String, manager: Option[String])
      */
     def getDepartment: (Option[Employee]) => Option[String] = res0
 
@@ -149,8 +151,8 @@ object ErrorHandlingSection
    *   def variance(xs: Seq[Double]): Option[Double] =
    *     mean(xs) flatMap (m => mean(xs.map(x => math.pow(x - m, 2))))
    * }}}
-   */
-  /**
+   *
+   *
    * <b>Exercise 4.3:</b>
    *
    * Let's write a generic function to combine two `Option` values , so that if any of those values is `None`, the

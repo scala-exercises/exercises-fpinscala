@@ -1,16 +1,18 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /** @param name getting_started_with_functional_programming
  */
 object GettingStartedWithFPSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -31,12 +33,12 @@ object GettingStartedWithFPSection
    * Try to fix the `loop` function inside `fib` so that it returns the correct values for each case in a tail-recursive
    * way. What should the missing expressions for the trivial case and the recursive call be?
    */
-  def fibAssert(res0: Int, res1: Int) {
+  def fibAssert(res0: Int) = {
     def fib(n: Int): Int = {
       @annotation.tailrec
       def loop(n: Int, prev: Int, cur: Int): Int =
         if (n <= res0) prev
-        else loop(n - res1, cur, prev + cur)
+        else loop(n - 1, cur, prev + cur)
       loop(n, 0, 1)
     }
 
@@ -56,15 +58,15 @@ object GettingStartedWithFPSection
       @annotation.tailrec
       def go(n: Int): Boolean =
         if (n >= as.length - 1) true
-        else if (ordering(as(n), as(n + 1))) false
+        else if (!ordering(as(n), as(n + 1))) false
         else go(n + 1)
 
       go(0)
     }
 
-    isSorted(Array(1, 3, 5, 7), (x: Int, y: Int) => x > y) shouldBe res0
-    isSorted(Array(7, 5, 1, 3), (x: Int, y: Int) => x < y) shouldBe res1
-    isSorted(Array("Scala", "Exercises"), (x: String, y: String) => x.length > y.length) shouldBe res2
+    isSorted(Array(1, 3, 5, 7), (x: Int, y: Int) => x < y) shouldBe res0
+    isSorted(Array(7, 5, 1, 3), (x: Int, y: Int) => x > y) shouldBe res1
+    isSorted(Array("Scala", "Exercises"), (x: String, y: String) => x.length < y.length) shouldBe res2
   }
 
   /**

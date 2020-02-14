@@ -1,21 +1,21 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
 
-import java.util.concurrent.ExecutorService
-
 import fpinscalalib.customlib.functionalparallelism.Par
 import fpinscalalib.customlib.functionalparallelism.Par._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import java.util.concurrent.Executors
 
 /** @param name purely_functional_parallelism
  */
 object FunctionalParallelismSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -72,7 +72,7 @@ object FunctionalParallelismSection
   /**
    * <b>Exercise 7.5:</b>
    *
-   * Remember, `asyncF` converts an `A => B` to an `A => Par[B`] by forking a parallel computation to produce the
+   * Remember, `asyncF` converts an `A => B` to an `A => Par[B]` by forking a parallel computation to produce the
    * result. So we can fork off our N parallel computations pretty easily, but we need some way of collecting their
    * results. Are we stuck? Well, just from inspecting the types, we can see that we need some way of converting our
    * `List[Par[B]]` to the `Par[List[B]]` required by the return type of `parMap`.

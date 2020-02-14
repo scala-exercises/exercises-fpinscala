@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib.customlib.parsing
@@ -15,8 +16,6 @@ import java.util.regex._
 import scala.util.matching.Regex
 import fpinscalalib.customlib.testing._
 import fpinscalalib.customlib.testing.Prop._
-import language.higherKinds
-import language.implicitConversions
 
 trait Parsers[Parser[+ _]] { self => // so inner classes may call methods of trait
   def run[A](p: Parser[A])(input: String): Either[ParseError, A]
@@ -200,7 +199,7 @@ case class Location(input: String, offset: Int = 0) {
 
   /* Returns the line corresponding to this location */
   def currentLine: String =
-    if (input.length > 1) input.lines.drop(line - 1).next
+    if (input.length > 1) input.linesIterator.drop(line - 1).next
     else ""
 
   def columnCaret = (" " * (col - 1)) + "^"
@@ -249,9 +248,9 @@ case class ParseError(stack: List[(Location, String)] = List()) {
    * messages at the same location have their messages merged,
    * separated by semicolons */
   def collapseStack(s: List[(Location, String)]): List[(Location, String)] =
-    s.groupBy(_._1).mapValues(_.map(_._2).mkString("; ")).toList.sortBy(_._1.offset)
+    s.groupBy(_._1).view.mapValues(_.map(_._2).mkString("; ")).toList.sortBy(_._1.offset)
 
-  def formatLoc(l: Location): String = l.line + "." + l.col
+  def formatLoc(l: Location): String = s"${l.line}.${l.col}"
 }
 
 object Parsers {}

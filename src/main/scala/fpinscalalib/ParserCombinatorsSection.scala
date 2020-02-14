@@ -1,20 +1,22 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
 
-import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.parsing.{JSON, Location, ParseError, Reference}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import fpinscalalib.customlib.parsing.{JSON, ParseError, Reference}
 import fpinscalalib.customlib.parsing.ReferenceTypes._
 import Reference._
 import scala.util.matching.Regex
 
-/** @param name parser_combinators
+/** @param name parser_combinatorss
  */
 object ParserCombinatorsSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section
     with ReferenceHelper {

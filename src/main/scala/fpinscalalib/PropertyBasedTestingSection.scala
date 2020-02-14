@@ -1,23 +1,22 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
 
-import java.util.concurrent.Executors
-
-import fpinscalalib.customlib.functionalparallelism.Par
 import fpinscalalib.customlib.state.{RNG, State}
-import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.testing.{Gen, Prop, SGen}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import fpinscalalib.customlib.testing.{Gen, SGen}
 import fpinscalalib.customlib.testing.Gen._
 import fpinscalalib.customlib.testing.Prop._
 
 /** @param name property_based_testing
  */
 object PropertyBasedTestingSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -204,7 +203,7 @@ object PropertyBasedTestingSection
    *
    * <b>Exercise 8.9</b>
    *
-   * Let's implement `&&` and `\\` to compose `Prop` values:
+   * Let's implement `&&` and `||` to compose `Prop` values:
    *
    * {{{
    *   def &&(p: Prop) = Prop {
@@ -343,7 +342,7 @@ object PropertyBasedTestingSection
    *       Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
    * }}}
    *
-   * <b>Exercise 8.18</b>
+   * <b>Exercise 8.17</b>
    *
    * With `pint2` we can express the property about `fork` from chapter 7 (`fork(x) == x`):
    *

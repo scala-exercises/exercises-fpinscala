@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib.customlib.parsing
@@ -10,9 +11,6 @@ package fpinscalalib.customlib.parsing
 // The original code can be found in the following URL:
 //
 // https://github.com/fpinscala/fpinscala/blob/44e01a7b5cc68cd681f182274b3a605db1bcff6c/answers/src/main/scala/fpinscala/parsing/JSON.scala
-
-import language.higherKinds
-import language.implicitConversions
 
 trait JSON
 

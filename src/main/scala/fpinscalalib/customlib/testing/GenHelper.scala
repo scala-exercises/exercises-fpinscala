@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib.customlib.testing
@@ -21,7 +22,6 @@ import fpinscalalib.customlib.state.{RNG, State}
 import fpinscalalib.customlib.laziness.Stream
 
 import language.postfixOps
-import language.implicitConversions
 
 case class Prop(run: (MaxSize, TestCases, RNG) => Result) {
   def &&(p: Prop) = Prop { (max, n, rng) =>

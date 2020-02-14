@@ -1,6 +1,7 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-fpinscala
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
 package fpinscalalib
@@ -8,13 +9,13 @@ package fpinscalalib
 import fpinscalalib.customlib.laziness._
 import fpinscalalib.customlib.laziness.Stream
 import fpinscalalib.customlib.laziness.Stream._
-import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.laziness.ExampleHelper._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /** @param name strictness_and_laziness
  */
 object StrictnessAndLazinessSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -29,6 +30,12 @@ object StrictnessAndLazinessSection
    * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
    * = Strict and non-strict functions =
+   *
+   * <b>NOTE:</b> This section is only for educational purposes. In Scala 2.13, scala.collection.immutable.Stream
+   * is deprecated and scala.collection.immutable.LazyList is recommended for replacement. For more information,
+   * check the Scala [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/Stream.html Stream]]
+   * and [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/LazyList.html LazyList]]
+   * documentation.
    *
    * <b>Exercise 5.1:</b>
    *
