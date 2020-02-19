@@ -91,7 +91,7 @@ object GettingStartedWithFPSection
   /**
    * <b>Exercise 2.4</b>:
    *
-   * Let's do the same with uncurrying is the reverse transformation of curry. Take a look at its implementation and
+   * Let's do the same with uncurrying. Uncurrying is the reverse transformation of curry. Take a look at its implementation and
    * check to see if this principle holds true:
    */
   def uncurryAssert(res0: Boolean, res1: Boolean): Unit = {
