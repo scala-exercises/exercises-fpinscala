@@ -71,7 +71,6 @@ object StrictnessAndLazinessSection
   def streamTakeAssert(res0: Int): Unit = {
     def take[A](s: Stream[A], n: Int): Stream[A] = s match {
       case Cons(h, t) if n > 0  => cons[A](h(), t().take(n - res0))
-      case Cons(h, _) if n == 0 => cons[A](h(), Stream.empty)
       case _                    => Stream.empty
     }
 
