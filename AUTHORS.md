@@ -8,6 +8,7 @@
 
 The maintainers of the project are:
 
+- [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **Ana Gómez González (angoglez)**](https://github.com/angoglez)
 - [![dominv](https://avatars1.githubusercontent.com/u/3943031?v=4&s=20) **Domingo Valera (dominv)**](https://github.com/dominv)
 - [![kiroco12](https://avatars1.githubusercontent.com/u/48894338?v=4&s=20) **Enrique Nieto (kiroco12)**](https://github.com/kiroco12)
@@ -26,6 +27,7 @@ These are the people that have contributed to the _exercises-fpinscala_ project:
 - [![isabelcosta](https://avatars1.githubusercontent.com/u/11148726?v=4&s=20) **isabelcosta**](https://github.com/isabelcosta)
 - [![ricsirigu](https://avatars3.githubusercontent.com/u/5004093?v=4&s=20) **ricsirigu**](https://github.com/ricsirigu)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **angoglez**](https://github.com/angoglez)
+- [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
 - [![Bhudjo](https://avatars0.githubusercontent.com/u/830963?v=4&s=20) **Bhudjo**](https://github.com/Bhudjo)
 - [![jkmcclellan](https://avatars3.githubusercontent.com/u/52432856?v=4&s=20) **jkmcclellan**](https://github.com/jkmcclellan)
 - [![pdo400](https://avatars1.githubusercontent.com/u/1780993?v=4&s=20) **pdo400**](https://github.com/pdo400)
