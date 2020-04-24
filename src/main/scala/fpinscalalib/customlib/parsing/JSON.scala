@@ -22,7 +22,7 @@ object JSON {
   case class JArray(get: IndexedSeq[JSON])   extends JSON
   case class JObject(get: Map[String, JSON]) extends JSON
 
-  def jsonParser[Parser[+ _]](P: Parsers[Parser]): Parser[JSON] = {
+  def jsonParser[Parser[+_]](P: Parsers[Parser]): Parser[JSON] = {
     // we'll hide the string implicit conversion and promote strings to tokens instead
     // this is a bit nicer than having to write token everywhere
     import P.{string => _, _}
@@ -81,9 +81,9 @@ object JSONExample extends App {
     e.fold(println, println)
 
   val json: Parser[JSON] = JSON.jsonParser(P)
-  printResult { P.run(json)(jsonTxt) }
+  printResult(P.run(json)(jsonTxt))
   println("--")
-  printResult { P.run(json)(malformedJson1) }
+  printResult(P.run(json)(malformedJson1))
   println("--")
-  printResult { P.run(json)(malformedJson2) }
+  printResult(P.run(json)(malformedJson2))
 }

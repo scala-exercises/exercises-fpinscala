@@ -91,7 +91,8 @@ object FunctionalDataStructuresSection
       res1: List[Int],
       res2: List[Int],
       res3: List[Int],
-      res4: List[Int]) = {
+      res4: List[Int]
+  ) = {
     def drop[A](l: List[A], n: Int): List[A] =
       if (n <= 0) l
       else
@@ -161,7 +162,8 @@ object FunctionalDataStructuresSection
       res7: Int,
       res8: Int,
       res9: Int,
-      res10: Int) = {
+      res10: Int
+  ) = {
     foldRight(Cons(1, Cons(2, Cons(3, Nil))), 0)((x, y) => x + y) shouldBe 6
     res0 + foldRight(Cons(2, Cons(3, Nil)), 0)((x, y) => x + y) shouldBe 6
     res1 + res2 + foldRight(Cons(3, Nil), 0)((x, y) => x + y) shouldBe 6

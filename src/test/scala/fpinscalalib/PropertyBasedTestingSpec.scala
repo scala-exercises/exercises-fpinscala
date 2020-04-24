@@ -26,13 +26,16 @@ class PropertyBasedTestingSpec extends RefSpec with Checkers {
 
   def `gen listOfN`() =
     check(
-      Test.testSuccess(PropertyBasedTestingSection.genListOfN _, 10 :: List(42, 42, 42) :: HNil))
+      Test.testSuccess(PropertyBasedTestingSection.genListOfN _, 10 :: List(42, 42, 42) :: HNil)
+    )
 
   def `gen listOfN via flatMap`() =
     check(
       Test.testSuccess(
         PropertyBasedTestingSection.genListOfNViaFlatMap _,
-        0 :: 10 :: List(42) :: HNil))
+        0 :: 10 :: List(42) :: HNil
+      )
+    )
 
   def `prop and or`() =
     PropertyBasedTestingSection.propAndOrAssert(Passed)

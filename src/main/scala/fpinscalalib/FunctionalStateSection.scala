@@ -293,7 +293,7 @@ object FunctionalStateSection
                 Machine(false, candy, coin + res0)
               case (Turn, Machine(false, candy, coin)) =>
                 Machine(true, candy - res1, coin)
-        }
+            }
 
       def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] =
         for {

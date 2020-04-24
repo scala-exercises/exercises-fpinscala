@@ -96,9 +96,7 @@ object Prop {
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
 
   def apply(f: (TestCases, RNG) => Result): Prop =
-    Prop { (_, n, rng) =>
-      f(n, rng)
-    }
+    Prop((_, n, rng) => f(n, rng))
 
   def forAll[A](g: SGen[A])(f: A => Boolean): Prop =
     forAll(g(_))(f)
@@ -109,10 +107,7 @@ object Prop {
       Stream.from(0).take((n min max) + 1).map(i => forAll(g(i))(f))
     val prop: Prop =
       props
-        .map(p =>
-          Prop { (max, n, rng) =>
-            p.run(max, casesPerSize, rng)
-        })
+        .map(p => Prop((max, n, rng) => p.run(max, casesPerSize, rng)))
         .toList
         .reduce(_ && _)
     prop.run(max, n, rng)
@@ -122,7 +117,8 @@ object Prop {
       p: Prop,
       maxSize: Int = 100,
       testCases: Int = 100,
-      rng: RNG = RNG.Simple(System.currentTimeMillis)): Unit =
+      rng: RNG = RNG.Simple(System.currentTimeMillis)
+  ): Unit =
     p.run(maxSize, testCases, rng) match {
       case Falsified(msg, n) =>
         println(s"! Falsified after $n passed tests:\n $msg")
@@ -136,9 +132,7 @@ object Prop {
   val p1 =
     Prop.forAll(Gen.unit(Par.unit(1)))(i => Par.map(i)(_ + 1)(ES).get == Par.unit(2)(ES).get)
 
-  def check(p: => Boolean): Prop = Prop { (_, _, _) =>
-    if (p) Passed else Falsified("()", 0)
-  }
+  def check(p: => Boolean): Prop = Prop((_, _, _) => if (p) Passed else Falsified("()", 0))
 
   val p2 = check {
     val p  = Par.map(Par.unit(1))(_ + 1)
@@ -158,7 +152,8 @@ object Prop {
 
   val S = weighted(
     choose(1, 4).map(Executors.newFixedThreadPool) -> .75,
-    unit(Executors.newCachedThreadPool)            -> .25) // `a -> b` is syntax sugar for `(a,b)`
+    unit(Executors.newCachedThreadPool)            -> .25
+  ) // `a -> b` is syntax sugar for `(a,b)`
 
   def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
     forAll(S.map2(g)((_, _))) { case (s, a) => f(a)(s).get }
@@ -229,11 +224,13 @@ object Gen {
    */
   def even(start: Int, stopExclusive: Int): Gen[Int] =
     choose(start, if (stopExclusive % 2 == 0) stopExclusive - 1 else stopExclusive).map(n =>
-      if (n % 2 != 0) n + 1 else n)
+      if (n % 2 != 0) n + 1 else n
+    )
 
   def odd(start: Int, stopExclusive: Int): Gen[Int] =
     choose(start, if (stopExclusive % 2 != 0) stopExclusive - 1 else stopExclusive).map(n =>
-      if (n % 2 == 0) n + 1 else n)
+      if (n % 2 == 0) n + 1 else n
+    )
 
   def sameParity(from: Int, to: Int): Gen[(Int, Int)] =
     for {
@@ -302,7 +299,7 @@ object Gen {
    */
   lazy val pint2: Gen[Par[Int]] = choose(-100, 100)
     .listOfN(choose(0, 20))
-    .map(l => l.foldLeft(Par.unit(0))((p, i) => Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
+    .map(l => l.foldLeft(Par.unit(0))((p, i) => Par.fork(Par.map2(p, Par.unit(i))(_ + _))))
 
   def genStringIntFn(g: Gen[Int]): Gen[String => Int] =
     g map (i => (s => i))
@@ -312,7 +309,7 @@ case class SGen[+A](g: Int => Gen[A]) {
   def apply(n: Int): Gen[A] = g(n)
 
   def map[B](f: A => B): SGen[B] =
-    SGen { g(_) map f }
+    SGen(g(_) map f)
 
   def flatMap[B](f: A => SGen[B]): SGen[B] = {
     val g2: Int => Gen[B] = n => {
