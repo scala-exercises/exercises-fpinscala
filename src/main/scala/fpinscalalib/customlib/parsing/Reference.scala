@@ -92,7 +92,7 @@ object Reference extends Parsers[Parser] {
       p(s) match {
         case Failure(e, false) => p2(s)
         case r                 => r // committed failure or success skips running `p2`
-    }
+      }
 
   def flatMap[A, B](f: Parser[A])(g: A => Parser[B]): Parser[B] =
     s =>
@@ -102,18 +102,17 @@ object Reference extends Parsers[Parser] {
             .addCommit(n != 0)
             .advanceSuccess(n)
         case f @ Failure(_, _) => f
-    }
+      }
 
   def string(w: String): Parser[String] = {
     val msg = "'" + w + "'"
-    s =>
-      {
-        val i = firstNonmatchingIndex(s.loc.input, w, s.loc.offset)
-        if (i == -1) // they matched
-          Success(w, w.length)
-        else
-          Failure(s.loc.advanceBy(i).toError(msg), i != 0)
-      }
+    s => {
+      val i = firstNonmatchingIndex(s.loc.input, w, s.loc.offset)
+      if (i == -1) // they matched
+        Success(w, w.length)
+      else
+        Failure(s.loc.advanceBy(i).toError(msg), i != 0)
+    }
   }
 
   /* note, regex matching is 'all-or-nothing':
@@ -144,7 +143,7 @@ object Reference extends Parsers[Parser] {
       p(s) match {
         case Success(_, n)     => Success(s.slice(n), n)
         case f @ Failure(_, _) => f
-    }
+      }
 
   /* We provide an overridden version of `many` that accumulates
    * the list of results using a monolithic loop. This avoids

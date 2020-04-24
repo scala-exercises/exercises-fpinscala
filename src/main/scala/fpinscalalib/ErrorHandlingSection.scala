@@ -135,7 +135,8 @@ object ErrorHandlingSection
   def optionFilterAssert(
       res0: Some[Employee],
       res1: Option[Employee],
-      res2: Option[Employee]): Unit = {
+      res2: Option[Employee]
+  ): Unit = {
     lookupByName("Joe").filter(_.department != "IT") shouldBe res0
     lookupByName("Mary").filter(_.department != "IT") shouldBe res1
     lookupByName("Foo").filter(_.department != "IT") shouldBe res2
@@ -271,7 +272,8 @@ object ErrorHandlingSection
         e.manager match {
           case Some(e) => Right(e)
           case _       => Left("Manager not found")
-      })
+        }
+      )
 
     getManager(lookupByNameViaEither("Joe")) shouldBe res0
     getManager(lookupByNameViaEither("Mary")) shouldBe res1
@@ -298,7 +300,8 @@ object ErrorHandlingSection
         e.manager match {
           case Some(e) => Right(e)
           case _       => Left("Manager not found")
-      })
+        }
+      )
 
     getManager(lookupByNameViaEither("Joe")).orElse(Right("Mr. CEO")) shouldBe res0
     getManager(lookupByNameViaEither("Mary")).orElse(Right("Mr. CEO")) shouldBe res1

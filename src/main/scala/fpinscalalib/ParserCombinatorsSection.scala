@@ -108,7 +108,8 @@ object ParserCombinatorsSection
    */
   def parserManyAssert(
       res0: Either[ParseError, List[Char]],
-      res1: Either[ParseError, List[Char]]): Unit = {
+      res1: Either[ParseError, List[Char]]
+  ): Unit = {
     def many[A](p: Parser[A]): Parser[List[A]] =
       map2(p, many(p))(_ :: _) or fpinscalalib.customlib.parsing.Reference.succeed(List())
 
@@ -276,14 +277,13 @@ object ParserCombinatorsSection
   def parserStringAssert(res0: String): Unit = {
     def string(w: String): Parser[String] = {
       val msg = "'" + w + "'"
-      s =>
-        {
-          val i = firstNonmatchingIndex(s.loc.input, w, s.loc.offset)
-          if (i == -1) // they matched
-            Success(w, w.length)
-          else
-            Failure(s.loc.advanceBy(i).toError(msg), i != 0)
-        }
+      s => {
+        val i = firstNonmatchingIndex(s.loc.input, w, s.loc.offset)
+        if (i == -1) // they matched
+          Success(w, w.length)
+        else
+          Failure(s.loc.advanceBy(i).toError(msg), i != 0)
+      }
     }
 
     val parseFunction = run(
@@ -329,7 +329,7 @@ object ParserCombinatorsSection
         p(s) match {
           case Success(_, n)     => Success(s.slice(n), n)
           case f @ Failure(_, _) => f
-      }
+        }
 
     val parserFunction = run(
       slice(many1(string("a")))

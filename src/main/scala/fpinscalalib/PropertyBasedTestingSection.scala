@@ -357,10 +357,10 @@ object PropertyBasedTestingSection
    * Let's show how we can test higher-order functions with `takeWhile` and `dropWhile` from `List`:
    */
   def propTakeWhileDropWhile(res0: Result): Unit = {
-    val prop = forAll(listOf(Gen.choose(0, 20)))(l => {
+    val prop = forAll(listOf(Gen.choose(0, 20))) { l =>
       val index = Gen.choose(0, 20).sample.run(RNG.Simple(47))._1
       l.takeWhile(_ < index) ++ l.dropWhile(_ < index) == l
-    })
+    }
     prop.run(100, 100, RNG.Simple(System.currentTimeMillis)) shouldBe res0
   }
 }

@@ -24,7 +24,9 @@ object List { // `List` companion object. Contains functions for creating and wo
     ints match { // A function that uses pattern matching to add up a list of integers
       case Nil => 0 // The sum of the empty list is 0.
       case Cons(x, xs) =>
-        x + sum(xs) // The sum of a list starting with `x` is `x` plus the sum of the rest of the list.
+        x + sum(
+          xs
+        ) // The sum of a list starting with `x` is `x` plus the sum of the rest of the list.
     }
 
   def product(ds: List[Double]): Double = ds match {

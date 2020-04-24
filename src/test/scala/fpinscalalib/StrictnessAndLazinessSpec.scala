@@ -19,12 +19,16 @@ class StrictnessAndLazinessSpec extends RefSpec with Checkers {
   import Arbitrary._
 
   implicit def arbStreamAlternative[T](implicit a: Arbitrary[T]): Arbitrary[Stream[T]] =
-    Arbitrary(sized(n =>
-      frequency((n, resize(n / 2, arbitrary[T]).map(Stream(_))), (1, const(Stream.empty)))))
+    Arbitrary(
+      sized(n =>
+        frequency((n, resize(n / 2, arbitrary[T]).map(Stream(_))), (1, const(Stream.empty)))
+      )
+    )
 
   def `stream toList asserts`() =
     check(
-      Test.testSuccess(StrictnessAndLazinessSection.streamToListAssert _, List(1, 2, 3) :: HNil))
+      Test.testSuccess(StrictnessAndLazinessSection.streamToListAssert _, List(1, 2, 3) :: HNil)
+    )
 
   def `stream take asserts`() =
     check(Test.testSuccess(StrictnessAndLazinessSection.streamTakeAssert _, 1 :: HNil))
@@ -36,7 +40,9 @@ class StrictnessAndLazinessSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         StrictnessAndLazinessSection.streamTakeWhileAssert _,
-        List(1, 2) :: List[Int]() :: HNil))
+        List(1, 2) :: List[Int]() :: HNil
+      )
+    )
 
   def `stream forAll asserts`() =
     check(Test.testSuccess(StrictnessAndLazinessSection.streamForAllAssert _, true :: HNil))
@@ -45,14 +51,18 @@ class StrictnessAndLazinessSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         StrictnessAndLazinessSection.streamTraceAssert _,
-        11 :: Stream(2, 3, 4) :: Stream(3, 4) :: 13 :: Stream(4) :: 14 :: HNil))
+        11 :: Stream(2, 3, 4) :: Stream(3, 4) :: 13 :: Stream(4) :: 14 :: HNil
+      )
+    )
   }
 
   def `stream ones asserts`() = {
     check(
       Test.testSuccess(
         StrictnessAndLazinessSection.streamOnesAssert _,
-        List(1, 1, 1, 1, 1) :: true :: true :: false :: HNil))
+        List(1, 1, 1, 1, 1) :: true :: true :: false :: HNil
+      )
+    )
   }
 
   def `stream integers asserts`() =
@@ -63,7 +73,8 @@ class StrictnessAndLazinessSpec extends RefSpec with Checkers {
 
   def `stream fibs via unfold asserts`() =
     check(
-      Test.testSuccess(StrictnessAndLazinessSection.streamFibsViaUnfoldAssert _, 0 :: 1 :: HNil))
+      Test.testSuccess(StrictnessAndLazinessSection.streamFibsViaUnfoldAssert _, 0 :: 1 :: HNil)
+    )
 
   def `stream integers via unfold asserts`() =
     check(Test.testSuccess(StrictnessAndLazinessSection.streamIntegersAssert _, 1 :: HNil))
@@ -79,7 +90,7 @@ class StrictnessAndLazinessSpec extends RefSpec with Checkers {
 
   def `stream scanRight asserts`() =
     check(
-      Test.testSuccess(
-        StrictnessAndLazinessSection.streamScanRightAssert _,
-        List(6, 5, 3, 0) :: HNil))
+      Test
+        .testSuccess(StrictnessAndLazinessSection.streamScanRightAssert _, List(6, 5, 3, 0) :: HNil)
+    )
 }

@@ -34,7 +34,9 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         ErrorHandlingSection.optionOrElseAssert _,
-        Some("Julie") :: Some("Mr. CEO") :: Some("Mr. CEO") :: HNil))
+        Some("Julie") :: Some("Mr. CEO") :: Some("Mr. CEO") :: HNil
+      )
+    )
   }
 
   def `option filter asserts`() = {
@@ -57,7 +59,8 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
     val none: Option[Employee] = None
     check(
       Test
-        .testSuccess(ErrorHandlingSection.optionFilterAssert _, Some(joe) :: none :: none :: HNil))
+        .testSuccess(ErrorHandlingSection.optionFilterAssert _, Some(joe) :: none :: none :: HNil)
+    )
   }
 
   def `option sequence asserts`() = {
@@ -65,7 +68,9 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         ErrorHandlingSection.optionSequenceAssert _,
-        Some(List(1, 2, 3)) :: none :: HNil))
+        Some(List(1, 2, 3)) :: none :: HNil
+      )
+    )
   }
 
   def `option traverse asserts`() = {
@@ -73,7 +78,9 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         ErrorHandlingSection.optionTraverseAssert _,
-        Some(List(1, 2, 3)) :: none :: HNil))
+        Some(List(1, 2, 3)) :: none :: HNil
+      )
+    )
   }
 
   def `either map asserts`() = {
@@ -86,21 +93,27 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherFlatMapAssert _,
-        Right("Julie") :: Left("Manager not found") :: Left("Employee not found") :: HNil))
+        Right("Julie") :: Left("Manager not found") :: Left("Employee not found") :: HNil
+      )
+    )
   }
 
   def `either orElse asserts`() = {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherOrElseAssert _,
-        Right("Julie") :: Right("Mr. CEO") :: Right("Mr. CEO") :: HNil))
+        Right("Julie") :: Right("Mr. CEO") :: Right("Mr. CEO") :: HNil
+      )
+    )
   }
 
   def `either map2 asserts`() = {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherMap2Assert _,
-        Right(false) :: Right(true) :: Left("Employee not found") :: HNil))
+        Right(false) :: Right(true) :: Left("Employee not found") :: HNil
+      )
+    )
   }
 
   def `either traverse asserts`() = {
@@ -108,7 +121,9 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherTraverseAssert _,
-        Right(list) :: Left("Employee not found") :: HNil))
+        Right(list) :: Left("Employee not found") :: HNil
+      )
+    )
   }
 
   def `either sequence asserts`() = {
@@ -116,6 +131,8 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
     check(
       Test.testSuccess(
         ErrorHandlingSection.eitherSequenceAssert _,
-        Right(list) :: Left("Employee not found") :: HNil))
+        Right(list) :: Left("Employee not found") :: HNil
+      )
+    )
   }
 }

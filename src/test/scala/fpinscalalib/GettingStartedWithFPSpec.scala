@@ -29,7 +29,8 @@ class GettingStartedWithFPSpec extends RefSpec with Checkers {
   def `isSorted asserts`() =
     check(
       Test
-        .testSuccess(GettingStartedWithFPSection.isSortedAssert _, true :: false :: true :: HNil))
+        .testSuccess(GettingStartedWithFPSection.isSortedAssert _, true :: false :: true :: HNil)
+    )
 
   def `currying asserts`() =
     check(Test.testSuccess(GettingStartedWithFPSection.curryAssert _, true :: true :: HNil))

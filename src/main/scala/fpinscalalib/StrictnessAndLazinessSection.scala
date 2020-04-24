@@ -185,7 +185,8 @@ object StrictnessAndLazinessSection
       res2: Stream[Int],
       res3: Int,
       res4: Stream[Int],
-      res5: Int): Unit = {
+      res5: Int
+  ): Unit = {
     val startingPoint = Stream(1, 2, 3, 4).map(_ + 10).filter(_ % 2 == 0).toList
 
     // Apply map to the first element:
