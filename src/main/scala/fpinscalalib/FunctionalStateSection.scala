@@ -43,7 +43,7 @@ object FunctionalStateSection
    *
    * <b>Exercise 6.1:</b>
    *
-   * Let's write a function that uses `RNG.nextInt` to generate a random integer between `0` and `Int.maxValue`, making
+   * Let's write a function that uses `RNG.nextInt` to generate a random integer between `0` and `Int.MaxValue`, making
    * sure to handle the corner case when `nextInt` returns `Int.MinValue`, which doesn't have a non-negative
    * counterpart:
    */
