@@ -28,7 +28,6 @@ These are the people that have contributed to the _exercises-fpinscala_ project:
 - [![isabelcosta](https://avatars1.githubusercontent.com/u/11148726?v=4&s=20) **isabelcosta**](https://github.com/isabelcosta)
 - [![ricsirigu](https://avatars3.githubusercontent.com/u/5004093?v=4&s=20) **ricsirigu**](https://github.com/ricsirigu)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **angoglez**](https://github.com/angoglez)
-- [![Bhudjo](https://avatars0.githubusercontent.com/u/830963?v=4&s=20) **Bhudjo**](https://github.com/Bhudjo)
 - [![jkmcclellan](https://avatars3.githubusercontent.com/u/52432856?v=4&s=20) **jkmcclellan**](https://github.com/jkmcclellan)
 - [![pdo400](https://avatars1.githubusercontent.com/u/1780993?v=4&s=20) **pdo400**](https://github.com/pdo400)
 - [![sergey-lagutin](https://avatars3.githubusercontent.com/u/11209668?v=4&s=20) **sergey-lagutin**](https://github.com/sergey-lagutin)
