@@ -58,12 +58,13 @@ object ErrorHandlingSection
    * Let's try it out:
    */
   def optionMapAssert(res0: (Option[Employee]) => Option[String]): Unit = {
-    def lookupByName(name: String): Option[Employee] = name match {
-      case "Joe"   => Some(Employee("Joe", "Finances", Some("Julie")))
-      case "Mary"  => Some(Employee("Mary", "IT", None))
-      case "Izumi" => Some(Employee("Izumi", "IT", Some("Mary")))
-      case _       => None
-    }
+    def lookupByName(name: String): Option[Employee] =
+      name match {
+        case "Joe"   => Some(Employee("Joe", "Finances", Some("Julie")))
+        case "Mary"  => Some(Employee("Mary", "IT", None))
+        case "Izumi" => Some(Employee("Izumi", "IT", Some("Mary")))
+        case _       => None
+      }
 
     /*
      We can look for our employees, and try to obtain their departments. We will assume that we won't find any errors,
@@ -227,10 +228,11 @@ object ErrorHandlingSection
     val list1 = List("1", "2", "3")
     val list2 = List("I", "II", "III", "IV")
 
-    def parseInt(a: String): Option[Int] = Try(a.toInt) match {
-      case Success(r) => Some(r)
-      case _          => None
-    }
+    def parseInt(a: String): Option[Int] =
+      Try(a.toInt) match {
+        case Success(r) => Some(r)
+        case _          => None
+      }
 
     traverse(list1)(i => parseInt(i)) shouldBe res0
     traverse(list2)(i => parseInt(i)) shouldBe res1
@@ -257,12 +259,13 @@ object ErrorHandlingSection
    * `Either` type to obtain the department of each employee:
    */
   def eitherMapAssert(res0: (Either[String, Employee]) => Either[String, String]): Unit = {
-    def lookupByNameViaEither(name: String): Either[String, Employee] = name match {
-      case "Joe"   => Right(Employee("Joe", "Finances", Some("Julie")))
-      case "Mary"  => Right(Employee("Mary", "IT", None))
-      case "Izumi" => Right(Employee("Izumi", "IT", Some("Mary")))
-      case _       => Left("Employee not found")
-    }
+    def lookupByNameViaEither(name: String): Either[String, Employee] =
+      name match {
+        case "Joe"   => Right(Employee("Joe", "Finances", Some("Julie")))
+        case "Mary"  => Right(Employee("Mary", "IT", None))
+        case "Izumi" => Right(Employee("Izumi", "IT", Some("Mary")))
+        case _       => Left("Employee not found")
+      }
 
     def getDepartment: (Either[String, Employee]) => Either[String, String] = res0
 
@@ -348,9 +351,15 @@ object ErrorHandlingSection
     def employeesShareDepartment(employeeA: Employee, employeeB: Employee) =
       employeeA.department == employeeB.department
 
-    lookupByNameViaEither("Joe").map2(lookupByNameViaEither("Mary"))(employeesShareDepartment) shouldBe res0
-    lookupByNameViaEither("Mary").map2(lookupByNameViaEither("Izumi"))(employeesShareDepartment) shouldBe res1
-    lookupByNameViaEither("Foo").map2(lookupByNameViaEither("Izumi"))(employeesShareDepartment) shouldBe res2
+    lookupByNameViaEither("Joe").map2(lookupByNameViaEither("Mary"))(
+      employeesShareDepartment
+    ) shouldBe res0
+    lookupByNameViaEither("Mary").map2(lookupByNameViaEither("Izumi"))(
+      employeesShareDepartment
+    ) shouldBe res1
+    lookupByNameViaEither("Foo").map2(lookupByNameViaEither("Izumi"))(
+      employeesShareDepartment
+    ) shouldBe res2
   }
 
   /**

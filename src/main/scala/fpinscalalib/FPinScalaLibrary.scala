@@ -28,16 +28,17 @@ object FPinScalaLibrary extends Library {
 
   override def color = Some("#E22D34")
 
-  override def sections = scala.collection.immutable.List(
-    GettingStartedWithFPSection,
-    FunctionalDataStructuresSection,
-    ErrorHandlingSection,
-    StrictnessAndLazinessSection,
-    FunctionalStateSection,
-    FunctionalParallelismSection,
-    PropertyBasedTestingSection,
-    ParserCombinatorsSection
-  )
+  override def sections =
+    scala.collection.immutable.List(
+      GettingStartedWithFPSection,
+      FunctionalDataStructuresSection,
+      ErrorHandlingSection,
+      StrictnessAndLazinessSection,
+      FunctionalStateSection,
+      FunctionalParallelismSection,
+      PropertyBasedTestingSection,
+      ParserCombinatorsSection
+    )
 
   override def logoPath = "fp_in_scala"
 }

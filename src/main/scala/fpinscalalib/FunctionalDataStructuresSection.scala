@@ -83,10 +83,11 @@ object FunctionalDataStructuresSection
    * `setHead` follows a similar principle. Let's take a look at how it works:
    */
   def listSetHeadAssert(res0: List[Int], res1: List[String]) = {
-    def setHead[A](l: List[A], h: A): List[A] = l match {
-      case Nil        => sys.error("setHead on empty list")
-      case Cons(_, t) => Cons(h, t)
-    }
+    def setHead[A](l: List[A], h: A): List[A] =
+      l match {
+        case Nil        => sys.error("setHead on empty list")
+        case Cons(_, t) => Cons(h, t)
+      }
     setHead(List(1, 2, 3), 3) shouldBe res0
     setHead(List("a", "b"), "c") shouldBe res1
   }
@@ -246,7 +247,7 @@ object FunctionalDataStructuresSection
    *
    * In fact, we can write `foldLeft` in terms of `foldRight`, and the other way around:
    *
-   * {{{ 
+   * {{{
    *   def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B =
    *     foldLeft(reverse(l), z)((b,a) => f(a,b))
    *
@@ -430,10 +431,11 @@ object FunctionalDataStructuresSection
    * Let's try to implement a function `size` to count the number of nodes (leaves and branches) in a tree:
    */
   def treeSizeAssert(res0: Int, res1: Int): Unit = {
-    def size[A](t: Tree[A]): Int = t match {
-      case Leaf(_)      => res0
-      case Branch(l, r) => res1 + size(l) + size(r)
-    }
+    def size[A](t: Tree[A]): Int =
+      t match {
+        case Leaf(_)      => res0
+        case Branch(l, r) => res1 + size(l) + size(r)
+      }
 
     def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
     size(t) shouldBe 5
@@ -458,10 +460,11 @@ object FunctionalDataStructuresSection
    * tree to any leaf.
    */
   def treeDepthAssert(res0: Int, res1: Int): Unit = {
-    def depth[A](t: Tree[A]): Int = t match {
-      case Leaf(_)      => res0
-      case Branch(l, r) => res1 + (depth(l) max depth(r))
-    }
+    def depth[A](t: Tree[A]): Int =
+      t match {
+        case Leaf(_)      => res0
+        case Branch(l, r) => res1 + (depth(l) max depth(r))
+      }
     def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
     depth(t) shouldBe 2
   }
@@ -473,10 +476,11 @@ object FunctionalDataStructuresSection
    * in a tree with a given function. Let's try it out in the following exercise:
    */
   def treeMapAssert(res0: Branch[Int]): Unit = {
-    def map[A, B](t: Tree[A])(f: A => B): Tree[B] = t match {
-      case Leaf(a)      => Leaf(f(a))
-      case Branch(l, r) => Branch(map(l)(f), map(r)(f))
-    }
+    def map[A, B](t: Tree[A])(f: A => B): Tree[B] =
+      t match {
+        case Leaf(a)      => Leaf(f(a))
+        case Branch(l, r) => Branch(map(l)(f), map(r)(f))
+      }
 
     def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
     Tree.map(t)(_ * 2) shouldBe res0

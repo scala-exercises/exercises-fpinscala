@@ -53,10 +53,11 @@ object StrictnessAndLazinessSection
    * `Stream` to a `List` (which will force its evaluation):
    */
   def streamToListAssert(res0: List[Int]): Unit = {
-    def toList[A](s: Stream[A]): List[A] = s match {
-      case Cons(h, t) => h() :: toList(t())
-      case _          => List()
-    }
+    def toList[A](s: Stream[A]): List[A] =
+      s match {
+        case Cons(h, t) => h() :: toList(t())
+        case _          => List()
+      }
 
     val s = Stream(1, 2, 3)
     toList(s) shouldBe res0
@@ -79,11 +80,12 @@ object StrictnessAndLazinessSection
    * }}}
    */
   def streamTakeAssert(res0: Int): Unit = {
-    def take[A](s: Stream[A], n: Int): Stream[A] = s match {
-      case Cons(h, t) if n > 0  => cons[A](h(), t().take(n - res0))
-      case Cons(h, _) if n == 0 => cons[A](h(), Stream.empty)
-      case _                    => Stream.empty
-    }
+    def take[A](s: Stream[A], n: Int): Stream[A] =
+      s match {
+        case Cons(h, t) if n > 0  => cons[A](h(), t().take(n - res0))
+        case Cons(h, _) if n == 0 => cons[A](h(), Stream.empty)
+        case _                    => Stream.empty
+      }
 
     take(Stream(1, 2, 3), 2).toList shouldBe List(1, 2)
   }
@@ -92,10 +94,11 @@ object StrictnessAndLazinessSection
    * `drop` is similar to `take`, but skips the first `n` elements of a `Stream` instead:
    */
   def streamDropAssert(res0: Int): Unit = {
-    def drop[A](s: Stream[A], n: Int): Stream[A] = s match {
-      case Cons(_, t) if n > 0 => t().drop(n - res0)
-      case _                   => s
-    }
+    def drop[A](s: Stream[A], n: Int): Stream[A] =
+      s match {
+        case Cons(_, t) if n > 0 => t().drop(n - res0)
+        case _                   => s
+      }
 
     drop(Stream(1, 2, 3, 4, 5), 2).toList shouldBe List(3, 4, 5)
   }
@@ -106,10 +109,11 @@ object StrictnessAndLazinessSection
    * We can also implement `takeWhile` to return all starting elements of a `Stream` that match a given predicate:
    */
   def streamTakeWhileAssert(res0: List[Int], res1: List[Int]): Unit = {
-    def takeWhile[A](s: Stream[A], f: A => Boolean): Stream[A] = s match {
-      case Cons(h, t) if f(h()) => cons(h(), t() takeWhile f)
-      case _                    => Stream.empty
-    }
+    def takeWhile[A](s: Stream[A], f: A => Boolean): Stream[A] =
+      s match {
+        case Cons(h, t) if f(h()) => cons(h(), t() takeWhile f)
+        case _                    => Stream.empty
+      }
 
     takeWhile(Stream(1, 2, 3, 4, 5), (x: Int) => x < 3).toList shouldBe res0
     takeWhile(Stream(1, 2, 3, 4, 5), (x: Int) => x < 0).toList shouldBe res1
@@ -206,9 +210,9 @@ object StrictnessAndLazinessSection
     // Apply map to the second element:
     val step3 = cons(12, res2.map(_ + 10)).filter(_ % 2 == 0).toList
     // Apply filter to the second element. Produce the first element of the result:
-    val step4 = 12 :: Stream(3, 4).map(_ + 10).filter(_              % 2 == 0).toList
-    val step5 = 12 :: cons(res3, res4.map(_ + 10)).filter(_          % 2 == 0).toList
-    val step6 = 12 :: Stream(4).map(_ + 10).filter(_                 % 2 == 0).toList
+    val step4 = 12 :: Stream(3, 4).map(_ + 10).filter(_ % 2 == 0).toList
+    val step5 = 12 :: cons(res3, res4.map(_ + 10)).filter(_ % 2 == 0).toList
+    val step6 = 12 :: Stream(4).map(_ + 10).filter(_ % 2 == 0).toList
     val step7 = 12 :: cons(res5, Stream[Int]().map(_ + 10)).filter(_ % 2 == 0).toList
     // Apply filter to the fourth element and produce the final element of the result.
     val step8 = 12 :: 14 :: Stream[Int]().map(_ + 10).filter(_ % 2 == 0).toList
@@ -242,7 +246,7 @@ object StrictnessAndLazinessSection
    */
   def streamOnesAssert(res0: List[Int], res1: Boolean, res2: Boolean, res3: Boolean): Unit = {
     ones.take(5).toList shouldBe res0
-    ones.exists(_            % 2 != 0) shouldBe res1
+    ones.exists(_ % 2 != 0) shouldBe res1
     ones.map(_ + 1).exists(_ % 2 == 0) shouldBe res2
     ones.forAll(_ != 1) shouldBe res3
   }
