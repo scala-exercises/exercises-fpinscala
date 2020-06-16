@@ -44,29 +44,34 @@ object ReferenceTypes {
 
   /* Likewise, we define a few helper functions on `Result`. */
   sealed trait Result[+A] {
-    def extract: Either[ParseError, A] = this match {
-      case Failure(e, _) => Left(e)
-      case Success(a, _) => Right(a)
-    }
+    def extract: Either[ParseError, A] =
+      this match {
+        case Failure(e, _) => Left(e)
+        case Success(a, _) => Right(a)
+      }
     /* Used by `attempt`. */
-    def uncommit: Result[A] = this match {
-      case Failure(e, true) => Failure(e, false)
-      case _                => this
-    }
+    def uncommit: Result[A] =
+      this match {
+        case Failure(e, true) => Failure(e, false)
+        case _                => this
+      }
     /* Used by `flatMap` */
-    def addCommit(isCommitted: Boolean): Result[A] = this match {
-      case Failure(e, c) => Failure(e, c || isCommitted)
-      case _             => this
-    }
+    def addCommit(isCommitted: Boolean): Result[A] =
+      this match {
+        case Failure(e, c) => Failure(e, c || isCommitted)
+        case _             => this
+      }
     /* Used by `scope`, `label`. */
-    def mapError(f: ParseError => ParseError): Result[A] = this match {
-      case Failure(e, c) => Failure(f(e), c)
-      case _             => this
-    }
-    def advanceSuccess(n: Int): Result[A] = this match {
-      case Success(a, m) => Success(a, n + m)
-      case _             => this
-    }
+    def mapError(f: ParseError => ParseError): Result[A] =
+      this match {
+        case Failure(e, c) => Failure(f(e), c)
+        case _             => this
+      }
+    def advanceSuccess(n: Int): Result[A] =
+      this match {
+        case Success(a, m) => Success(a, n + m)
+        case _             => this
+      }
   }
   case class Success[+A](get: A, length: Int)               extends Result[A]
   case class Failure(get: ParseError, isCommitted: Boolean) extends Result[Nothing]
@@ -76,9 +81,11 @@ object ReferenceTypes {
    * longer than s1, returns s1.length. */
   def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int = {
     var i = 0
-    while (i < s1.length &&
+    while (
+      i < s1.length &&
       i < s2.length &&
-      s1.length > i + offset) { // Last condition added to avoid index out of bounds errors
+      s1.length > i + offset
+    ) { // Last condition added to avoid index out of bounds errors
       if (s1.charAt(i + offset) != s2.charAt(i)) return i
       i += 1
     }

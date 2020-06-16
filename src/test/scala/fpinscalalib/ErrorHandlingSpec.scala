@@ -51,12 +51,13 @@ class ErrorHandlingSpec extends RefSpec with Checkers {
 
   def `option filter asserts`() = {
 
-    implicit def optionArbitrary[T](implicit GT: Gen[T]): Arbitrary[Option[T]] = Arbitrary {
-      Gen.option[T](GT) map {
-        case scala.Some(v) => Some(v)
-        case _             => None
+    implicit def optionArbitrary[T](implicit GT: Gen[T]): Arbitrary[Option[T]] =
+      Arbitrary {
+        Gen.option[T](GT) map {
+          case scala.Some(v) => Some(v)
+          case _             => None
+        }
       }
-    }
 
     implicit val employeeArbitrary: Arbitrary[Employee] = Arbitrary {
       for {

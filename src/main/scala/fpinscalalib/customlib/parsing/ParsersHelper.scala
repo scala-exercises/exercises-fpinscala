@@ -132,7 +132,10 @@ trait Parsers[Parser[+_]] { self => // so inner classes may call methods of trai
     attempt(p) <* whitespace
 
   /** Zero or more repetitions of `p`, separated by `p2`, whose results are ignored. */
-  def sep[A](p: Parser[A], p2: Parser[Any]): Parser[List[A]] = // use `Parser[Any]` since don't care about result type of separator
+  def sep[A](
+      p: Parser[A],
+      p2: Parser[Any]
+  ): Parser[List[A]] = // use `Parser[Any]` since don't care about result type of separator
     sep1(p, p2) or succeed(List())
 
   /** One or more repetitions of `p`, separated by `p2`, whose results are ignored. */

@@ -23,7 +23,10 @@ package fpinscalalib.customlib.state
 // https://github.com/fpinscala/fpinscala/blob/70cf952cde5ca6d6b39252456dd3352b9a69b6f6/answers/src/main/scala/fpinscala/state/State.scala
 
 trait RNG {
-  def nextInt: (Int, RNG) // Should generate a random `Int`. We'll later define other functions in terms of `nextInt`.
+  def nextInt: (
+      Int,
+      RNG
+  ) // Should generate a random `Int`. We'll later define other functions in terms of `nextInt`.
 }
 
 object RNG {
@@ -32,9 +35,11 @@ object RNG {
   case class Simple(seed: Long) extends RNG {
     def nextInt: (Int, RNG) = {
       val newSeed =
-        (seed * 0x5DEECE66DL + 0xBL) & 0xFFFFFFFFFFFFL // `&` is bitwise AND. We use the current seed to generate a new seed.
-      val nextRNG = Simple(newSeed)        // The next state, which is an `RNG` instance created from the new seed.
-      val n       = (newSeed >>> 16).toInt // `>>>` is right binary shift with zero fill. The value `n` is our new pseudo-random integer.
+        (seed * 0x5deece66dL + 0xbL) & 0xffffffffffffL // `&` is bitwise AND. We use the current seed to generate a new seed.
+      val nextRNG =
+        Simple(newSeed) // The next state, which is an `RNG` instance created from the new seed.
+      val n =
+        (newSeed >>> 16).toInt // `>>>` is right binary shift with zero fill. The value `n` is our new pseudo-random integer.
       (
         n,
         nextRNG
@@ -233,7 +238,7 @@ object State {
 
   def modify[S](f: S => S): State[S, Unit] =
     for {
-      s <- get       // Gets the current state and assigns it to `s`.
+      s <- get // Gets the current state and assigns it to `s`.
       _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
     } yield ()
 

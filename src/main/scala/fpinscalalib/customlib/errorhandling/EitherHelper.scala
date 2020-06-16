@@ -90,5 +90,5 @@ object Either {
 
   It's also possible to use `Either[List[E],_]` directly to accumulate errors, using different implementations of
   helper functions like `map2` and `sequence`.
- */
+   */
 }
