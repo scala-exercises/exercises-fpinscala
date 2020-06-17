@@ -23,7 +23,8 @@ import fpinscalalib.customlib.parsing.ReferenceTypes._
 import Reference._
 import scala.util.matching.Regex
 
-/** @param name parser_combinatorss
+/**
+ * @param name parser_combinatorss
  */
 object ParserCombinatorsSection
     extends AnyFlatSpec

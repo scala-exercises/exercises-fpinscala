@@ -27,10 +27,12 @@ import scala.util.matching.Regex
 
 object ReferenceTypes {
 
-  /** A parser is a kind of state action that can fail. */
+  /**
+   * A parser is a kind of state action that can fail. */
   type Parser[+A] = ParseState => Result[A]
 
-  /** `ParseState` wraps a `Location` and provides some extra
+  /**
+   * `ParseState` wraps a `Location` and provides some extra
    * convenience functions. The sliceable parsers defined
    * in `Sliceable.scala` add an `isSliced` `Boolean` flag
    * to `ParseState`.
@@ -76,7 +78,8 @@ object ReferenceTypes {
   case class Success[+A](get: A, length: Int)               extends Result[A]
   case class Failure(get: ParseError, isCommitted: Boolean) extends Result[Nothing]
 
-  /** Returns -1 if s1.startsWith(s2), otherwise returns the
+  /**
+   * Returns -1 if s1.startsWith(s2), otherwise returns the
    * first index where the two strings differed. If s2 is
    * longer than s1, returns s1.length. */
   def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int = {

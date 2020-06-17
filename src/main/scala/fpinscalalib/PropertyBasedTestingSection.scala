@@ -23,7 +23,8 @@ import fpinscalalib.customlib.testing.{Gen, SGen}
 import fpinscalalib.customlib.testing.Gen._
 import fpinscalalib.customlib.testing.Prop._
 
-/** @param name property_based_testing
+/**
+ * @param name property_based_testing
  */
 object PropertyBasedTestingSection
     extends AnyFlatSpec

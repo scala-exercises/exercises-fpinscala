@@ -22,7 +22,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import java.util.concurrent.Executors
 
-/** @param name purely_functional_parallelism
+/**
+ * @param name purely_functional_parallelism
  */
 object FunctionalParallelismSection
     extends AnyFlatSpec
@@ -105,7 +106,7 @@ object FunctionalParallelismSection
    *     map(sequence(pars))(_.flatten)
    *   }
    * }}}
-    **/
+   */
   def parFilterAssert(res0: List[Int]): Unit = {
     def parFilter[A](l: List[A])(f: A => Boolean): Par[List[A]] = {
       val pars: List[Par[List[A]]] =
