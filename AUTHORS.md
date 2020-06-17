@@ -10,6 +10,7 @@ The maintainers of the project are:
 
 - [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **Ana Gómez González (angoglez)**](https://github.com/angoglez)
+- [![BenFradet](https://avatars2.githubusercontent.com/u/1737211?v=4&s=20) **Ben Fradet (BenFradet)**](https://github.com/BenFradet)
 - [![dominv](https://avatars1.githubusercontent.com/u/3943031?v=4&s=20) **Domingo Valera (dominv)**](https://github.com/dominv)
 - [![kiroco12](https://avatars1.githubusercontent.com/u/48894338?v=4&s=20) **Enrique Nieto (kiroco12)**](https://github.com/kiroco12)
 - [![jdesiloniz](https://avatars2.githubusercontent.com/u/2835739?v=4&s=20) **Javier de Silóniz Sandino (jdesiloniz)**](https://github.com/jdesiloniz)
@@ -24,6 +25,7 @@ These are the people that have contributed to the _exercises-fpinscala_ project:
 - [![kiroco12](https://avatars1.githubusercontent.com/u/48894338?v=4&s=20) **kiroco12**](https://github.com/kiroco12)
 - [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
 - [![dominv](https://avatars1.githubusercontent.com/u/3943031?v=4&s=20) **dominv**](https://github.com/dominv)
+- [![BenFradet](https://avatars2.githubusercontent.com/u/1737211?v=4&s=20) **BenFradet**](https://github.com/BenFradet)
 - [![davisharlan](https://avatars3.githubusercontent.com/u/35711200?v=4&s=20) **davisharlan**](https://github.com/davisharlan)
 - [![isabelcosta](https://avatars1.githubusercontent.com/u/11148726?v=4&s=20) **isabelcosta**](https://github.com/isabelcosta)
 - [![ricsirigu](https://avatars3.githubusercontent.com/u/5004093?v=4&s=20) **ricsirigu**](https://github.com/ricsirigu)
