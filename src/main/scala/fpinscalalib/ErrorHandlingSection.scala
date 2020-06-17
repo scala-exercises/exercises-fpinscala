@@ -24,7 +24,8 @@ import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Success, Try}
 
-/** @param name handling_error_without_exceptions
+/**
+ * @param name handling_error_without_exceptions
  */
 object ErrorHandlingSection
     extends AnyFlatSpec
@@ -163,7 +164,6 @@ object ErrorHandlingSection
    *   def variance(xs: Seq[Double]): Option[Double] =
    *     mean(xs) flatMap (m => mean(xs.map(x => math.pow(x - m, 2))))
    * }}}
-   *
    *
    * <b>Exercise 4.3:</b>
    *

@@ -19,7 +19,8 @@ package fpinscalalib
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-/** @param name getting_started_with_functional_programming
+/**
+ * @param name getting_started_with_functional_programming
  */
 object GettingStartedWithFPSection
     extends AnyFlatSpec

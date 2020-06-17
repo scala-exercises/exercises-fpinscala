@@ -22,7 +22,8 @@ import fpinscalalib.customlib.functionaldatastructures._
 import fpinscalalib.customlib.functionaldatastructures.List._
 import Tree._
 
-/** @param name functional_data_structures
+/**
+ * @param name functional_data_structures
  */
 object FunctionalDataStructuresSection
     extends AnyFlatSpec
@@ -42,11 +43,11 @@ object FunctionalDataStructuresSection
    * = Singly linked lists =
    *
    * Assume the following functions are available for your reference:
-   *{{{
+   * {{{
    *    sealed trait List[+A]
    *    case object Nil extends List[Nothing]
    *    case class Cons[+A](head: A, tail: List[A]) extends List[A]
-   *}}}
+   * }}}
    * <b>Exercise 3.1:</b>
    *
    * Examine the next complex match expression. What will be the result?
@@ -160,7 +161,6 @@ object FunctionalDataStructuresSection
    * <b>Exercise 3.x:</b>
    *
    * Let's run through the steps that `foldRight` will follow in our new implementation of `sum2`:
-   *
    */
   def listFoldRightSumAssert(
       res0: Int,
@@ -355,7 +355,6 @@ object FunctionalDataStructuresSection
    *   def filterViaFlatMap[A](l: List[A])(f: A => Boolean): List[A] =
    *     flatMap(l)(a => if (f(a)) List(a) else Nil)
    * }}}
-   *
    */
   /**
    * <b>Exercise 3.22:</b>

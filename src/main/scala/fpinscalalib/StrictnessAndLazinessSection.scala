@@ -22,7 +22,8 @@ import fpinscalalib.customlib.laziness.Stream._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-/** @param name strictness_and_laziness
+/**
+ * @param name strictness_and_laziness
  */
 object StrictnessAndLazinessSection
     extends AnyFlatSpec

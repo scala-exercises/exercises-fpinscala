@@ -22,7 +22,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import fpinscalalib.customlib.state._
 
-/** @param name pure_functional_state
+/**
+ * @param name pure_functional_state
  */
 object FunctionalStateSection
     extends AnyFlatSpec

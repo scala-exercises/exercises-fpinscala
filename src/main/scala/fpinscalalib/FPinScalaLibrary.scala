@@ -18,7 +18,8 @@ package fpinscalalib
 
 import org.scalaexercises.definitions._
 
-/** Exercises based on Manning's "Functional Programming in Scala" book by Paul Chiusano and Rúnar Bjarnason.
+/**
+ * Exercises based on Manning's "Functional Programming in Scala" book by Paul Chiusano and Rúnar Bjarnason.
  *
  * @param name fp_in_scala
  */

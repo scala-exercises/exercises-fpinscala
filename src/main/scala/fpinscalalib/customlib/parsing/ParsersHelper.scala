@@ -86,12 +86,14 @@ trait Parsers[Parser[+_]] { self => // so inner classes may call methods of trai
 
   def attempt[A](p: Parser[A]): Parser[A]
 
-  /** Sequences two parsers, ignoring the result of the first.
+  /**
+   * Sequences two parsers, ignoring the result of the first.
    * We wrap the ignored half in slice, since we don't care about its result. */
   def skipL[B](p: Parser[Any], p2: => Parser[B]): Parser[B] =
     map2(slice(p), p2)((_, b) => b)
 
-  /** Sequences two parsers, ignoring the result of the second.
+  /**
+   * Sequences two parsers, ignoring the result of the second.
    * We wrap the ignored half in slice, since we don't care about its result. */
   def skipR[A](p: Parser[A], p2: => Parser[Any]): Parser[A] =
     map2(p, slice(p2))((a, b) => a)
@@ -99,62 +101,76 @@ trait Parsers[Parser[+_]] { self => // so inner classes may call methods of trai
   def opt[A](p: Parser[A]): Parser[Option[A]] =
     p.map(Some(_)) or succeed(None)
 
-  /** Parser which consumes zero or more whitespace characters. */
+  /**
+   * Parser which consumes zero or more whitespace characters. */
   def whitespace: Parser[String] = "\\s*".r
 
-  /** Parser which consumes 1 or more digits. */
+  /**
+   * Parser which consumes 1 or more digits. */
   def digits: Parser[String] = "\\d+".r
 
-  /** Parser which consumes reluctantly until it encounters the given string. */
+  /**
+   * Parser which consumes reluctantly until it encounters the given string. */
   def thru(s: String): Parser[String] = (".*?" + Pattern.quote(s)).r
 
-  /** Unescaped string literals, like "foo" or "bar". */
+  /**
+   * Unescaped string literals, like "foo" or "bar". */
   def quoted: Parser[String] = string("\"") *> thru("\"").map(_.dropRight(1))
 
-  /** Unescaped or escaped string literals, like "An \n important \"Quotation\"" or "bar". */
+  /**
+   * Unescaped or escaped string literals, like "An \n important \"Quotation\"" or "bar". */
   def escapedQuoted: Parser[String] =
     // rather annoying to write, left as an exercise
     // we'll just use quoted (unescaped literals) for now
     token(quoted label "string literal")
 
-  /** C/Java style floating point literals, e.g .1, -1.0, 1e9, 1E-23, etc.
+  /**
+   * C/Java style floating point literals, e.g .1, -1.0, 1e9, 1E-23, etc.
    * Result is left as a string to keep full precision
    */
   def doubleString: Parser[String] =
     token("[-+]?([0-9]*\\.)?[0-9]+([eE][-+]?[0-9]+)?".r)
 
-  /** Floating point literals, converted to a `Double`. */
+  /**
+   * Floating point literals, converted to a `Double`. */
   def double: Parser[Double] =
     doubleString map (_.toDouble) label "double literal"
 
-  /** Attempts `p` and strips trailing whitespace, usually used for the tokens of a grammar. */
+  /**
+   * Attempts `p` and strips trailing whitespace, usually used for the tokens of a grammar. */
   def token[A](p: Parser[A]): Parser[A] =
     attempt(p) <* whitespace
 
-  /** Zero or more repetitions of `p`, separated by `p2`, whose results are ignored. */
+  /**
+   * Zero or more repetitions of `p`, separated by `p2`, whose results are ignored. */
   def sep[A](
       p: Parser[A],
       p2: Parser[Any]
   ): Parser[List[A]] = // use `Parser[Any]` since don't care about result type of separator
     sep1(p, p2) or succeed(List())
 
-  /** One or more repetitions of `p`, separated by `p2`, whose results are ignored. */
+  /**
+   * One or more repetitions of `p`, separated by `p2`, whose results are ignored. */
   def sep1[A](p: Parser[A], p2: Parser[Any]): Parser[List[A]] =
     map2(p, many(p2 *> p))(_ :: _)
 
-  /** Parses a sequence of left-associative binary operators with the same precedence. */
+  /**
+   * Parses a sequence of left-associative binary operators with the same precedence. */
   def opL[A](p: Parser[A])(op: Parser[(A, A) => A]): Parser[A] =
     map2(p, many(op ** p))((h, t) => t.foldLeft(h)((a, b) => b._1(a, b._2)))
 
-  /** Wraps `p` in start/stop delimiters. */
+  /**
+   * Wraps `p` in start/stop delimiters. */
   def surround[A](start: Parser[Any], stop: Parser[Any])(p: => Parser[A]) =
     start *> p <* stop
 
-  /** A parser that succeeds when given empty input. */
+  /**
+   * A parser that succeeds when given empty input. */
   def eof: Parser[String] =
     regex("\\z".r).label("unexpected trailing characters")
 
-  /** The root of the grammar, expects no further input following `p`. */
+  /**
+   * The root of the grammar, expects no further input following `p`. */
   def root[A](p: Parser[A]): Parser[A] =
     p <* eof
 
@@ -235,17 +251,17 @@ case class ParseError(stack: List[(Location, String)] = List()) {
     latest map (_._1)
 
   /**
-  Display collapsed error stack - any adjacent stack elements with the
-  same location are combined on one line. For the bottommost error, we
-  display the full line, with a caret pointing to the column of the error.
-  Example:
-
-  1.1 file 'companies.json'; array
-  5.1 object
-  5.2 key-value
-  5.10 ':'
-
-  { "MSFT" ; 24,
+   *  Display collapsed error stack - any adjacent stack elements with the
+   *  same location are combined on one line. For the bottommost error, we
+   *  display the full line, with a caret pointing to the column of the error.
+   *  Example:
+   *
+   *  1.1 file 'companies.json'; array
+   *  5.1 object
+   *  5.2 key-value
+   *  5.10 ':'
+   *
+   *  { "MSFT" ; 24,
    */
   override def toString =
     if (stack.isEmpty) "no error message"
