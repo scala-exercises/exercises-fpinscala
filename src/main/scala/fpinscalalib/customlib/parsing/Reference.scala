@@ -28,7 +28,8 @@ import scala.util.matching.Regex
 object ReferenceTypes {
 
   /**
-   * A parser is a kind of state action that can fail. */
+   * A parser is a kind of state action that can fail.
+   */
   type Parser[+A] = ParseState => Result[A]
 
   /**
@@ -81,7 +82,8 @@ object ReferenceTypes {
   /**
    * Returns -1 if s1.startsWith(s2), otherwise returns the
    * first index where the two strings differed. If s2 is
-   * longer than s1, returns s1.length. */
+   * longer than s1, returns s1.length.
+   */
   def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int = {
     var i = 0
     while (
