@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.6.4](https://github.com/scala-exercises/exercises-fpinscala/tree/v0.6.4) (2020-06-30)
+
+[Full Changelog](https://github.com/scala-exercises/exercises-fpinscala/compare/v0.6.3...v0.6.4)
+
 ## [v0.6.3](https://github.com/scala-exercises/exercises-fpinscala/tree/v0.6.3) (2020-06-29)
 
 [Full Changelog](https://github.com/scala-exercises/exercises-fpinscala/compare/v0.6.2...v0.6.3)
@@ -66,7 +70,6 @@
 - Fix incorrect implementation [\#37](https://github.com/scala-exercises/exercises-fpinscala/pull/37) ([floating-cat](https://github.com/floating-cat))
 - Clarity changes for missing functions [\#36](https://github.com/scala-exercises/exercises-fpinscala/pull/36) ([zebaslam](https://github.com/zebaslam))
 - Add employee `Izumi` to the error handling section [\#35](https://github.com/scala-exercises/exercises-fpinscala/pull/35) ([pdo400](https://github.com/pdo400))
-- Missing Employee definition [\#28](https://github.com/scala-exercises/exercises-fpinscala/pull/28) ([ricsirigu](https://github.com/ricsirigu))
 
 ## [v0.4.0](https://github.com/scala-exercises/exercises-fpinscala/tree/v0.4.0) (2017-03-28)
 
@@ -87,6 +90,7 @@
 - Integrates sbt-org-policies plugin [\#34](https://github.com/scala-exercises/exercises-fpinscala/pull/34) ([juanpedromoreno](https://github.com/juanpedromoreno))
 - Upgrades to 0.3.0 version [\#31](https://github.com/scala-exercises/exercises-fpinscala/pull/31) ([juanpedromoreno](https://github.com/juanpedromoreno))
 - typo in header title [\#29](https://github.com/scala-exercises/exercises-fpinscala/pull/29) ([abuggin](https://github.com/abuggin))
+- Missing Employee definition [\#28](https://github.com/scala-exercises/exercises-fpinscala/pull/28) ([ricsirigu](https://github.com/ricsirigu))
 - Updates PGP keys [\#27](https://github.com/scala-exercises/exercises-fpinscala/pull/27) ([juanpedromoreno](https://github.com/juanpedromoreno))
 - SE-597 - Upgrade Libs [\#26](https://github.com/scala-exercises/exercises-fpinscala/pull/26) ([juanpedromoreno](https://github.com/juanpedromoreno))
 - Chapter 9 exercises [\#25](https://github.com/scala-exercises/exercises-fpinscala/pull/25) ([jdesiloniz](https://github.com/jdesiloniz))
