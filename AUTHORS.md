@@ -9,6 +9,7 @@
 The maintainers of the project are:
 
 - [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
+- [![alejandrohdezma](https://avatars0.githubusercontent.com/u/9027541?v=4&s=20) **Alejandro Hernández (alejandrohdezma)**](https://github.com/alejandrohdezma)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **Ana Gómez González (angoglez)**](https://github.com/angoglez)
 - [![BenFradet](https://avatars2.githubusercontent.com/u/1737211?v=4&s=20) **Ben Fradet (BenFradet)**](https://github.com/BenFradet)
 - [![dominv](https://avatars1.githubusercontent.com/u/3943031?v=4&s=20) **Domingo Valera (dominv)**](https://github.com/dominv)
@@ -33,5 +34,6 @@ These are the people that have contributed to the _exercises-fpinscala_ project:
 - [![jkmcclellan](https://avatars3.githubusercontent.com/u/52432856?v=4&s=20) **jkmcclellan**](https://github.com/jkmcclellan)
 - [![pdo400](https://avatars1.githubusercontent.com/u/1780993?v=4&s=20) **pdo400**](https://github.com/pdo400)
 - [![sergey-lagutin](https://avatars3.githubusercontent.com/u/11209668?v=4&s=20) **sergey-lagutin**](https://github.com/sergey-lagutin)
+- [![alejandrohdezma](https://avatars0.githubusercontent.com/u/9027541?v=4&s=20) **alejandrohdezma**](https://github.com/alejandrohdezma)
 - [![floating-cat](https://avatars0.githubusercontent.com/u/6748077?v=4&s=20) **floating-cat**](https://github.com/floating-cat)
 - [![slashdev1](https://avatars1.githubusercontent.com/u/50917204?v=4&s=20) **slashdev1**](https://github.com/slashdev1)
