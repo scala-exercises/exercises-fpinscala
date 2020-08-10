@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.6.6](https://github.com/scala-exercises/exercises-fpinscala/tree/v0.6.6) (2020-08-10)
+
+[Full Changelog](https://github.com/scala-exercises/exercises-fpinscala/compare/v0.6.5...v0.6.6)
+
+📈 **Dependency updates**
+
+- Update definitions, exercise-compiler, ... to 0.6.4 [\#110](https://github.com/scala-exercises/exercises-fpinscala/pull/110) ([47erbot](https://github.com/47erbot))
+
 ## [v0.6.5](https://github.com/scala-exercises/exercises-fpinscala/tree/v0.6.5) (2020-08-10)
 
 [Full Changelog](https://github.com/scala-exercises/exercises-fpinscala/compare/v0.6.4...v0.6.5)
