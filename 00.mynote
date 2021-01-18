@@ -1,0 +1,3 @@
+- this uses scala 2.13, which fails in my intellij, but sbt runs ok
+- changing that to 2.12 causes more errors : ( - give up
+- TODO: try to make IJ work with multiple versions?
