@@ -24,7 +24,7 @@ import Reference._
 import scala.util.matching.Regex
 
 /**
- * @param name parser_combinatorss
+ * @param name parser_combinators
  */
 object ParserCombinatorsSection
     extends AnyFlatSpec
