@@ -1,6 +1,17 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib.customlib.functionaldatastructures
@@ -15,43 +26,48 @@ case class Leaf[A](value: A)                        extends Tree[A]
 case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 
 object Tree {
-  def size[A](t: Tree[A]): Int = t match {
-    case Leaf(_)      => 1
-    case Branch(l, r) => 1 + size(l) + size(r)
-  }
+  def size[A](t: Tree[A]): Int =
+    t match {
+      case Leaf(_)      => 1
+      case Branch(l, r) => 1 + size(l) + size(r)
+    }
 
   /*
   We're using the method `max` that exists on all `Int` values rather than an explicit `if` expression.
 
   Note how similar the implementation is to `size`. We'll abstract out the common pattern in a later exercise.
    */
-  def maximum(t: Tree[Int]): Int = t match {
-    case Leaf(n)      => n
-    case Branch(l, r) => maximum(l) max maximum(r)
-  }
+  def maximum(t: Tree[Int]): Int =
+    t match {
+      case Leaf(n)      => n
+      case Branch(l, r) => maximum(l) max maximum(r)
+    }
 
   /*
   Again, note how similar the implementation is to `size` and `maximum`.
    */
-  def depth[A](t: Tree[A]): Int = t match {
-    case Leaf(_)      => 0
-    case Branch(l, r) => 1 + (depth(l) max depth(r))
-  }
+  def depth[A](t: Tree[A]): Int =
+    t match {
+      case Leaf(_)      => 0
+      case Branch(l, r) => 1 + (depth(l) max depth(r))
+    }
 
-  def map[A, B](t: Tree[A])(f: A => B): Tree[B] = t match {
-    case Leaf(a)      => Leaf(f(a))
-    case Branch(l, r) => Branch(map(l)(f), map(r)(f))
-  }
+  def map[A, B](t: Tree[A])(f: A => B): Tree[B] =
+    t match {
+      case Leaf(a)      => Leaf(f(a))
+      case Branch(l, r) => Branch(map(l)(f), map(r)(f))
+    }
 
   /*
   Like `foldRight` for lists, `fold` receives a "handler" for each of the data constructors of the type, and recursively
   accumulates some value using these handlers. As with `foldRight`, `fold(t)(Leaf(_))(Branch(_,_)) == t`, and we can use
   this function to implement just about any recursive function that would otherwise be defined by pattern matching.
    */
-  def fold[A, B](t: Tree[A])(f: A => B)(g: (B, B) => B): B = t match {
-    case Leaf(a)      => f(a)
-    case Branch(l, r) => g(fold(l)(f)(g), fold(r)(f)(g))
-  }
+  def fold[A, B](t: Tree[A])(f: A => B)(g: (B, B) => B): B =
+    t match {
+      case Leaf(a)      => f(a)
+      case Branch(l, r) => g(fold(l)(f)(g), fold(r)(f)(g))
+    }
 
   def sizeViaFold[A](t: Tree[A]): Int =
     fold(t)(a => 1)(1 + _ + _)

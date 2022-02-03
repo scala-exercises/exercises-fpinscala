@@ -1,20 +1,33 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib
 
-import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.parsing.{JSON, Location, ParseError, Reference}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import fpinscalalib.customlib.parsing.{JSON, ParseError, Reference}
 import fpinscalalib.customlib.parsing.ReferenceTypes._
 import Reference._
 import scala.util.matching.Regex
 
-/** @param name parser_combinators
+/**
+ * @param name parser_combinators
  */
 object ParserCombinatorsSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section
     with ReferenceHelper {
@@ -106,7 +119,8 @@ object ParserCombinatorsSection
    */
   def parserManyAssert(
       res0: Either[ParseError, List[Char]],
-      res1: Either[ParseError, List[Char]]): Unit = {
+      res1: Either[ParseError, List[Char]]
+  ): Unit = {
     def many[A](p: Parser[A]): Parser[List[A]] =
       map2(p, many(p))(_ :: _) or fpinscalalib.customlib.parsing.Reference.succeed(List())
 
@@ -274,14 +288,13 @@ object ParserCombinatorsSection
   def parserStringAssert(res0: String): Unit = {
     def string(w: String): Parser[String] = {
       val msg = "'" + w + "'"
-      s =>
-        {
-          val i = firstNonmatchingIndex(s.loc.input, w, s.loc.offset)
-          if (i == -1) // they matched
-            Success(w, w.length)
-          else
-            Failure(s.loc.advanceBy(i).toError(msg), i != 0)
-        }
+      s => {
+        val i = firstNonmatchingIndex(s.loc.input, w, s.loc.offset)
+        if (i == -1) // they matched
+          Success(w, w.length)
+        else
+          Failure(s.loc.advanceBy(i).toError(msg), i != 0)
+      }
     }
 
     val parseFunction = run(
@@ -327,7 +340,7 @@ object ParserCombinatorsSection
         p(s) match {
           case Success(_, n)     => Success(s.slice(n), n)
           case f @ Failure(_, _) => f
-      }
+        }
 
     val parserFunction = run(
       slice(many1(string("a")))

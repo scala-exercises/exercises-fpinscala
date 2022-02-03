@@ -1,6 +1,17 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib.customlib.laziness
@@ -15,10 +26,11 @@ import Stream._
 trait Stream[+A] {
 
   // The natural recursive solution
-  def toListRecursive: List[A] = this match {
-    case Cons(h, t) => h() :: t().toListRecursive
-    case _          => List()
-  }
+  def toListRecursive: List[A] =
+    this match {
+      case Cons(h, t) => h() :: t().toListRecursive
+      case _          => List()
+    }
 
   /*
   The above solution will stack overflow for large streams, since it's
@@ -29,10 +41,11 @@ trait Stream[+A] {
    */
   def toList: List[A] = {
     @annotation.tailrec
-    def go(s: Stream[A], acc: List[A]): List[A] = s match {
-      case Cons(h, t) => go(t(), h() :: acc)
-      case _          => acc
-    }
+    def go(s: Stream[A], acc: List[A]): List[A] =
+      s match {
+        case Cons(h, t) => go(t(), h() :: acc)
+        case _          => acc
+      }
     go(this, List()).reverse
   }
 
@@ -45,12 +58,13 @@ trait Stream[+A] {
   def toListFast: List[A] = {
     val buf = new collection.mutable.ListBuffer[A]
     @annotation.tailrec
-    def go(s: Stream[A]): List[A] = s match {
-      case Cons(h, t) =>
-        buf += h()
-        go(t())
-      case _ => buf.toList
-    }
+    def go(s: Stream[A]): List[A] =
+      s match {
+        case Cons(h, t) =>
+          buf += h()
+          go(t())
+        case _ => buf.toList
+      }
     go(this)
   }
 
@@ -60,39 +74,51 @@ trait Stream[+A] {
     we need to, by handling the special case where n == 1 separately. If n == 0, we can avoid looking
     at the stream at all.
    */
-  def take(n: Int): Stream[A] = this match {
-    case Cons(h, t) if n > 1  => cons(h(), t().take(n - 1))
-    case Cons(h, _) if n == 1 => cons(h(), empty)
-    case _                    => empty
-  }
+  def take(n: Int): Stream[A] =
+    this match {
+      case Cons(h, t) if n > 1  => cons(h(), t().take(n - 1))
+      case Cons(h, _) if n == 1 => cons(h(), empty)
+      case _                    => empty
+    }
 
   /*
     Create a new Stream[A] from this, but ignore the n first elements. This can be achieved by recursively calling
     drop on the invoked tail of a cons cell. Note that the implementation is also tail recursive.
    */
   @annotation.tailrec
-  final def drop(n: Int): Stream[A] = this match {
-    case Cons(_, t) if n > 0 => t().drop(n - 1)
-    case _                   => this
-  }
+  final def drop(n: Int): Stream[A] =
+    this match {
+      case Cons(_, t) if n > 0 => t().drop(n - 1)
+      case _                   => this
+    }
 
   /*
   It's a common Scala style to write method calls without `.` notation, as in `t() takeWhile f`.
    */
-  def takeWhile(f: A => Boolean): Stream[A] = this match {
-    case Cons(h, t) if f(h()) => cons(h(), t() takeWhile f)
-    case _                    => empty
-  }
+  def takeWhile(f: A => Boolean): Stream[A] =
+    this match {
+      case Cons(h, t) if f(h()) => cons(h(), t() takeWhile f)
+      case _                    => empty
+    }
 
-  def foldRight[B](z: => B)(f: (A, => B) => B): B = // The arrow `=>` in front of the argument type `B` means that the function `f` takes its second argument by name and may choose not to evaluate it.
+  def foldRight[B](
+      z: => B
+  )(
+      f: (A, => B) => B
+  ): B = // The arrow `=>` in front of the argument type `B` means that the function `f` takes its second argument by name and may choose not to evaluate it.
     this match {
       case Cons(h, t) =>
-        f(h(), t().foldRight(z)(f)) // If `f` doesn't evaluate its second argument, the recursion never occurs.
+        f(
+          h(),
+          t().foldRight(z)(f)
+        ) // If `f` doesn't evaluate its second argument, the recursion never occurs.
       case _ => z
     }
 
   def exists(p: A => Boolean): Boolean =
-    foldRight(false)((a, b) => p(a) || b) // Here `b` is the unevaluated recursive step that folds the tail of the stream. If `p(a)` returns `true`, `b` will never be evaluated and the computation terminates early.
+    foldRight(false)((a, b) =>
+      p(a) || b
+    ) // Here `b` is the unevaluated recursive step that folds the tail of the stream. If `p(a)` returns `true`, `b` will never be evaluated and the computation terminates early.
 
   /*
   Since `&&` is non-strict in its second argument, this terminates the traversal as soon as a nonmatching element is found.
@@ -101,10 +127,10 @@ trait Stream[+A] {
     foldRight(true)((a, b) => f(a) && b)
 
   def takeWhile_1(f: A => Boolean): Stream[A] =
-    foldRight(empty[A])(
-      (h, t) =>
-        if (f(h)) cons(h, t)
-        else empty)
+    foldRight(empty[A])((h, t) =>
+      if (f(h)) cons(h, t)
+      else empty
+    )
 
   def headOption: Option[A] =
     foldRight(None: Option[A])((h, _) => Some(h))
@@ -113,10 +139,10 @@ trait Stream[+A] {
     foldRight(empty[B])((h, t) => cons(f(h), t))
 
   def filter(f: A => Boolean): Stream[A] =
-    foldRight(empty[A])(
-      (h, t) =>
-        if (f(h)) cons(h, t)
-        else t)
+    foldRight(empty[A])((h, t) =>
+      if (f(h)) cons(h, t)
+      else t
+    )
 
   def append[B >: A](s: => Stream[B]): Stream[B] =
     foldRight(s)((h, t) => cons(h, t))
@@ -160,7 +186,7 @@ trait Stream[+A] {
   def zipWithAll[B, C](s2: Stream[B])(f: (Option[A], Option[B]) => C): Stream[C] =
     Stream.unfold((this, s2)) {
       case (Empty, Empty)               => None
-      case (Cons(h, t), Empty)          => Some(f(Some(h()), Option.empty[B]) -> (t(), empty[B]))
+      case (Cons(h, t), Empty)          => Some(f(Some(h()), Option.empty[B]) -> Tuple2(t(), empty[B]))
       case (Empty, Cons(h, t))          => Some(f(Option.empty[A], Some(h())) -> (empty[A] -> t()))
       case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
     }
@@ -168,9 +194,9 @@ trait Stream[+A] {
   /*
   `s startsWith s2` when corresponding elements of `s` and `s2` are all equal, until the point that `s2` is exhausted. If `s` is exhausted first, or we find an element that doesn't match, we terminate early. Using non-strictness, we can compose these three separate logical steps--the zipping, the termination when the second stream is exhausted, and the termination if a nonmatching element is found or the first stream is exhausted.
    */
-  def startsWith[A](s: Stream[A]): Boolean =
-    zipAll(s).takeWhile(!_._2.isEmpty) forAll {
-      case (h, h2) => h == h2
+  def startsWith[T](s: Stream[T]): Boolean =
+    zipAll(s).takeWhile(_._2.isDefined) forAll { case (h, h2) =>
+      h == h2
     }
 
   /*
@@ -182,7 +208,7 @@ trait Stream[+A] {
       case s     => Some((s, s drop 1))
     } append Stream(empty)
 
-  def hasSubsequence[A](s: Stream[A]): Boolean =
+  def hasSubsequence[T](s: Stream[T]): Boolean =
     tails exists (_ startsWith s)
 
   /*
@@ -191,18 +217,19 @@ trait Stream[+A] {
   The implementation is just a `foldRight` that keeps the accumulated value and the stream of intermediate results, which we `cons` onto during each iteration. When writing folds, it's common to have more state in the fold than is needed to compute the result. Here, we simply extract the accumulated list once finished.
    */
   def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] =
-    foldRight((z, Stream(z)))((a, p0) => {
+    foldRight((z, Stream(z))) { (a, p0) =>
       // p0 is passed by-name and used in by-name args in f and cons. So use lazy val to ensure only one evaluation...
       lazy val p1 = p0
       val b2      = f(a, p1._1)
       (b2, cons(b2, p1._2))
-    })._2
+    }._2
 
   @annotation.tailrec
-  final def find(f: A => Boolean): Option[A] = this match {
-    case Empty      => None
-    case Cons(h, t) => if (f(h())) Some(h()) else t().find(f)
-  }
+  final def find(f: A => Boolean): Option[A] =
+    this match {
+      case Empty      => None
+      case Cons(h, t) => if (f(h())) Some(h()) else t().find(f)
+    }
 }
 case object Empty                                   extends Stream[Nothing]
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]

@@ -1,23 +1,33 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib
 
-import java.util.concurrent.Executors
-
-import fpinscalalib.customlib.functionalparallelism.Par
 import fpinscalalib.customlib.state.{RNG, State}
-import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib.testing.{Gen, Prop, SGen}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import fpinscalalib.customlib.testing.{Gen, SGen}
 import fpinscalalib.customlib.testing.Gen._
 import fpinscalalib.customlib.testing.Prop._
 
-/** @param name property_based_testing
+/**
+ * @param name property_based_testing
  */
 object PropertyBasedTestingSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -204,7 +214,7 @@ object PropertyBasedTestingSection
    *
    * <b>Exercise 8.9</b>
    *
-   * Let's implement `&&` and `\\` to compose `Prop` values:
+   * Let's implement `&&` and `||` to compose `Prop` values:
    *
    * {{{
    *   def &&(p: Prop) = Prop {
@@ -343,7 +353,7 @@ object PropertyBasedTestingSection
    *       Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
    * }}}
    *
-   * <b>Exercise 8.18</b>
+   * <b>Exercise 8.17</b>
    *
    * With `pint2` we can express the property about `fork` from chapter 7 (`fork(x) == x`):
    *
@@ -358,10 +368,10 @@ object PropertyBasedTestingSection
    * Let's show how we can test higher-order functions with `takeWhile` and `dropWhile` from `List`:
    */
   def propTakeWhileDropWhile(res0: Result): Unit = {
-    val prop = forAll(listOf(Gen.choose(0, 20)))(l => {
+    val prop = forAll(listOf(Gen.choose(0, 20))) { l =>
       val index = Gen.choose(0, 20).sample.run(RNG.Simple(47))._1
       l.takeWhile(_ < index) ++ l.dropWhile(_ < index) == l
-    })
+    }
     prop.run(100, 100, RNG.Simple(System.currentTimeMillis)) shouldBe res0
   }
 }

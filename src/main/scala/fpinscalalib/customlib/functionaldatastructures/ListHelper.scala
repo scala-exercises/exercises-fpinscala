@@ -1,6 +1,17 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib.customlib.functionaldatastructures
@@ -23,14 +34,17 @@ object List { // `List` companion object. Contains functions for creating and wo
     ints match { // A function that uses pattern matching to add up a list of integers
       case Nil => 0 // The sum of the empty list is 0.
       case Cons(x, xs) =>
-        x + sum(xs) // The sum of a list starting with `x` is `x` plus the sum of the rest of the list.
+        x + sum(
+          xs
+        ) // The sum of a list starting with `x` is `x` plus the sum of the rest of the list.
     }
 
-  def product(ds: List[Double]): Double = ds match {
-    case Nil          => 1.0
-    case Cons(0.0, _) => 0.0
-    case Cons(x, xs)  => x * product(xs)
-  }
+  def product(ds: List[Double]): Double =
+    ds match {
+      case Nil          => 1.0
+      case Cons(0.0, _) => 0.0
+      case Cons(x, xs)  => x * product(xs)
+    }
 
   def apply[A](as: A*): List[A] = // Variadic function syntax
     if (as.isEmpty) Nil
@@ -84,10 +98,11 @@ object List { // `List` companion object. Contains functions for creating and wo
   If a function body consists solely of a match expression, we'll often put the match on the same line as the
   function signature, rather than introducing another level of nesting.
    */
-  def setHead[A](l: List[A], h: A): List[A] = l match {
-    case Nil        => sys.error("setHead on empty list")
-    case Cons(_, t) => Cons(h, t)
-  }
+  def setHead[A](l: List[A], h: A): List[A] =
+    l match {
+      case Nil        => sys.error("setHead on empty list")
+      case Cons(_, t) => Cons(h, t)
+    }
 
   /*
   Again, it's somewhat subjective whether to throw an exception when asked to drop more elements than the list
@@ -135,11 +150,12 @@ object List { // `List` companion object. Contains functions for creating and wo
     import collection.mutable.ListBuffer
     val buf = new ListBuffer[A]
     @annotation.tailrec
-    def go(cur: List[A]): List[A] = cur match {
-      case Nil          => sys.error("init of empty list")
-      case Cons(_, Nil) => List(buf.toList: _*)
-      case Cons(h, t)   => buf += h; go(t)
-    }
+    def go(cur: List[A]): List[A] =
+      cur match {
+        case Nil          => sys.error("init of empty list")
+        case Cons(_, Nil) => List(buf.toList: _*)
+        case Cons(h, t)   => buf += h; go(t)
+      }
     go(l)
   }
 
@@ -170,10 +186,11 @@ object List { // `List` companion object. Contains functions for creating and wo
   in greater stack space usage at runtime.
    */
   @annotation.tailrec
-  def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B = l match {
-    case Nil        => z
-    case Cons(h, t) => foldLeft(t, f(z, h))(f)
-  }
+  def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B =
+    l match {
+      case Nil        => z
+      case Cons(h, t) => foldLeft(t, f(z, h))(f)
+    }
 
   def sum3(l: List[Int])        = foldLeft(l, 0)(_ + _)
   def product3(l: List[Double]) = foldLeft(l, 1.0)(_ * _)
@@ -244,10 +261,11 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def map_2[A, B](l: List[A])(f: A => B): List[B] = {
     val buf = new collection.mutable.ListBuffer[B]
-    def go(l: List[A]): Unit = l match {
-      case Nil        => ()
-      case Cons(h, t) => buf += f(h); go(t)
-    }
+    def go(l: List[A]): Unit =
+      l match {
+        case Nil        => ()
+        case Cons(h, t) => buf += f(h); go(t)
+      }
     go(l)
     List(buf.toList: _*) // converting from the standard Scala list to the list we've defined here
   }
@@ -263,10 +281,11 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def filter_2[A](l: List[A])(f: A => Boolean): List[A] = {
     val buf = new collection.mutable.ListBuffer[A]
-    def go(l: List[A]): Unit = l match {
-      case Nil        => ()
-      case Cons(h, t) => if (f(h)) buf += h; go(t)
-    }
+    def go(l: List[A]): Unit =
+      l match {
+        case Nil        => ()
+        case Cons(h, t) => if (f(h)) buf += h; go(t)
+      }
     go(l)
     List(buf.toList: _*) // converting from the standard Scala list to the list we've defined here
   }
@@ -289,21 +308,23 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   The discussion about stack usage from the explanation of `map` also applies here.
    */
-  def addPairwise(a: List[Int], b: List[Int]): List[Int] = (a, b) match {
-    case (Nil, _)                     => Nil
-    case (_, Nil)                     => Nil
-    case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1 + h2, addPairwise(t1, t2))
-  }
+  def addPairwise(a: List[Int], b: List[Int]): List[Int] =
+    (a, b) match {
+      case (Nil, _)                     => Nil
+      case (_, Nil)                     => Nil
+      case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1 + h2, addPairwise(t1, t2))
+    }
 
   /*
   This function is usually called `zipWith`. The discussion about stack usage from the explanation of `map` also
   applies here. By putting the `f` in the second argument list, Scala can infer its type from the previous argument list.
    */
-  def zipWith[A, B, C](a: List[A], b: List[B])(f: (A, B) => C): List[C] = (a, b) match {
-    case (Nil, _)                     => Nil
-    case (_, Nil)                     => Nil
-    case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2)(f))
-  }
+  def zipWith[A, B, C](a: List[A], b: List[B])(f: (A, B) => C): List[C] =
+    (a, b) match {
+      case (Nil, _)                     => Nil
+      case (_, Nil)                     => Nil
+      case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2)(f))
+    }
 
   /*
   There's nothing particularly bad about this implementation,
@@ -326,15 +347,17 @@ object List { // `List` companion object. Contains functions for creating and wo
 
    */
   @annotation.tailrec
-  def startsWith[A](l: List[A], prefix: List[A]): Boolean = (l, prefix) match {
-    case (_, Nil)                              => true
-    case (Cons(h, t), Cons(h2, t2)) if h == h2 => startsWith(t, t2)
-    case _                                     => false
-  }
+  def startsWith[A](l: List[A], prefix: List[A]): Boolean =
+    (l, prefix) match {
+      case (_, Nil)                              => true
+      case (Cons(h, t), Cons(h2, t2)) if h == h2 => startsWith(t, t2)
+      case _                                     => false
+    }
   @annotation.tailrec
-  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = sup match {
-    case Nil                       => sub == Nil
-    case _ if startsWith(sup, sub) => true
-    case Cons(h, t)                => hasSubsequence(t, sub)
-  }
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean =
+    sup match {
+      case Nil                       => sub == Nil
+      case _ if startsWith(sup, sub) => true
+      case Cons(h, t)                => hasSubsequence(t, sub)
+    }
 }

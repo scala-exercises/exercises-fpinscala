@@ -1,20 +1,32 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib
 
-import org.scalatest.{FlatSpec, Matchers}
-import fpinscalalib.customlib._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import fpinscalalib.customlib.functionaldatastructures._
 import fpinscalalib.customlib.functionaldatastructures.List._
 import Tree._
 
-/** @param name functional_data_structures
+/**
+ * @param name functional_data_structures
  */
 object FunctionalDataStructuresSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -31,11 +43,11 @@ object FunctionalDataStructuresSection
    * = Singly linked lists =
    *
    * Assume the following functions are available for your reference:
-   *{{{
+   * {{{
    *    sealed trait List[+A]
    *    case object Nil extends List[Nothing]
    *    case class Cons[+A](head: A, tail: List[A]) extends List[A]
-   *}}}
+   * }}}
    * <b>Exercise 3.1:</b>
    *
    * Examine the next complex match expression. What will be the result?
@@ -56,7 +68,7 @@ object FunctionalDataStructuresSection
    *
    * Take a look at the implementation of `List`'s `tail` function, and check its behaviour on the following cases:
    */
-  def listTakeAssert(res0: List[Int], res1: List[Int]) {
+  def listTakeAssert(res0: List[Int], res1: List[Int]) = {
     def tail[A](l: List[A]): List[A] =
       l match {
         case Nil        => sys.error("tail of empty list")
@@ -71,11 +83,12 @@ object FunctionalDataStructuresSection
    *
    * `setHead` follows a similar principle. Let's take a look at how it works:
    */
-  def listSetHeadAssert(res0: List[Int], res1: List[String]) {
-    def setHead[A](l: List[A], h: A): List[A] = l match {
-      case Nil        => sys.error("setHead on empty list")
-      case Cons(_, t) => Cons(h, t)
-    }
+  def listSetHeadAssert(res0: List[Int], res1: List[String]) = {
+    def setHead[A](l: List[A], h: A): List[A] =
+      l match {
+        case Nil        => sys.error("setHead on empty list")
+        case Cons(_, t) => Cons(h, t)
+      }
     setHead(List(1, 2, 3), 3) shouldBe res0
     setHead(List("a", "b"), "c") shouldBe res1
   }
@@ -90,7 +103,8 @@ object FunctionalDataStructuresSection
       res1: List[Int],
       res2: List[Int],
       res3: List[Int],
-      res4: List[Int]) {
+      res4: List[Int]
+  ) = {
     def drop[A](l: List[A], n: Int): List[A] =
       if (n <= 0) l
       else
@@ -112,7 +126,7 @@ object FunctionalDataStructuresSection
    * `dropWhile` extends the behaviour of `drop`, removing elements from the `List` prefix as long as they match a
    * predicate. Study its implementation and check how it works with the following examples:
    */
-  def listDropWhileAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int]) {
+  def listDropWhileAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int]) = {
     def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
       l match {
         case Cons(h, t) if f(h) => dropWhile(t, f)
@@ -130,7 +144,7 @@ object FunctionalDataStructuresSection
    *
    * `init` can be implemented in the same fashion, but cannot be implemented in constant time like `tail`:
    */
-  def listInitAssert(res0: List[Int], res1: List[Int]) {
+  def listInitAssert(res0: List[Int], res1: List[Int]) = {
     def init[A](l: List[A]): List[A] =
       l match {
         case Nil          => sys.error("init of empty list")
@@ -147,7 +161,6 @@ object FunctionalDataStructuresSection
    * <b>Exercise 3.x:</b>
    *
    * Let's run through the steps that `foldRight` will follow in our new implementation of `sum2`:
-   *
    */
   def listFoldRightSumAssert(
       res0: Int,
@@ -160,7 +173,8 @@ object FunctionalDataStructuresSection
       res7: Int,
       res8: Int,
       res9: Int,
-      res10: Int) {
+      res10: Int
+  ) = {
     foldRight(Cons(1, Cons(2, Cons(3, Nil))), 0)((x, y) => x + y) shouldBe 6
     res0 + foldRight(Cons(2, Cons(3, Nil)), 0)((x, y) => x + y) shouldBe 6
     res1 + res2 + foldRight(Cons(3, Nil), 0)((x, y) => x + y) shouldBe 6
@@ -174,9 +188,8 @@ object FunctionalDataStructuresSection
    * Now that we know how `foldRight` works, try to think about what happens when you pass `Nil` and `Cons` themselves
    * to `foldRight`.
    */
-  def listFoldRightNilConsAssert(res0: List[Int]) {
+  def listFoldRightNilConsAssert(res0: List[Int]) =
     foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _)) shouldBe res0
-  }
 
   /**
    * <b>Exercise 3.9:</b>
@@ -234,7 +247,7 @@ object FunctionalDataStructuresSection
    *
    * In fact, we can write `foldLeft` in terms of `foldRight`, and the other way around:
    *
-   * {{{ 
+   * {{{
    *   def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B =
    *     foldLeft(reverse(l), z)((b,a) => f(a,b))
    *
@@ -342,7 +355,6 @@ object FunctionalDataStructuresSection
    *   def filterViaFlatMap[A](l: List[A])(f: A => Boolean): List[A] =
    *     flatMap(l)(a => if (f(a)) List(a) else Nil)
    * }}}
-   *
    */
   /**
    * <b>Exercise 3.22:</b>
@@ -418,10 +430,11 @@ object FunctionalDataStructuresSection
    * Let's try to implement a function `size` to count the number of nodes (leaves and branches) in a tree:
    */
   def treeSizeAssert(res0: Int, res1: Int): Unit = {
-    def size[A](t: Tree[A]): Int = t match {
-      case Leaf(_)      => res0
-      case Branch(l, r) => res1 + size(l) + size(r)
-    }
+    def size[A](t: Tree[A]): Int =
+      t match {
+        case Leaf(_)      => res0
+        case Branch(l, r) => res1 + size(l) + size(r)
+      }
 
     def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
     size(t) shouldBe 5
@@ -446,10 +459,11 @@ object FunctionalDataStructuresSection
    * tree to any leaf.
    */
   def treeDepthAssert(res0: Int, res1: Int): Unit = {
-    def depth[A](t: Tree[A]): Int = t match {
-      case Leaf(_)      => res0
-      case Branch(l, r) => res1 + (depth(l) max depth(r))
-    }
+    def depth[A](t: Tree[A]): Int =
+      t match {
+        case Leaf(_)      => res0
+        case Branch(l, r) => res1 + (depth(l) max depth(r))
+      }
     def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
     depth(t) shouldBe 2
   }
@@ -461,10 +475,11 @@ object FunctionalDataStructuresSection
    * in a tree with a given function. Let's try it out in the following exercise:
    */
   def treeMapAssert(res0: Branch[Int]): Unit = {
-    def map[A, B](t: Tree[A])(f: A => B): Tree[B] = t match {
-      case Leaf(a)      => Leaf(f(a))
-      case Branch(l, r) => Branch(map(l)(f), map(r)(f))
-    }
+    def map[A, B](t: Tree[A])(f: A => B): Tree[B] =
+      t match {
+        case Leaf(a)      => Leaf(f(a))
+        case Branch(l, r) => Branch(map(l)(f), map(r)(f))
+      }
 
     def t = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
     Tree.map(t)(_ * 2) shouldBe res0

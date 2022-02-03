@@ -1,20 +1,32 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib
 
 import fpinscalalib.customlib.state.RNG.Simple
 import fpinscalalib.customlib.state.RNG._
-import org.scalatest.{FlatSpec, Matchers}
-import org.scalacheck.Shapeless._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import fpinscalalib.customlib.state._
 
-/** @param name pure_functional_state
+/**
+ * @param name pure_functional_state
  */
 object FunctionalStateSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -32,7 +44,7 @@ object FunctionalStateSection
    *
    * <b>Exercise 6.1:</b>
    *
-   * Let's write a function that uses `RNG.nextInt` to generate a random integer between `0` and `Int.maxValue`, making
+   * Let's write a function that uses `RNG.nextInt` to generate a random integer between `0` and `Int.MaxValue`, making
    * sure to handle the corner case when `nextInt` returns `Int.MinValue`, which doesn't have a non-negative
    * counterpart:
    */
@@ -292,7 +304,7 @@ object FunctionalStateSection
                 Machine(false, candy, coin + res0)
               case (Turn, Machine(false, candy, coin)) =>
                 Machine(true, candy - res1, coin)
-        }
+            }
 
       def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] =
         for {

@@ -1,6 +1,17 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib.customlib.testing
@@ -21,33 +32,35 @@ import fpinscalalib.customlib.state.{RNG, State}
 import fpinscalalib.customlib.laziness.Stream
 
 import language.postfixOps
-import language.implicitConversions
 
 case class Prop(run: (MaxSize, TestCases, RNG) => Result) {
-  def &&(p: Prop) = Prop { (max, n, rng) =>
-    run(max, n, rng) match {
-      case Passed | Proved => p.run(max, n, rng)
-      case x               => x
+  def &&(p: Prop) =
+    Prop { (max, n, rng) =>
+      run(max, n, rng) match {
+        case Passed | Proved => p.run(max, n, rng)
+        case x               => x
+      }
     }
-  }
 
-  def ||(p: Prop) = Prop { (max, n, rng) =>
-    run(max, n, rng) match {
-      // In case of failure, run the other prop.
-      case Falsified(msg, _) => p.tag(msg).run(max, n, rng)
-      case x                 => x
+  def ||(p: Prop) =
+    Prop { (max, n, rng) =>
+      run(max, n, rng) match {
+        // In case of failure, run the other prop.
+        case Falsified(msg, _) => p.tag(msg).run(max, n, rng)
+        case x                 => x
+      }
     }
-  }
 
   /* This is rather simplistic - in the event of failure, we simply prepend
    * the given message on a newline in front of the existing message.
    */
-  def tag(msg: String) = Prop { (max, n, rng) =>
-    run(max, n, rng) match {
-      case Falsified(e, c) => Falsified(msg + "\n" + e, c)
-      case x               => x
+  def tag(msg: String) =
+    Prop { (max, n, rng) =>
+      run(max, n, rng) match {
+        case Falsified(e, c) => Falsified(msg + "\n" + e, c)
+        case x               => x
+      }
     }
-  }
 }
 
 object Prop {
@@ -73,19 +86,18 @@ object Prop {
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
 
-  def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (n, rng) =>
-    randomStream(as)(rng)
-      .zip(Stream.from(0))
-      .take(n)
-      .map {
-        case (a, i) =>
-          try {
-            if (f(a)) Passed else Falsified(a.toString, i)
-          } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
-      }
-      .find(_.isFalsified)
-      .getOrElse(Passed)
-  }
+  def forAll[A](as: Gen[A])(f: A => Boolean): Prop =
+    Prop { (n, rng) =>
+      randomStream(as)(rng)
+        .zip(Stream.from(0))
+        .take(n)
+        .map { case (a, i) =>
+          try if (f(a)) Passed else Falsified(a.toString, i)
+          catch { case e: Exception => Falsified(buildMsg(a, e), i) }
+        }
+        .find(_.isFalsified)
+        .getOrElse(Passed)
+    }
 
   // String interpolation syntax. A string starting with `s"` can refer to
   // a Scala value `v` as `$v` or `${v}` in the string.
@@ -96,33 +108,30 @@ object Prop {
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
 
   def apply(f: (TestCases, RNG) => Result): Prop =
-    Prop { (_, n, rng) =>
-      f(n, rng)
-    }
+    Prop((_, n, rng) => f(n, rng))
 
   def forAll[A](g: SGen[A])(f: A => Boolean): Prop =
     forAll(g(_))(f)
 
-  def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = Prop { (max, n, rng) =>
-    val casesPerSize = (n - 1) / max + 1
-    val props: Stream[Prop] =
-      Stream.from(0).take((n min max) + 1).map(i => forAll(g(i))(f))
-    val prop: Prop =
-      props
-        .map(p =>
-          Prop { (max, n, rng) =>
-            p.run(max, casesPerSize, rng)
-        })
-        .toList
-        .reduce(_ && _)
-    prop.run(max, n, rng)
-  }
+  def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop =
+    Prop { (max, n, rng) =>
+      val casesPerSize = (n - 1) / max + 1
+      val props: Stream[Prop] =
+        Stream.from(0).take((n min max) + 1).map(i => forAll(g(i))(f))
+      val prop: Prop =
+        props
+          .map(p => Prop((max, n, rng) => p.run(max, casesPerSize, rng)))
+          .toList
+          .reduce(_ && _)
+      prop.run(max, n, rng)
+    }
 
   def run(
       p: Prop,
       maxSize: Int = 100,
       testCases: Int = 100,
-      rng: RNG = RNG.Simple(System.currentTimeMillis)): Unit =
+      rng: RNG = RNG.Simple(System.currentTimeMillis)
+  ): Unit =
     p.run(maxSize, testCases, rng) match {
       case Falsified(msg, n) =>
         println(s"! Falsified after $n passed tests:\n $msg")
@@ -136,9 +145,7 @@ object Prop {
   val p1 =
     Prop.forAll(Gen.unit(Par.unit(1)))(i => Par.map(i)(_ + 1)(ES).get == Par.unit(2)(ES).get)
 
-  def check(p: => Boolean): Prop = Prop { (_, _, _) =>
-    if (p) Passed else Falsified("()", 0)
-  }
+  def check(p: => Boolean): Prop = Prop((_, _, _) => if (p) Passed else Falsified("()", 0))
 
   val p2 = check {
     val p  = Par.map(Par.unit(1))(_ + 1)
@@ -158,7 +165,8 @@ object Prop {
 
   val S = weighted(
     choose(1, 4).map(Executors.newFixedThreadPool) -> .75,
-    unit(Executors.newCachedThreadPool)            -> .25) // `a -> b` is syntax sugar for `(a,b)`
+    unit(Executors.newCachedThreadPool)            -> .25
+  ) // `a -> b` is syntax sugar for `(a,b)`
 
   def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
     forAll(S.map2(g)((_, _))) { case (s, a) => f(a)(s).get }
@@ -229,11 +237,13 @@ object Gen {
    */
   def even(start: Int, stopExclusive: Int): Gen[Int] =
     choose(start, if (stopExclusive % 2 == 0) stopExclusive - 1 else stopExclusive).map(n =>
-      if (n % 2 != 0) n + 1 else n)
+      if (n % 2 != 0) n + 1 else n
+    )
 
   def odd(start: Int, stopExclusive: Int): Gen[Int] =
     choose(start, if (stopExclusive % 2 != 0) stopExclusive - 1 else stopExclusive).map(n =>
-      if (n % 2 == 0) n + 1 else n)
+      if (n % 2 == 0) n + 1 else n
+    )
 
   def sameParity(from: Int, to: Int): Gen[(Int, Int)] =
     for {
@@ -302,7 +312,7 @@ object Gen {
    */
   lazy val pint2: Gen[Par[Int]] = choose(-100, 100)
     .listOfN(choose(0, 20))
-    .map(l => l.foldLeft(Par.unit(0))((p, i) => Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
+    .map(l => l.foldLeft(Par.unit(0))((p, i) => Par.fork(Par.map2(p, Par.unit(i))(_ + _))))
 
   def genStringIntFn(g: Gen[Int]): Gen[String => Int] =
     g map (i => (s => i))
@@ -312,7 +322,7 @@ case class SGen[+A](g: Int => Gen[A]) {
   def apply(n: Int): Gen[A] = g(n)
 
   def map[B](f: A => B): SGen[B] =
-    SGen { g(_) map f }
+    SGen(g(_) map f)
 
   def flatMap[B](f: A => SGen[B]): SGen[B] = {
     val g2: Int => Gen[B] = n => {

@@ -1,6 +1,17 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib.customlib.functionalparallelism
@@ -12,7 +23,6 @@ package fpinscalalib.customlib.functionalparallelism
 // https://github.com/fpinscala/fpinscala/blob/a261989ae4e779b45c7176273dbd2349f487b7d1/answers/src/main/scala/fpinscala/parallelism/Par.scala
 
 import java.util.concurrent._
-import language.implicitConversions
 
 object Par {
   type Par[A] = ExecutorService => Future[A]
@@ -21,7 +31,9 @@ object Par {
 
   def unit[A](a: A): Par[A] =
     (es: ExecutorService) =>
-      UnitFuture(a) // `unit` is represented as a function that returns a `UnitFuture`, which is a simple implementation of `Future` that just wraps a constant value. It doesn't use the `ExecutorService` at all. It's always done and can't be cancelled. Its `get` method simply returns the value that we gave it.
+      UnitFuture(
+        a
+      ) // `unit` is represented as a function that returns a `UnitFuture`, which is a simple implementation of `Future` that just wraps a constant value. It doesn't use the `ExecutorService` at all. It's always done and can't be cancelled. Its `get` method simply returns the value that we gave it.
 
   private case class UnitFuture[A](get: A) extends Future[A] {
     def isDone                                  = true
@@ -30,14 +42,23 @@ object Par {
     def cancel(evenIfRunning: Boolean): Boolean = false
   }
 
-  def map2[A, B, C](a: Par[A], b: Par[B])(f: (A, B) => C): Par[C] = // `map2` doesn't evaluate the call to `f` in a separate logical thread, in accord with our design choice of having `fork` be the sole function in the API for controlling parallelism. We can always do `fork(map2(a,b)(f))` if we want the evaluation of `f` to occur in a separate thread.
+  def map2[A, B, C](
+      a: Par[A],
+      b: Par[B]
+  )(
+      f: (A, B) => C
+  ): Par[C] = // `map2` doesn't evaluate the call to `f` in a separate logical thread, in accord with our design choice of having `fork` be the sole function in the API for controlling parallelism. We can always do `fork(map2(a,b)(f))` if we want the evaluation of `f` to occur in a separate thread.
     (es: ExecutorService) => {
       val af = a(es)
       val bf = b(es)
-      UnitFuture(f(af.get, bf.get)) // This implementation of `map2` does _not_ respect timeouts. It simply passes the `ExecutorService` on to both `Par` values, waits for the results of the Futures `af` and `bf`, applies `f` to them, and wraps them in a `UnitFuture`. In order to respect timeouts, we'd need a new `Future` implementation that records the amount of time spent evaluating `af`, then subtracts that time from the available time allocated for evaluating `bf`.
+      UnitFuture(
+        f(af.get, bf.get)
+      ) // This implementation of `map2` does _not_ respect timeouts. It simply passes the `ExecutorService` on to both `Par` values, waits for the results of the Futures `af` and `bf`, applies `f` to them, and wraps them in a `UnitFuture`. In order to respect timeouts, we'd need a new `Future` implementation that records the amount of time spent evaluating `af`, then subtracts that time from the available time allocated for evaluating `bf`.
     }
 
-  def fork[A](a: => Par[A]): Par[A] = // This is the simplest and most natural implementation of `fork`, but there are some problems with it--for one, the outer `Callable` will block waiting for the "inner" task to complete. Since this blocking occupies a thread in our thread pool, or whatever resource backs the `ExecutorService`, this implies that we're losing out on some potential parallelism. Essentially, we're using two threads when one should suffice. This is a symptom of a more serious problem with the implementation, and we will discuss this later in the chapter.
+  def fork[A](
+      a: => Par[A]
+  ): Par[A] = // This is the simplest and most natural implementation of `fork`, but there are some problems with it--for one, the outer `Callable` will block waiting for the "inner" task to complete. Since this blocking occupies a thread in our thread pool, or whatever resource backs the `ExecutorService`, this implies that we're losing out on some potential parallelism. Essentially, we're using two threads when one should suffice. This is a symptom of a more serious problem with the implementation, and we will discuss this later in the chapter.
     es =>
       es.submit(new Callable[A] {
         def call = a(es).get
@@ -69,14 +90,15 @@ object Par {
 
   // We define `sequenceBalanced` using `IndexedSeq`, which provides an
   // efficient function for splitting the sequence in half.
-  def sequenceBalanced[A](as: IndexedSeq[Par[A]]): Par[IndexedSeq[A]] = fork {
-    if (as.isEmpty) unit(Vector())
-    else if (as.length == 1) map(as.head)(a => Vector(a))
-    else {
-      val (l, r) = as.splitAt(as.length / 2)
-      map2(sequenceBalanced(l), sequenceBalanced(r))(_ ++ _)
+  def sequenceBalanced[A](as: IndexedSeq[Par[A]]): Par[IndexedSeq[A]] =
+    fork {
+      if (as.isEmpty) unit(Vector())
+      else if (as.length == 1) map(as.head)(a => Vector(a))
+      else {
+        val (l, r) = as.splitAt(as.length / 2)
+        map2(sequenceBalanced(l), sequenceBalanced(r))(_ ++ _)
+      }
     }
-  }
 
   def sequence[A](as: List[Par[A]]): Par[List[A]] =
     map(sequenceBalanced(as.toIndexedSeq))(_.toList)
@@ -148,12 +170,14 @@ object Par {
 }
 
 object Examples {
-  import Par._
-  def sum(ints: IndexedSeq[Int]): Int = // `IndexedSeq` is a superclass of random-access sequences like `Vector` in the standard library. Unlike lists, these sequences provide an efficient `splitAt` method for dividing them into two parts at a particular index.
+  def sum(
+      ints: IndexedSeq[Int]
+  ): Int = // `IndexedSeq` is a superclass of random-access sequences like `Vector` in the standard library. Unlike lists, these sequences provide an efficient `splitAt` method for dividing them into two parts at a particular index.
     if (ints.size <= 1)
       ints.headOption getOrElse 0 // `headOption` is a method defined on all collections in Scala. We saw this function in chapter 3.
     else {
-      val (l, r) = ints.splitAt(ints.length / 2) // Divide the sequence in half using the `splitAt` function.
-      sum(l) + sum(r) // Recursively sum both halves and add the results together.
+      val (l, r) =
+        ints.splitAt(ints.length / 2) // Divide the sequence in half using the `splitAt` function.
+      sum(l) + sum(r)                 // Recursively sum both halves and add the results together.
     }
 }

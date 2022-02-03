@@ -1,16 +1,29 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-/** @param name getting_started_with_functional_programming
+/**
+ * @param name getting_started_with_functional_programming
  */
 object GettingStartedWithFPSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -31,12 +44,12 @@ object GettingStartedWithFPSection
    * Try to fix the `loop` function inside `fib` so that it returns the correct values for each case in a tail-recursive
    * way. What should the missing expressions for the trivial case and the recursive call be?
    */
-  def fibAssert(res0: Int, res1: Int) {
+  def fibAssert(res0: Int) = {
     def fib(n: Int): Int = {
       @annotation.tailrec
       def loop(n: Int, prev: Int, cur: Int): Int =
         if (n <= res0) prev
-        else loop(n - res1, cur, prev + cur)
+        else loop(n - 1, cur, prev + cur)
       loop(n, 0, 1)
     }
 
@@ -56,15 +69,18 @@ object GettingStartedWithFPSection
       @annotation.tailrec
       def go(n: Int): Boolean =
         if (n >= as.length - 1) true
-        else if (ordering(as(n), as(n + 1))) false
+        else if (!ordering(as(n), as(n + 1))) false
         else go(n + 1)
 
       go(0)
     }
 
-    isSorted(Array(1, 3, 5, 7), (x: Int, y: Int) => x > y) shouldBe res0
-    isSorted(Array(7, 5, 1, 3), (x: Int, y: Int) => x < y) shouldBe res1
-    isSorted(Array("Scala", "Exercises"), (x: String, y: String) => x.length > y.length) shouldBe res2
+    isSorted(Array(1, 3, 5, 7), (x: Int, y: Int) => x < y) shouldBe res0
+    isSorted(Array(7, 5, 1, 3), (x: Int, y: Int) => x > y) shouldBe res1
+    isSorted(
+      Array("Scala", "Exercises"),
+      (x: String, y: String) => x.length < y.length
+    ) shouldBe res2
   }
 
   /**

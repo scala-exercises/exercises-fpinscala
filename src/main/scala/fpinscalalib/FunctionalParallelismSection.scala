@@ -1,21 +1,32 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib
 
-import java.util.concurrent.ExecutorService
-
 import fpinscalalib.customlib.functionalparallelism.Par
 import fpinscalalib.customlib.functionalparallelism.Par._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import java.util.concurrent.Executors
 
-/** @param name purely_functional_parallelism
+/**
+ * @param name purely_functional_parallelism
  */
 object FunctionalParallelismSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -72,7 +83,7 @@ object FunctionalParallelismSection
   /**
    * <b>Exercise 7.5:</b>
    *
-   * Remember, `asyncF` converts an `A => B` to an `A => Par[B`] by forking a parallel computation to produce the
+   * Remember, `asyncF` converts an `A => B` to an `A => Par[B]` by forking a parallel computation to produce the
    * result. So we can fork off our N parallel computations pretty easily, but we need some way of collecting their
    * results. Are we stuck? Well, just from inspecting the types, we can see that we need some way of converting our
    * `List[Par[B]]` to the `Par[List[B]]` required by the return type of `parMap`.
@@ -95,7 +106,7 @@ object FunctionalParallelismSection
    *     map(sequence(pars))(_.flatten)
    *   }
    * }}}
-    **/
+   */
   def parFilterAssert(res0: List[Int]): Unit = {
     def parFilter[A](l: List[A])(f: A => Boolean): Par[List[A]] = {
       val pars: List[Par[List[A]]] =

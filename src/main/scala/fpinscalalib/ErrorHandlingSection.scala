@@ -1,6 +1,17 @@
 /*
- * scala-exercises - exercises-fpinscala
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees Open Source <https://www.47deg.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package fpinscalalib
@@ -8,14 +19,16 @@ package fpinscalalib
 import fpinscalalib.customlib.errorhandling._
 import fpinscalalib.customlib.errorhandling.Option._
 import fpinscalalib.customlib.errorhandling.ExampleHelper._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Success, Try}
 
-/** @param name handling_error_without_exceptions
+/**
+ * @param name handling_error_without_exceptions
  */
 object ErrorHandlingSection
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with org.scalaexercises.definitions.Section {
 
@@ -46,24 +59,25 @@ object ErrorHandlingSection
    * Let's try it out:
    */
   def optionMapAssert(res0: (Option[Employee]) => Option[String]): Unit = {
-    def lookupByName(name: String): Option[Employee] = name match {
-      case "Joe"   => Some(Employee("Joe", "Finances", Some("Julie")))
-      case "Mary"  => Some(Employee("Mary", "IT", None))
-      case "Izumi" => Some(Employee("Izumi", "IT", Some("Mary")))
-      case _       => None
-    }
+    def lookupByName(name: String): Option[Employee] =
+      name match {
+        case "Joe"   => Some(Employee("Joe", "Finances", Some("Julie")))
+        case "Mary"  => Some(Employee("Mary", "IT", None))
+        case "Izumi" => Some(Employee("Izumi", "IT", Some("Mary")))
+        case _       => None
+      }
 
-    /**
-     * We can look for our employees, and try to obtain their departments. We will assume that we won't find any errors,
-     * and if it's the case, we don't have to worry as the computation will end there. Try to use `map` on the result of
-     * calling `lookupByName` to create a function to obtain the department of each employee. Hint: to access the
-     * optional employee, use Scala's underscore notation. i.e.:
-     *
-     * _.getOrElse(Employee("John", "Doe", None))
-     *
-     * Employee is defined as:
-     *
-     * case class Employee(name: String, department: String, manager: Option[String])
+    /*
+     We can look for our employees, and try to obtain their departments. We will assume that we won't find any errors,
+     and if it's the case, we don't have to worry as the computation will end there. Try to use `map` on the result of
+     calling `lookupByName` to create a function to obtain the department of each employee. Hint: to access the
+     optional employee, use Scala's underscore notation. i.e.:
+
+     _.getOrElse(Employee("John", "Doe", None))
+
+     Employee is defined as:
+
+     case class Employee(name: String, department: String, manager: Option[String])
      */
     def getDepartment: (Option[Employee]) => Option[String] = res0
 
@@ -133,7 +147,8 @@ object ErrorHandlingSection
   def optionFilterAssert(
       res0: Some[Employee],
       res1: Option[Employee],
-      res2: Option[Employee]): Unit = {
+      res2: Option[Employee]
+  ): Unit = {
     lookupByName("Joe").filter(_.department != "IT") shouldBe res0
     lookupByName("Mary").filter(_.department != "IT") shouldBe res1
     lookupByName("Foo").filter(_.department != "IT") shouldBe res2
@@ -149,8 +164,7 @@ object ErrorHandlingSection
    *   def variance(xs: Seq[Double]): Option[Double] =
    *     mean(xs) flatMap (m => mean(xs.map(x => math.pow(x - m, 2))))
    * }}}
-   */
-  /**
+   *
    * <b>Exercise 4.3:</b>
    *
    * Let's write a generic function to combine two `Option` values , so that if any of those values is `None`, the
@@ -214,10 +228,11 @@ object ErrorHandlingSection
     val list1 = List("1", "2", "3")
     val list2 = List("I", "II", "III", "IV")
 
-    def parseInt(a: String): Option[Int] = Try(a.toInt) match {
-      case Success(r) => Some(r)
-      case _          => None
-    }
+    def parseInt(a: String): Option[Int] =
+      Try(a.toInt) match {
+        case Success(r) => Some(r)
+        case _          => None
+      }
 
     traverse(list1)(i => parseInt(i)) shouldBe res0
     traverse(list2)(i => parseInt(i)) shouldBe res1
@@ -244,12 +259,13 @@ object ErrorHandlingSection
    * `Either` type to obtain the department of each employee:
    */
   def eitherMapAssert(res0: (Either[String, Employee]) => Either[String, String]): Unit = {
-    def lookupByNameViaEither(name: String): Either[String, Employee] = name match {
-      case "Joe"   => Right(Employee("Joe", "Finances", Some("Julie")))
-      case "Mary"  => Right(Employee("Mary", "IT", None))
-      case "Izumi" => Right(Employee("Izumi", "IT", Some("Mary")))
-      case _       => Left("Employee not found")
-    }
+    def lookupByNameViaEither(name: String): Either[String, Employee] =
+      name match {
+        case "Joe"   => Right(Employee("Joe", "Finances", Some("Julie")))
+        case "Mary"  => Right(Employee("Mary", "IT", None))
+        case "Izumi" => Right(Employee("Izumi", "IT", Some("Mary")))
+        case _       => Left("Employee not found")
+      }
 
     def getDepartment: (Either[String, Employee]) => Either[String, String] = res0
 
@@ -269,7 +285,8 @@ object ErrorHandlingSection
         e.manager match {
           case Some(e) => Right(e)
           case _       => Left("Manager not found")
-      })
+        }
+      )
 
     getManager(lookupByNameViaEither("Joe")) shouldBe res0
     getManager(lookupByNameViaEither("Mary")) shouldBe res1
@@ -296,7 +313,8 @@ object ErrorHandlingSection
         e.manager match {
           case Some(e) => Right(e)
           case _       => Left("Manager not found")
-      })
+        }
+      )
 
     getManager(lookupByNameViaEither("Joe")).orElse(Right("Mr. CEO")) shouldBe res0
     getManager(lookupByNameViaEither("Mary")).orElse(Right("Mr. CEO")) shouldBe res1
@@ -333,9 +351,15 @@ object ErrorHandlingSection
     def employeesShareDepartment(employeeA: Employee, employeeB: Employee) =
       employeeA.department == employeeB.department
 
-    lookupByNameViaEither("Joe").map2(lookupByNameViaEither("Mary"))(employeesShareDepartment) shouldBe res0
-    lookupByNameViaEither("Mary").map2(lookupByNameViaEither("Izumi"))(employeesShareDepartment) shouldBe res1
-    lookupByNameViaEither("Foo").map2(lookupByNameViaEither("Izumi"))(employeesShareDepartment) shouldBe res2
+    lookupByNameViaEither("Joe").map2(lookupByNameViaEither("Mary"))(
+      employeesShareDepartment
+    ) shouldBe res0
+    lookupByNameViaEither("Mary").map2(lookupByNameViaEither("Izumi"))(
+      employeesShareDepartment
+    ) shouldBe res1
+    lookupByNameViaEither("Foo").map2(lookupByNameViaEither("Izumi"))(
+      employeesShareDepartment
+    ) shouldBe res2
   }
 
   /**
