@@ -326,7 +326,7 @@ case class SGen[+A](g: Int => Gen[A]) {
 
   def flatMap[B](f: A => SGen[B]): SGen[B] = {
     val g2: Int => Gen[B] = n => {
-      g(n) flatMap f(_).g(n)
+      g(n) flatMap { a => f(a).g(n) }
     }
     SGen(g2)
   }
