@@ -23,7 +23,8 @@ import fpinscalalib.customlib.functionaldatastructures.List._
 import Tree._
 
 /**
- * @param name functional_data_structures
+ * @param name
+ *   functional_data_structures
  */
 object FunctionalDataStructuresSection
     extends AnyFlatSpec
@@ -31,16 +32,17 @@ object FunctionalDataStructuresSection
     with org.scalaexercises.definitions.Section {
 
   /**
-   * = Functional programming in Scala =
+   * =Functional programming in Scala=
    *
-   * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
-   * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
-   * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+   * The following set of sections represent the exercises contained in the book "Functional
+   * Programming in Scala", written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+   * This content library is meant to be used in tandem with the book. We use the same numeration
+   * for the exercises for you to follow them.
    *
-   * For more information about "Functional Programming in Scala" please visit its
-   * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+   * For more information about "Functional Programming in Scala" please visit its <a
+   * href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
-   * = Singly linked lists =
+   * =Singly linked lists=
    *
    * Assume the following functions are available for your reference:
    * {{{
@@ -66,7 +68,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.2:</b>
    *
-   * Take a look at the implementation of `List`'s `tail` function, and check its behaviour on the following cases:
+   * Take a look at the implementation of `List`'s `tail` function, and check its behaviour on the
+   * following cases:
    */
   def listTakeAssert(res0: List[Int], res1: List[Int]) = {
     def tail[A](l: List[A]): List[A] =
@@ -123,8 +126,9 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.5:</b>
    *
-   * `dropWhile` extends the behaviour of `drop`, removing elements from the `List` prefix as long as they match a
-   * predicate. Study its implementation and check how it works with the following examples:
+   * `dropWhile` extends the behaviour of `drop`, removing elements from the `List` prefix as long
+   * as they match a predicate. Study its implementation and check how it works with the following
+   * examples:
    */
   def listDropWhileAssert(res0: List[Int], res1: List[Int], res2: List[Int], res3: List[Int]) = {
     def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
@@ -142,7 +146,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.6:</b>
    *
-   * `init` can be implemented in the same fashion, but cannot be implemented in constant time like `tail`:
+   * `init` can be implemented in the same fashion, but cannot be implemented in constant time like
+   * `tail`:
    */
   def listInitAssert(res0: List[Int], res1: List[Int]) = {
     def init[A](l: List[A]): List[A] =
@@ -156,7 +161,7 @@ object FunctionalDataStructuresSection
   }
 
   /**
-   * = Recursion over lists and generalizing to higher-order functions =
+   * =Recursion over lists and generalizing to higher-order functions=
    *
    * <b>Exercise 3.x:</b>
    *
@@ -185,8 +190,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.8:</b>
    *
-   * Now that we know how `foldRight` works, try to think about what happens when you pass `Nil` and `Cons` themselves
-   * to `foldRight`.
+   * Now that we know how `foldRight` works, try to think about what happens when you pass `Nil` and
+   * `Cons` themselves to `foldRight`.
    */
   def listFoldRightNilConsAssert(res0: List[Int]) =
     foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _)) shouldBe res0
@@ -194,7 +199,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.9:</b>
    *
-   * Let's try to use `foldRight` to calculate the length of a list. Try to fill the gaps in our implementation:
+   * Let's try to use `foldRight` to calculate the length of a list. Try to fill the gaps in our
+   * implementation:
    */
   def listLengthAssert(res0: Int, res1: Int): Unit = {
     def l                           = List(1, 2, 3, 4, 5)
@@ -206,8 +212,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.10:</b>
    *
-   * Let's write another general tail-recursive list-recursion function, `foldLeft`, using the techniques we discussed
-   * in the previous chapter:
+   * Let's write another general tail-recursive list-recursion function, `foldLeft`, using the
+   * techniques we discussed in the previous chapter:
    *
    * {{{
    *   def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B =
@@ -236,8 +242,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.12:</b>
    *
-   * As we saw above, we can write the previous functions we implemented using `foldRight` with `foldLeft`. Let's continue
-   * with `reverse`:
+   * As we saw above, we can write the previous functions we implemented using `foldRight` with
+   * `foldLeft`. Let's continue with `reverse`:
    *
    * {{{
    *   def reverse[A](l: List[A]): List[A] = foldLeft(l, List[A]())((acc, h) => Cons(h, acc))
@@ -276,23 +282,24 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.15:</b>
    *
-   * `foldRight` can also be useful to write a function `concat` that concatenates a list of lists into a single list.
-   * Take a look at its implementation:
+   * `foldRight` can also be useful to write a function `concat` that concatenates a list of lists
+   * into a single list. Take a look at its implementation:
    *
    * {{{
    *   def concat[A](l: List[List[A]]): List[A] =
    *     foldRight(l, Nil:List[A])(append)
    * }}}
    *
-   * Since `append` takes time proportional to its first argument, and this first argument never grows because of the
-   * right-associativity of `foldRight`, this function is linear in the total length of all lists.
+   * Since `append` takes time proportional to its first argument, and this first argument never
+   * grows because of the right-associativity of `foldRight`, this function is linear in the total
+   * length of all lists.
    *
-   * = More functions for working with lists =
+   * =More functions for working with lists=
    *
    * <b>Exercise 3.16:</b>
    *
-   * Let's keep digging into the uses of `foldLeft` and `foldRight`, by implementing a function that transforms a list
-   * of integers by adding 1 to each element:
+   * Let's keep digging into the uses of `foldLeft` and `foldRight`, by implementing a function that
+   * transforms a list of integers by adding 1 to each element:
    */
   def listAdd1Assert(res0: Int): Unit = {
     def add1(l: List[Int]): List[Int] = foldRight(l, Nil: List[Int])((h, t) => Cons(h + res0, t))
@@ -311,8 +318,8 @@ object FunctionalDataStructuresSection
    *
    * <b>Exercise 3.18:</b>
    *
-   * Both `add1` and `doubleToString` modify each element in a list while maintaining its structure. We can generalize
-   * it in the following way:
+   * Both `add1` and `doubleToString` modify each element in a list while maintaining its structure.
+   * We can generalize it in the following way:
    *
    * {{{
    *   def map[A,B](l: List[A])(f: A => B): List[B] =
@@ -321,8 +328,8 @@ object FunctionalDataStructuresSection
    *
    * <b>Exercise 3.19:</b>
    *
-   * Let's apply the same principle as we use in `map` to remove elements from a list, starting with a function to
-   * remove all odd numbers from a List[Int]:
+   * Let's apply the same principle as we use in `map` to remove elements from a list, starting with
+   * a function to remove all odd numbers from a List[Int]:
    */
   def listRemoveOdds(res0: Int, res1: Int): Unit = {
     def removeOdds(l: List[Int]): List[Int] =
@@ -333,8 +340,9 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.20:</b>
    *
-   * We're going to implement a new function that works like `map` except that the function given will return a list
-   * instead of a single result, and that list should be inserted into the final resulting list:
+   * We're going to implement a new function that works like `map` except that the function given
+   * will return a list instead of a single result, and that list should be inserted into the final
+   * resulting list:
    *
    * {{{
    *   def flatMap[A,B](l: List[A])(f: A => List[B]): List[B] =
@@ -359,8 +367,9 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.22:</b>
    *
-   * Now we're going to write a function that accepts two lists of integers and constructs a new list by adding
-   * corresponding elements. i.e.: `List(1, 2, 3)` and `List(4, 5, 6)` become `List(5, 7, 9)`:
+   * Now we're going to write a function that accepts two lists of integers and constructs a new
+   * list by adding corresponding elements. i.e.: `List(1, 2, 3)` and `List(4, 5, 6)` become
+   * `List(5, 7, 9)`:
    *
    * {{{
    *   def addPairwise(a: List[Int], b: List[Int]): List[Int] = (a,b) match {
@@ -372,7 +381,8 @@ object FunctionalDataStructuresSection
    *
    * <b>Exercise 3.23:</b>
    *
-   * We can generalize the function above so that it's not specific to integers or addition, `zipWith`:
+   * We can generalize the function above so that it's not specific to integers or addition,
+   * `zipWith`:
    *
    * {{{
    *   def zipWith[A,B,C](a: List[A], b: List[B])(f: (A,B) => C): List[C] = (a,b) match {
@@ -392,9 +402,9 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.24:</b>
    *
-   * As a final example for working with lists, let's implement a `hasSubsequence` function for checking whether a `List`
-   * contains another `List` as a subsequence. For instance, `List(1, 2, 3, 4)` would have `List(1, 2)`, `List(2, 3)`
-   * and `List(4)` as subsequences, among others:
+   * As a final example for working with lists, let's implement a `hasSubsequence` function for
+   * checking whether a `List` contains another `List` as a subsequence. For instance, `List(1, 2,
+   * 3, 4)` would have `List(1, 2)`, `List(2, 3)` and `List(4)` as subsequences, among others:
    *
    * {{{
    *   @annotation.tailrec
@@ -412,7 +422,8 @@ object FunctionalDataStructuresSection
    *   }
    * }}}
    *
-   * Take a thorough look at the implementation of this function, and then try it out in the next exercise:
+   * Take a thorough look at the implementation of this function, and then try it out in the next
+   * exercise:
    */
   def listHasSubsequenceAssert(res0: Boolean, res1: Boolean, res2: Boolean): Unit = {
     def l = List(1, 2, 3, 4, 5)
@@ -423,11 +434,12 @@ object FunctionalDataStructuresSection
   }
 
   /**
-   * = Trees =
+   * =Trees=
    *
    * <b>Exercise 3.25:</b>
    *
-   * Let's try to implement a function `size` to count the number of nodes (leaves and branches) in a tree:
+   * Let's try to implement a function `size` to count the number of nodes (leaves and branches) in
+   * a tree:
    */
   def treeSizeAssert(res0: Int, res1: Int): Unit = {
     def size[A](t: Tree[A]): Int =
@@ -443,8 +455,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.26:</b>
    *
-   * Following a similar implementation, we can write a function `maximum` that returns the maximum element in a
-   * Tree[Int]:
+   * Following a similar implementation, we can write a function `maximum` that returns the maximum
+   * element in a Tree[Int]:
    *
    * {{{
    *   def maximum(t: Tree[Int]): Int = t match {
@@ -455,8 +467,8 @@ object FunctionalDataStructuresSection
    *
    * <b>Exercise 3.27:</b>
    *
-   * In the same fashion, let's implement a function `depth` that returns the maximum path length from the root of a
-   * tree to any leaf.
+   * In the same fashion, let's implement a function `depth` that returns the maximum path length
+   * from the root of a tree to any leaf.
    */
   def treeDepthAssert(res0: Int, res1: Int): Unit = {
     def depth[A](t: Tree[A]): Int =
@@ -471,8 +483,9 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.28:</b>
    *
-   * We can also write a function `map`, analogous to the method of the same name on `List`, that modifies each element
-   * in a tree with a given function. Let's try it out in the following exercise:
+   * We can also write a function `map`, analogous to the method of the same name on `List`, that
+   * modifies each element in a tree with a given function. Let's try it out in the following
+   * exercise:
    */
   def treeMapAssert(res0: Branch[Int]): Unit = {
     def map[A, B](t: Tree[A])(f: A => B): Tree[B] =
@@ -488,8 +501,8 @@ object FunctionalDataStructuresSection
   /**
    * <b>Exercise 3.29:</b>
    *
-   * To wrap this section up, let's generalize `size`, `maximum`, `depth` and `map`, writing a new function `fold` that
-   * abstracts over their similarities:
+   * To wrap this section up, let's generalize `size`, `maximum`, `depth` and `map`, writing a new
+   * function `fold` that abstracts over their similarities:
    *
    * {{{
    *   def fold[A,B](t: Tree[A])(f: A => B)(g: (B,B) => B): B = t match {
@@ -498,7 +511,8 @@ object FunctionalDataStructuresSection
    *   }
    * }}}
    *
-   * Let's try to reimplement `size`, `maximum`, `depth`, and `map` in terms of this more general function:
+   * Let's try to reimplement `size`, `maximum`, `depth`, and `map` in terms of this more general
+   * function:
    */
   def treeFoldAssert(res0: Int, res1: Int, res2: Int, res3: Int, res4: Branch[Boolean]): Unit = {
     def sizeViaFold[A](t: Tree[A]): Int =

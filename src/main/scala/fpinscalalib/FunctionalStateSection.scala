@@ -23,7 +23,8 @@ import org.scalatest.matchers.should.Matchers
 import fpinscalalib.customlib.state._
 
 /**
- * @param name pure_functional_state
+ * @param name
+ *   pure_functional_state
  */
 object FunctionalStateSection
     extends AnyFlatSpec
@@ -31,22 +32,23 @@ object FunctionalStateSection
     with org.scalaexercises.definitions.Section {
 
   /**
-   * = Functional programming in Scala =
+   * =Functional programming in Scala=
    *
-   * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
-   * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
-   * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+   * The following set of sections represent the exercises contained in the book "Functional
+   * Programming in Scala", written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+   * This content library is meant to be used in tandem with the book. We use the same numeration
+   * for the exercises for you to follow them.
    *
-   * For more information about "Functional Programming in Scala" please visit its
-   * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+   * For more information about "Functional Programming in Scala" please visit its <a
+   * href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
-   * = Purely functional random number generation =
+   * =Purely functional random number generation=
    *
    * <b>Exercise 6.1:</b>
    *
-   * Let's write a function that uses `RNG.nextInt` to generate a random integer between `0` and `Int.MaxValue`, making
-   * sure to handle the corner case when `nextInt` returns `Int.MinValue`, which doesn't have a non-negative
-   * counterpart:
+   * Let's write a function that uses `RNG.nextInt` to generate a random integer between `0` and
+   * `Int.MaxValue`, making sure to handle the corner case when `nextInt` returns `Int.MinValue`,
+   * which doesn't have a non-negative counterpart:
    */
   def randomNonNegativeIntAssert(res0: Int, res1: Int): Unit = {
     def nonNegativeInt(rng: RNG): (Int, RNG) = {
@@ -66,8 +68,8 @@ object FunctionalStateSection
   /**
    * <b>Exercise 6.2:</b>
    *
-   * Now let's write a function to generate a `Double` between `0` and `1`, excluding `1`. Note that we use
-   * `Int.MaxValue` to divide a random positive integer:
+   * Now let's write a function to generate a `Double` between `0` and `1`, excluding `1`. Note that
+   * we use `Int.MaxValue` to divide a random positive integer:
    */
   def randomDoubleAssert(res0: Int): Unit = {
     def double(rng: RNG): (Double, RNG) = {
@@ -87,9 +89,9 @@ object FunctionalStateSection
   /**
    * <b>Exercise 6.3:</b>
    *
-   * Following the same principle, we're going to write functions that generate tuples of random values, i.e.: an
-   * `(Int, Double)` pair, a `(Double, Int)` pair, and a `(Double, Double, Double)` 3-tuple, by reusing the functions
-   * we've already written:
+   * Following the same principle, we're going to write functions that generate tuples of random
+   * values, i.e.: an `(Int, Double)` pair, a `(Double, Int)` pair, and a `(Double, Double, Double)`
+   * 3-tuple, by reusing the functions we've already written:
    *
    * {{{
    *   def intDouble(rng: RNG): ((Int, Double), RNG) = {
@@ -132,7 +134,7 @@ object FunctionalStateSection
   }
 
   /**
-   * = A better API for state actions =
+   * =A better API for state actions=
    *
    * <b>Exercise 6.5:</b>
    *
@@ -154,8 +156,8 @@ object FunctionalStateSection
   /**
    * <b>Exercise 6.6:</b>
    *
-   * Now we're going to implement `map2` which takes two actions, `ra` and `rb`, and a binary function `f` for combining
-   * their results, and returns a new action that combines them:
+   * Now we're going to implement `map2` which takes two actions, `ra` and `rb`, and a binary
+   * function `f` for combining their results, and returns a new action that combines them:
    *
    * {{{
    *   def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
@@ -168,8 +170,8 @@ object FunctionalStateSection
    *
    * <b>Exercise 6.7:</b>
    *
-   * If we can combine two `RNG` transitions, we should be able to combine a whole list of them. Let's implement
-   * `sequence` for combining a `List` of transitions into a single transition:
+   * If we can combine two `RNG` transitions, we should be able to combine a whole list of them.
+   * Let's implement `sequence` for combining a `List` of transitions into a single transition:
    *
    * {{{
    *   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
@@ -188,8 +190,8 @@ object FunctionalStateSection
    *     }
    * }}}
    *
-   * Let's use it to write `nonNegativeLessThan`, which generates an integer between `0` (inclusive) and `n`
-   * (exclusive):
+   * Let's use it to write `nonNegativeLessThan`, which generates an integer between `0` (inclusive)
+   * and `n` (exclusive):
    */
   def randomNonNegativeLessThan(res0: Int, res1: Int): Unit = {
     def nonNegativeLessThan(n: Int): Rand[Int] = {
@@ -223,8 +225,8 @@ object FunctionalStateSection
    *
    * <b>Exercise 6.x:</b>
    *
-   * As a final example, let’s revisit the functions we previously wrote and implement a function that will roll a
-   * six-sided die:
+   * As a final example, let’s revisit the functions we previously wrote and implement a function
+   * that will roll a six-sided die:
    */
   def randomRollDie(res0: Int): Unit = {
     def rollDie: Rand[Int] = map(nonNegativeLessThan(6))(_ + res0)
@@ -243,7 +245,7 @@ object FunctionalStateSection
   import fpinscalalib.customlib.state.State._
 
   /**
-   * = A general state action data type =
+   * =A general state action data type=
    *
    * <b>Exercise 6.10:</b>
    *
@@ -268,10 +270,10 @@ object FunctionalStateSection
    *
    * <b>Exercise 6.11:</b>
    *
-   * As a final showcase of the uses of `State`, let's implement a finite state automaton that models a simple candy
-   * dispenser. The machine has two inputs: you can insert a coin, or you can dispense candy by turning the knob.
-   * It can be in one of two states: locked or unlocked. It also tracks how many candies are left and how many coins
-   * it contains.
+   * As a final showcase of the uses of `State`, let's implement a finite state automaton that
+   * models a simple candy dispenser. The machine has two inputs: you can insert a coin, or you can
+   * dispense candy by turning the knob. It can be in one of two states: locked or unlocked. It also
+   * tracks how many candies are left and how many coins it contains.
    *
    * {{{
    *   sealed trait Input
@@ -282,14 +284,17 @@ object FunctionalStateSection
    *
    * The rules of the machine are:
    *
-   * - Inserting a coin into a locked machine will unlock it if there’s still any candy left.
-   * - Turning the knob on an unlocked machine will cause it to dispense one candy and return to a locked state.
-   * - Turning the knob on a locked machine or inserting a coin into an unlocked machine has no effect.
-   * - A machine that’s out of candy ignores any kind of input.
+   *   - Inserting a coin into a locked machine will unlock it if there’s still any candy left.
+   *   - Turning the knob on an unlocked machine will cause it to dispense one candy and return to a
+   *     locked state.
+   *   - Turning the knob on a locked machine or inserting a coin into an unlocked machine has no
+   *     effect.
+   *   - A machine that’s out of candy ignores any kind of input.
    *
-   * The method `simulateMachine` should operate the machine based on a list of inputs and return the number of coins
-   * and candies left in the machine. For instance, if the input `Machine` has 10 coins and 5 candies, and a
-   * total of 4 candies are bought successfully, the output should be `(14, 1)`.
+   * The method `simulateMachine` should operate the machine based on a list of inputs and return
+   * the number of coins and candies left in the machine. For instance, if the input `Machine` has
+   * 10 coins and 5 candies, and a total of 4 candies are bought successfully, the output should be
+   * `(14, 1)`.
    */
   def candyMachineAssert(res0: Int, res1: Int): Unit = {
     object Candy {

@@ -238,7 +238,7 @@ object State {
 
   def modify[S](f: S => S): State[S, Unit] =
     for {
-      s <- get // Gets the current state and assigns it to `s`.
+      s <- get       // Gets the current state and assigns it to `s`.
       _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
     } yield ()
 

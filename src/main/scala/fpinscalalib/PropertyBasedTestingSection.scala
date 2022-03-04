@@ -24,7 +24,8 @@ import fpinscalalib.customlib.testing.Gen._
 import fpinscalalib.customlib.testing.Prop._
 
 /**
- * @param name property_based_testing
+ * @param name
+ *   property_based_testing
  */
 object PropertyBasedTestingSection
     extends AnyFlatSpec
@@ -32,25 +33,27 @@ object PropertyBasedTestingSection
     with org.scalaexercises.definitions.Section {
 
   /**
-   * = Functional programming in Scala =
+   * =Functional programming in Scala=
    *
-   * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
-   * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
-   * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+   * The following set of sections represent the exercises contained in the book "Functional
+   * Programming in Scala", written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+   * This content library is meant to be used in tandem with the book. We use the same numeration
+   * for the exercises for you to follow them.
    *
-   * For more information about "Functional Programming in Scala" please visit its
-   * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+   * For more information about "Functional Programming in Scala" please visit its <a
+   * href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
-   * Note: some of the exercises in this chapter are somewhat open-ended, and weren't included in this section. You can
-   * always head to the <a href="https://github.com/fpinscala/fpinscala/tree/master/answerkey/testing">official repository</a>
-   * containing hints for all exercises available in the book.
+   * Note: some of the exercises in this chapter are somewhat open-ended, and weren't included in
+   * this section. You can always head to the <a
+   * href="https://github.com/fpinscala/fpinscala/tree/master/answerkey/testing">official
+   * repository</a> containing hints for all exercises available in the book.
    *
-   * = A brief tour of property-based testing =
+   * =A brief tour of property-based testing=
    *
    * <b>Exercise 8.1</b>
    *
-   * To get used to property testing, let's try to figure out the properties that specify the implementation of a
-   * `sum: List[Int] => Int` function:
+   * To get used to property testing, let's try to figure out the properties that specify the
+   * implementation of a `sum: List[Int] => Int` function:
    *
    * {{{
    *   * The sum of the empty list is 0.
@@ -65,7 +68,8 @@ object PropertyBasedTestingSection
    *
    * <b>Exercise 8.2</b>
    *
-   * Likewise, these would be the properties that specify a function that finds the maximum of a `List[Int]`:
+   * Likewise, these would be the properties that specify a function that finds the maximum of a
+   * `List[Int]`:
    *
    * {{{
    *   * The max of a single element list is equal to that element.
@@ -74,7 +78,7 @@ object PropertyBasedTestingSection
    *   * The max of the empty list is unspecified and should throw an error or return `None`.
    * }}}
    *
-   * = The meaning and API of properties =
+   * =The meaning and API of properties=
    *
    * <b>Exercise 8.3</b>
    *
@@ -88,9 +92,10 @@ object PropertyBasedTestingSection
    *   }
    * }}}
    *
-   * Let's try it out while testing a couple of properties for Strings. First, a substring of a String containing its
-   * last character should be the same that accessing the character directly. Secondly, calling `startsWith` on a string
-   * should yield an affirmative result when compared to the original string.
+   * Let's try it out while testing a couple of properties for Strings. First, a substring of a
+   * String containing its last character should be the same that accessing the character directly.
+   * Secondly, calling `startsWith` on a string should yield an affirmative result when compared to
+   * the original string.
    */
   def propAndAssert(res0: Int, res1: Int, res2: Boolean): Unit = {
     val genString = Gen.stringN(5)
@@ -104,7 +109,7 @@ object PropertyBasedTestingSection
   }
 
   /**
-   * = The meaning and API of generators =
+   * =The meaning and API of generators=
    *
    * <b>Exercise 8.4</b>
    *
@@ -130,8 +135,8 @@ object PropertyBasedTestingSection
   /**
    * <b>Exercise 8.5</b>
    *
-   * We can implement other functions for `Gen`. Let's look at them, starting by `unit`, that always generates the same
-   * value:
+   * We can implement other functions for `Gen`. Let's look at them, starting by `unit`, that always
+   * generates the same value:
    */
   def genUnitAssert(res0: Int, res1: String): Unit = {
     def unit[A](a: => A): Gen[A] = Gen(State.unit(a))
@@ -148,7 +153,8 @@ object PropertyBasedTestingSection
    *   val boolean: Gen[Boolean] = Gen(State(RNG.boolean))
    * }}}
    *
-   * We can also implement `listOfN`, a function that generates lists of length `n` using the provided generator:
+   * We can also implement `listOfN`, a function that generates lists of length `n` using the
+   * provided generator:
    */
   def genListOfN(res0: Int, res1: List[Int]): Unit = {
     def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
@@ -162,7 +168,7 @@ object PropertyBasedTestingSection
   }
 
   /**
-   * = Generators that depend on generated values =
+   * =Generators that depend on generated values=
    *
    * <b>Exercise 8.6</b>
    *
@@ -191,8 +197,8 @@ object PropertyBasedTestingSection
   /**
    * <b>Exercise 8.7</b>
    *
-   * Through the use of `flatMap` we can implement `union`, a function to combine two generators of the same type into
-   * one, by pulling values from each one with the same likelihood:
+   * Through the use of `flatMap` we can implement `union`, a function to combine two generators of
+   * the same type into one, by pulling values from each one with the same likelihood:
    *
    * {{{
    *   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
@@ -201,8 +207,9 @@ object PropertyBasedTestingSection
    *
    * <b>Exercise 8.8</b>
    *
-   * Following a similar principle we can implement `weighted`, a version of `union` accepting a weight for each
-   * `Gen` and generates values from each one with a probability proportional to its weight:
+   * Following a similar principle we can implement `weighted`, a version of `union` accepting a
+   * weight for each `Gen` and generates values from each one with a probability proportional to its
+   * weight:
    *
    * {{{
    *   def weighted[A](g1: (Gen[A],Double), g2: (Gen[A],Double)): Gen[A] = {
@@ -249,7 +256,7 @@ object PropertyBasedTestingSection
   }
 
   /**
-   * = Test case minimization =
+   * =Test case minimization=
    *
    * <b>Exercise 8.10</b>
    *
@@ -266,8 +273,8 @@ object PropertyBasedTestingSection
    *
    * <b>Exercise 8.11</b>
    *
-   * `SGen` supports many of the same operations as `Gen`. Let's define some convenience functions of `SGen` that just
-   * delegate to their counterparts on `Gen`:
+   * `SGen` supports many of the same operations as `Gen`. Let's define some convenience functions
+   * of `SGen` that just delegate to their counterparts on `Gen`:
    *
    * {{{
    *   case class SGen[+A](g: Int => Gen[A]) {
@@ -289,8 +296,9 @@ object PropertyBasedTestingSection
    *
    * <b>Exercise 8.12</b>
    *
-   * We can also implement a `listOf` combinator that doesn't need an explicit size. It should return an `SGen`, and its
-   * implementation should generate lists of the requested size. Let's try it out:
+   * We can also implement a `listOf` combinator that doesn't need an explicit size. It should
+   * return an `SGen`, and its implementation should generate lists of the requested size. Let's try
+   * it out:
    */
   def sGenListOfAssert(res0: Int): Unit = {
     def listOf[A](g: Gen[A]): SGen[List[A]] =
@@ -302,7 +310,7 @@ object PropertyBasedTestingSection
   }
 
   /**
-   * = Using the library and improving its usability =
+   * =Using the library and improving its usability=
    *
    * <b>Exercise 8.13</b>
    *
@@ -336,11 +344,12 @@ object PropertyBasedTestingSection
    *   }
    * }}}
    *
-   * = Writing a test suite for parallel computations =
+   * =Writing a test suite for parallel computations=
    *
    * <b>Exercise 8.16</b>
    *
-   * We can write a generator for Par[Int], building deeply nested parallel computations. Take a look:
+   * We can write a generator for Par[Int], building deeply nested parallel computations. Take a
+   * look:
    *
    * {{{
    *   // A `Gen[Par[Int]]` generated from a list summation that spawns a new parallel
@@ -361,7 +370,7 @@ object PropertyBasedTestingSection
    *   val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
    * }}}
    *
-   * == Testing higher-order functions ==
+   * ==Testing higher-order functions==
    *
    * <b>Exercise 8.18</b>
    *

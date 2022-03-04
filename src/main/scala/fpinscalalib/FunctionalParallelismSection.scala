@@ -23,7 +23,8 @@ import org.scalatest.matchers.should.Matchers
 import java.util.concurrent.Executors
 
 /**
- * @param name purely_functional_parallelism
+ * @param name
+ *   purely_functional_parallelism
  */
 object FunctionalParallelismSection
     extends AnyFlatSpec
@@ -31,31 +32,33 @@ object FunctionalParallelismSection
     with org.scalaexercises.definitions.Section {
 
   /**
-   * = Functional programming in Scala =
+   * =Functional programming in Scala=
    *
-   * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
-   * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
-   * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+   * The following set of sections represent the exercises contained in the book "Functional
+   * Programming in Scala", written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+   * This content library is meant to be used in tandem with the book. We use the same numeration
+   * for the exercises for you to follow them.
    *
-   * For more information about "Functional Programming in Scala" please visit its
-   * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+   * For more information about "Functional Programming in Scala" please visit its <a
+   * href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
-   * = A data type for parallel computations =
+   * =A data type for parallel computations=
    *
    * <b>Exercise 7.1:</b>
    *
-   * `Par.map2` is a new higher-order function for combining the result of two parallel computations. Its signature is
-   * as follows:
+   * `Par.map2` is a new higher-order function for combining the result of two parallel
+   * computations. Its signature is as follows:
    *
    * {{{
    *    def map2[A,B,C](a: Par[A], b: Par[B])(f: (A,B) => C): Par[C]
    * }}}
    *
-   * = Refining the API =
+   * =Refining the API=
    *
    * <b>Exercise 7.3:</b>
    *
-   * Let's fix the implementation of `map2` so that it respects the contract of timeouts on `Future`:
+   * Let's fix the implementation of `map2` so that it respects the contract of timeouts on
+   * `Future`:
    *
    * {{{
    *   def map2[A,B,C](a: Par[A], b: Par[B])(f: (A,B) => C): Par[C] =
@@ -67,8 +70,8 @@ object FunctionalParallelismSection
    *
    * <b>Exercise 7.4:</b>
    *
-   * Let's create some operations! Using `lazyUnit`, let's write a function to convert any function `A => B` to one
-   * that evaluates its result asynchronously:
+   * Let's create some operations! Using `lazyUnit`, let's write a function to convert any function
+   * `A => B` to one that evaluates its result asynchronously:
    */
   def parAsyncFAssert(res0: String): Unit = {
     def asyncF[A, B](f: A => B): A => Par[B] =
@@ -83,12 +86,14 @@ object FunctionalParallelismSection
   /**
    * <b>Exercise 7.5:</b>
    *
-   * Remember, `asyncF` converts an `A => B` to an `A => Par[B]` by forking a parallel computation to produce the
-   * result. So we can fork off our N parallel computations pretty easily, but we need some way of collecting their
-   * results. Are we stuck? Well, just from inspecting the types, we can see that we need some way of converting our
-   * `List[Par[B]]` to the `Par[List[B]]` required by the return type of `parMap`.
+   * Remember, `asyncF` converts an `A => B` to an `A => Par[B]` by forking a parallel computation
+   * to produce the result. So we can fork off our N parallel computations pretty easily, but we
+   * need some way of collecting their results. Are we stuck? Well, just from inspecting the types,
+   * we can see that we need some way of converting our `List[Par[B]]` to the `Par[List[B]]`
+   * required by the return type of `parMap`.
    *
-   * Let's try to write the function `sequence` that will allow us convert a `List[Par[B]]` into a `Par[List[B]]`:
+   * Let's try to write the function `sequence` that will allow us convert a `List[Par[B]]` into a
+   * `Par[List[B]]`:
    *
    * {{{
    *   def sequence_simple[A](l: List[Par[A]]): Par[List[A]] =
@@ -121,21 +126,22 @@ object FunctionalParallelismSection
   }
 
   /**
-   * = The algebra of an API =
+   * =The algebra of an API=
    *
    * <b>Exercise 7.9</b>
    *
-   * For a thread pool of size 2, `fork(fork(fork(x)))` will deadlock, and so on. Another, perhaps more interesting
-   * example is `fork(map2(fork(x), fork(y)))`. In this case, the outer task is submitted first and occupies a thread
-   * waiting for both `fork(x)` and `fork(y)`. The `fork(x)` and `fork(y)` tasks are submitted and run in parallel,
-   * except that only one thread is available, resulting in deadlock.
+   * For a thread pool of size 2, `fork(fork(fork(x)))` will deadlock, and so on. Another, perhaps
+   * more interesting example is `fork(map2(fork(x), fork(y)))`. In this case, the outer task is
+   * submitted first and occupies a thread waiting for both `fork(x)` and `fork(y)`. The `fork(x)`
+   * and `fork(y)` tasks are submitted and run in parallel, except that only one thread is
+   * available, resulting in deadlock.
    *
-   * = Refining combinators to their most general form =
+   * =Refining combinators to their most general form=
    *
    * <b>Exercise 7.11</b>
    *
-   * Let’s implement `choiceN`, that will allow us to choose between an arbitrary list of parallel computations based
-   * on the result of a given first:
+   * Let’s implement `choiceN`, that will allow us to choose between an arbitrary list of parallel
+   * computations based on the result of a given first:
    *
    * {{{
    *   def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
@@ -186,17 +192,17 @@ object FunctionalParallelismSection
         Par.run(es)(choices(k))
       }
 
-    val choices = (a: Int) => {
+    val choices = (a: Int) =>
       if (a % 2 == 0) Par.unit("even")
       else Par.unit("odd")
-    }
 
     val executorService = Executors.newFixedThreadPool(2)
     chooser(Par.unit(1))(choices).apply(executorService).get() shouldBe res0
   }
 
   /**
-   * This new primitive `chooser` is usually called `bind` or `flatMap`. Let's use it to re-implement `choice`:
+   * This new primitive `chooser` is usually called `bind` or `flatMap`. Let's use it to
+   * re-implement `choice`:
    */
   def parChoiceViaFlatMapAssert(res0: String): Unit = {
     def choiceViaFlatMap[A](p: Par[Boolean])(f: Par[A], t: Par[A]): Par[A] =
