@@ -1,8 +1,8 @@
 import com.jsuereth.sbtpgp.PgpKeys.publishSigned
 
-ThisBuild / organization := "org.scala-exercises"
+ThisBuild / organization       := "org.scala-exercises"
 ThisBuild / githubOrganization := "47degrees"
-ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / scalaVersion       := "2.13.8"
 
 // Required to prevent errors for eviction from binary incompatible dependency
 // resolutions.
@@ -10,7 +10,7 @@ ThisBuild / scalaVersion := "2.13.8"
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % "always"
 
 // This is required by the exercises compiler:
-publishLocal := (publishLocal dependsOn compile).value
+publishLocal  := (publishLocal dependsOn compile).value
 publishSigned := (publishSigned dependsOn compile).value
 
 addCommandAlias("ci-test", "scalafmtCheckAll; scalafmtSbtCheck; test")
