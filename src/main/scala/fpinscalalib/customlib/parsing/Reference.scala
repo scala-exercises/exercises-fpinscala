@@ -33,10 +33,8 @@ object ReferenceTypes {
   type Parser[+A] = ParseState => Result[A]
 
   /**
-   * `ParseState` wraps a `Location` and provides some extra
-   * convenience functions. The sliceable parsers defined
-   * in `Sliceable.scala` add an `isSliced` `Boolean` flag
-   * to `ParseState`.
+   * `ParseState` wraps a `Location` and provides some extra convenience functions. The sliceable
+   * parsers defined in `Sliceable.scala` add an `isSliced` `Boolean` flag to `ParseState`.
    */
   case class ParseState(loc: Location) {
     def advanceBy(numChars: Int): ParseState =
@@ -80,9 +78,8 @@ object ReferenceTypes {
   case class Failure(get: ParseError, isCommitted: Boolean) extends Result[Nothing]
 
   /**
-   * Returns -1 if s1.startsWith(s2), otherwise returns the
-   * first index where the two strings differed. If s2 is
-   * longer than s1, returns s1.length.
+   * Returns -1 if s1.startsWith(s2), otherwise returns the first index where the two strings
+   * differed. If s2 is longer than s1, returns s1.length.
    */
   def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int = {
     var i = 0

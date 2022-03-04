@@ -20,7 +20,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 /**
- * @param name getting_started_with_functional_programming
+ * @param name
+ *   getting_started_with_functional_programming
  */
 object GettingStartedWithFPSection
     extends AnyFlatSpec
@@ -28,21 +29,23 @@ object GettingStartedWithFPSection
     with org.scalaexercises.definitions.Section {
 
   /**
-   * = Functional programming in Scala =
+   * =Functional programming in Scala=
    *
-   * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
-   * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
-   * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+   * The following set of sections represent the exercises contained in the book "Functional
+   * Programming in Scala", written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+   * This content library is meant to be used in tandem with the book. We use the same numeration
+   * for the exercises for you to follow them.
    *
-   * For more information about "Functional Programming in Scala" please visit its
-   * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+   * For more information about "Functional Programming in Scala" please visit its <a
+   * href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
-   * = Tail-recursive functions =
+   * =Tail-recursive functions=
    *
    * <b>Exercise 2.1</b>:
    *
-   * Try to fix the `loop` function inside `fib` so that it returns the correct values for each case in a tail-recursive
-   * way. What should the missing expressions for the trivial case and the recursive call be?
+   * Try to fix the `loop` function inside `fib` so that it returns the correct values for each case
+   * in a tail-recursive way. What should the missing expressions for the trivial case and the
+   * recursive call be?
    */
   def fibAssert(res0: Int) = {
     def fib(n: Int): Int = {
@@ -57,12 +60,12 @@ object GettingStartedWithFPSection
   }
 
   /**
-   * = Higher-order functions =
+   * =Higher-order functions=
    *
    * <b>Exercise 2.2</b>:
    *
-   * Let's do the same with `isSorted`. Take a detailed look at its implementation, what would be the results of
-   * applying the following anonymous functions to it?
+   * Let's do the same with `isSorted`. Take a detailed look at its implementation, what would be
+   * the results of applying the following anonymous functions to it?
    */
   def isSortedAssert(res0: Boolean, res1: Boolean, res2: Boolean): Unit = {
     def isSorted[A](as: Array[A], ordering: (A, A) => Boolean): Boolean = {
@@ -86,9 +89,10 @@ object GettingStartedWithFPSection
   /**
    * <b>Exercise 2.3</b>:
    *
-   * Currying is a transformation which converts a function `f` of two arguments into a function of one argument that
-   * partially applies `f`. Taking into account its signature, there's only one possible implementation that compiles.
-   * Take a look at its implementation and verify if this principle holds true in the following exercise:
+   * Currying is a transformation which converts a function `f` of two arguments into a function of
+   * one argument that partially applies `f`. Taking into account its signature, there's only one
+   * possible implementation that compiles. Take a look at its implementation and verify if this
+   * principle holds true in the following exercise:
    */
   def curryAssert(res0: Boolean, res1: Boolean): Unit = {
     def curry[A, B, C](f: (A, B) => C): A => (B => C) =
@@ -105,8 +109,8 @@ object GettingStartedWithFPSection
   /**
    * <b>Exercise 2.4</b>:
    *
-   * Let's do the same with uncurrying is the reverse transformation of curry. Take a look at its implementation and
-   * check to see if this principle holds true:
+   * Let's do the same with uncurrying is the reverse transformation of curry. Take a look at its
+   * implementation and check to see if this principle holds true:
    */
   def uncurryAssert(res0: Boolean, res1: Boolean): Unit = {
     def uncurry[A, B, C](f: A => B => C): (A, B) => C =
@@ -122,8 +126,8 @@ object GettingStartedWithFPSection
   /**
    * <b>Exercise 2.5</b>:
    *
-   * Function composing feeds the output of one function to the input of another function. Look at the implementation
-   * of `compose` and test its behavior on this exercise:
+   * Function composing feeds the output of one function to the input of another function. Look at
+   * the implementation of `compose` and test its behavior on this exercise:
    */
   def composeAssert(res0: Boolean, res1: Int, res2: Int): Unit = {
     def compose[A, B, C](f: B => C, g: A => B): A => C =

@@ -23,7 +23,7 @@ package fpinscalalib.customlib.errorhandling
 //
 // https://github.com/fpinscala/fpinscala/blob/d9476b3323e843d234454ac411a61d353809deee/answers/src/main/scala/fpinscala/errorhandling/Either.scala
 
-import scala.{Option => _, Left => _, Right => _, Either => _, _}
+import scala.{Either => _, Left => _, Option => _, Right => _, _}
 
 sealed trait Either[+E, +A] {
   def map[B](f: A => B): Either[E, B] =

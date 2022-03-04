@@ -23,7 +23,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 /**
- * @param name strictness_and_laziness
+ * @param name
+ *   strictness_and_laziness
  */
 object StrictnessAndLazinessSection
     extends AnyFlatSpec
@@ -31,27 +32,30 @@ object StrictnessAndLazinessSection
     with org.scalaexercises.definitions.Section {
 
   /**
-   * = Functional programming in Scala =
+   * =Functional programming in Scala=
    *
-   * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
-   * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
-   * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+   * The following set of sections represent the exercises contained in the book "Functional
+   * Programming in Scala", written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+   * This content library is meant to be used in tandem with the book. We use the same numeration
+   * for the exercises for you to follow them.
    *
-   * For more information about "Functional Programming in Scala" please visit its
-   * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+   * For more information about "Functional Programming in Scala" please visit its <a
+   * href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
-   * = Strict and non-strict functions =
+   * =Strict and non-strict functions=
    *
-   * <b>NOTE:</b> This section is only for educational purposes. In Scala 2.13, scala.collection.immutable.Stream
-   * is deprecated and scala.collection.immutable.LazyList is recommended for replacement. For more information,
-   * check the Scala [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/Stream.html Stream]]
-   * and [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/LazyList.html LazyList]]
+   * <b>NOTE:</b> This section is only for educational purposes. In Scala 2.13,
+   * scala.collection.immutable.Stream is deprecated and scala.collection.immutable.LazyList is
+   * recommended for replacement. For more information, check the Scala
+   * [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/Stream.html Stream]]
+   * and
+   * [[https://www.scala-lang.org/files/archive/api/2.13.1/scala/collection/immutable/LazyList.html LazyList]]
    * documentation.
    *
    * <b>Exercise 5.1:</b>
    *
-   * Now let's write a few helper functions to make inspecting streams easier, starting with a function to convert a
-   * `Stream` to a `List` (which will force its evaluation):
+   * Now let's write a few helper functions to make inspecting streams easier, starting with a
+   * function to convert a `Stream` to a `List` (which will force its evaluation):
    */
   def streamToListAssert(res0: List[Int]): Unit = {
     def toList[A](s: Stream[A]): List[A] =
@@ -67,8 +71,9 @@ object StrictnessAndLazinessSection
   /**
    * <b>Exercise 5.2:</b>
    *
-   * Let's continue by writing the function `take` for returning the first `n` elements of a `Stream`. Note that in the
-   * following implementation, we're using `Stream`'s smart constructors `cons` and `empty`, defined as follows:
+   * Let's continue by writing the function `take` for returning the first `n` elements of a
+   * `Stream`. Note that in the following implementation, we're using `Stream`'s smart constructors
+   * `cons` and `empty`, defined as follows:
    *
    * {{{
    *   def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = {
@@ -107,7 +112,8 @@ object StrictnessAndLazinessSection
   /**
    * <b>Exercise 5.3:</b>
    *
-   * We can also implement `takeWhile` to return all starting elements of a `Stream` that match a given predicate:
+   * We can also implement `takeWhile` to return all starting elements of a `Stream` that match a
+   * given predicate:
    */
   def streamTakeWhileAssert(res0: List[Int], res1: List[Int]): Unit = {
     def takeWhile[A](s: Stream[A], f: A => Boolean): Stream[A] =
@@ -121,12 +127,12 @@ object StrictnessAndLazinessSection
   }
 
   /**
-   * = Separating program description from evaluation =
+   * =Separating program description from evaluation=
    *
-   * Laziness lets us separate the description of an expression from the evaluation of that expression. This gives us
-   * a powerful ability — we may choose to describe a “larger” expression than we need, and then evaluate only a portion
-   * of it. As an example, let’s look at the function exists that checks whether an element matching a `Boolean`
-   * function exists in this Stream:
+   * Laziness lets us separate the description of an expression from the evaluation of that
+   * expression. This gives us a powerful ability — we may choose to describe a “larger” expression
+   * than we need, and then evaluate only a portion of it. As an example, let’s look at the function
+   * exists that checks whether an element matching a `Boolean` function exists in this Stream:
    *
    * {{{
    *   def exists(p: A => Boolean): Boolean = this match {
@@ -137,8 +143,9 @@ object StrictnessAndLazinessSection
    *
    * <b>Exercise 5.4:</b>
    *
-   * Let's implement `forAll`, a function that checks that all elements in the `Stream` match a given predicate. Note
-   * that the implementation will stop as soon as it encounters a non-matching value.
+   * Let's implement `forAll`, a function that checks that all elements in the `Stream` match a
+   * given predicate. Note that the implementation will stop as soon as it encounters a non-matching
+   * value.
    */
   def streamForAllAssert(res0: Boolean): Unit = {
     def forAll[A](s: Stream[A], f: A => Boolean): Boolean =
@@ -170,7 +177,8 @@ object StrictnessAndLazinessSection
    *
    * <b>Exercise 5.7:</b>
    *
-   * Implementations for `map`, `filter`, `append` and `flatMap` using `foldRight` should sound familiar already:
+   * Implementations for `map`, `filter`, `append` and `flatMap` using `foldRight` should sound
+   * familiar already:
    *
    * {{{
    *   def map[B](f: A => B): Stream[B] = foldRight(empty[B])((h,t) => cons(f(h), t))
@@ -192,7 +200,8 @@ object StrictnessAndLazinessSection
    *   Stream(1, 2, 3, 4).map(_ + 10).filter(_ % 2 == 0)
    * }}}
    *
-   * We'll convert that expression to a `List` to force evaluation. Try to follow with what's happening in each step:
+   * We'll convert that expression to a `List` to force evaluation. Try to follow with what's
+   * happening in each step:
    */
   def streamTraceAssert(
       res0: Int,
@@ -232,7 +241,7 @@ object StrictnessAndLazinessSection
   }
 
   /**
-   * = Infinite streams and corecursion =
+   * =Infinite streams and corecursion=
    *
    * <b>Exercise 5.x:</b>
    *
@@ -242,8 +251,8 @@ object StrictnessAndLazinessSection
    *   val ones: Stream[Int] = Stream.cons(1, ones)
    * }}}
    *
-   * The functions we’ve written so far only inspect the portion of the stream needed to generate the demanded output.
-   * Take a look at this example:
+   * The functions we’ve written so far only inspect the portion of the stream needed to generate
+   * the demanded output. Take a look at this example:
    */
   def streamOnesAssert(res0: List[Int], res1: Boolean, res2: Boolean, res3: Boolean): Unit = {
     ones.take(5).toList shouldBe res0
@@ -255,7 +264,8 @@ object StrictnessAndLazinessSection
   /**
    * <b>Exercise 5.8:</b>
    *
-   * Let's generalize `ones` slightly to the function `constant`, which returns an infinite `Stream` of a given value:
+   * Let's generalize `ones` slightly to the function `constant`, which returns an infinite `Stream`
+   * of a given value:
    *
    * {{{
    *   def constant[A](a: A): Stream[A] = {
@@ -266,8 +276,8 @@ object StrictnessAndLazinessSection
    *
    * <b>Exercise 5.9:</b>
    *
-   * Of course, we can generate `number series` with `Stream`s. For example, let's write a function that generates an
-   * infinite stream of integers (n, n + 1, n + 2...):
+   * Of course, we can generate `number series` with `Stream`s. For example, let's write a function
+   * that generates an infinite stream of integers (n, n + 1, n + 2...):
    */
   def streamIntegersAssert(res0: Int): Unit = {
     def from(n: Int): Stream[Int] =
@@ -279,7 +289,8 @@ object StrictnessAndLazinessSection
   /**
    * <b>Exercise 5.10:</b>
    *
-   * We can also create a function `fibs` that generates the infinite stream of Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8...
+   * We can also create a function `fibs` that generates the infinite stream of Fibonacci numbers:
+   * 0, 1, 1, 2, 3, 5, 8...
    */
   def streamFibsAssert(res0: Int, res1: Int): Unit = {
     val fibs = {
@@ -294,8 +305,9 @@ object StrictnessAndLazinessSection
   /**
    * <b>Exercise 5.11:</b>
    *
-   * Now we're going to write a more general stream-building function: `unfold` which takes an initial state, and
-   * a function for building both the next state and the next value in the stream to be generated:
+   * Now we're going to write a more general stream-building function: `unfold` which takes an
+   * initial state, and a function for building both the next state and the next value in the stream
+   * to be generated:
    *
    * {{{
    *   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = f(z) match {
@@ -306,7 +318,8 @@ object StrictnessAndLazinessSection
    *
    * <b>Exercise 5.12:</b>
    *
-   * Now that we have `unfold`, let's rewrite our previous generator functions based on it, starting from `fibs`:
+   * Now that we have `unfold`, let's rewrite our previous generator functions based on it, starting
+   * from `fibs`:
    */
   def streamFibsViaUnfoldAssert(res0: Int, res1: Int): Unit = {
     val fibsViaUnfold =
@@ -342,7 +355,8 @@ object StrictnessAndLazinessSection
   /**
    * <b>Exercise 5.13:</b>
    *
-   * Now we're going to re-implement some of the higher-order functions for `Stream`s, starting with map:
+   * Now we're going to re-implement some of the higher-order functions for `Stream`s, starting with
+   * map:
    *
    * {{{
    *   def mapViaUnfold[B](f: A => B): Stream[B] = unfold(this) {
@@ -384,8 +398,9 @@ object StrictnessAndLazinessSection
    *   }
    * }}}
    *
-   * `zipAll` can also be implemented using `unfold`. Note that it should continue the traversal as long as either
-   * stream has more elements - it uses `Option` to indicate whether each stream has been exhausted:
+   * `zipAll` can also be implemented using `unfold`. Note that it should continue the traversal as
+   * long as either stream has more elements - it uses `Option` to indicate whether each stream has
+   * been exhausted:
    *
    * {{{
    *   def zipAll[B](s2: Stream[B]): Stream[(Option[A],Option[B])] = zipWithAll(s2)((_,_))
@@ -412,9 +427,9 @@ object StrictnessAndLazinessSection
    *
    * <b>Exercise 5.15:</b>
    *
-   * We can also write `tails` using `unfold`. `tails` returns the `Stream` of suffixes of a given `Stream`,
-   * starting with the original `Stream`. For example, for `Stream(1,2,3)`, it should return
-   * `Stream(Stream(1,2,3), Stream(2,3), Stream(3), Stream())`.
+   * We can also write `tails` using `unfold`. `tails` returns the `Stream` of suffixes of a given
+   * `Stream`, starting with the original `Stream`. For example, for `Stream(1,2,3)`, it should
+   * return `Stream(Stream(1,2,3), Stream(2,3), Stream(3), Stream())`.
    */
   def streamTailsAssert(res0: Int): Unit = {
     def tails[A](s: Stream[A]): Stream[Stream[A]] =
@@ -430,8 +445,8 @@ object StrictnessAndLazinessSection
   /**
    * <b>Exercise 5.16:</b>
    *
-   * We can generalize tails to the function scanRight, which is like a `foldRight` that returns a stream of the
-   * intermediate results:
+   * We can generalize tails to the function scanRight, which is like a `foldRight` that returns a
+   * stream of the intermediate results:
    *
    * {{{
    *   def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] =

@@ -24,7 +24,8 @@ import Reference._
 import scala.util.matching.Regex
 
 /**
- * @param name parser_combinators
+ * @param name
+ *   parser_combinators
  */
 object ParserCombinatorsSection
     extends AnyFlatSpec
@@ -33,16 +34,17 @@ object ParserCombinatorsSection
     with ReferenceHelper {
 
   /**
-   * = Functional programming in Scala =
+   * =Functional programming in Scala=
    *
-   * The following set of sections represent the exercises contained in the book "Functional Programming in Scala",
-   * written by Paul Chiusano and Rúnar Bjarnason and published by Manning. This content library is meant to be used
-   * in tandem with the book. We use the same numeration for the exercises for you to follow them.
+   * The following set of sections represent the exercises contained in the book "Functional
+   * Programming in Scala", written by Paul Chiusano and Rúnar Bjarnason and published by Manning.
+   * This content library is meant to be used in tandem with the book. We use the same numeration
+   * for the exercises for you to follow them.
    *
-   * For more information about "Functional Programming in Scala" please visit its
-   * <a href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
+   * For more information about "Functional Programming in Scala" please visit its <a
+   * href="https://www.manning.com/books/functional-programming-in-scala">official website</a>.
    *
-   * = Slicing and nonempty repetition =
+   * =Slicing and nonempty repetition=
    *
    * <b>Exercise 9.1</b>
    *
@@ -72,17 +74,17 @@ object ParserCombinatorsSection
   /**
    * <b>Exercise 9.2</b>
    *
-   * Regarding laws that specify the behavior of `product` (`**`), let's start by stating that `product` is associative.
-   * These two expressions are "roughly" equal:
+   * Regarding laws that specify the behavior of `product` (`**`), let's start by stating that
+   * `product` is associative. These two expressions are "roughly" equal:
    *
    * {{{
    *   (a ** b) ** c
    *   a ** (b ** c)
    * }}}
    *
-   * The only difference is how the pairs are nested. The `(a ** b) ** c` parser returns an `((A,B), C)`, whereas the
-   * `a ** (b ** c)` returns an `(A, (B,C))`. We can define functions `unbiasL` and `unbiasR` to convert these nested
-   * tuples to flat 3-tuples:
+   * The only difference is how the pairs are nested. The `(a ** b) ** c` parser returns an `((A,B),
+   * C)`, whereas the `a ** (b ** c)` returns an `(A, (B,C))`. We can define functions `unbiasL` and
+   * `unbiasR` to convert these nested tuples to flat 3-tuples:
    *
    * {{{
    *   def unbiasL[A,B,C](p: ((A,B), C)): (A,B,C) = (p._1._1, p._1._2, p._2)
@@ -101,17 +103,19 @@ object ParserCombinatorsSection
    *   (a ** b) ** c ~= a ** (b ** c)
    * }}}
    *
-   * `map` and `product` also have an interesting relationship--we can `map` either before or after taking the product
-   * of two parsers, without affecting the behavior:
+   * `map` and `product` also have an interesting relationship--we can `map` either before or after
+   * taking the product of two parsers, without affecting the behavior:
    *
    * {{{
    *   a.map(f) ** b.map(g) == (a ** b) map { case (a,b) => (f(a), g(b)) }
    * }}}
    *
-   * For instance, if `a` and `b` were both `Parser[String]`, and `f` and `g` both computed the length of a string, it
-   * doesn't matter if we map over the result of `a` to compute its length, or whether we do that after the product.
+   * For instance, if `a` and `b` were both `Parser[String]`, and `f` and `g` both computed the
+   * length of a string, it doesn't matter if we map over the result of `a` to compute its length,
+   * or whether we do that after the product.
    *
-   * For more discussion of these laws, take a look at chapter 12 of "Functional Programming in Scala".
+   * For more discussion of these laws, take a look at chapter 12 of "Functional Programming in
+   * Scala".
    *
    * <b>Exercise 9.3</b>
    *
@@ -166,27 +170,30 @@ object ParserCombinatorsSection
    *     map2(p, wrap(many(p)))(_ :: _) or succeed(List())
    * }}}
    *
-   * In the parallelism chapter, we were particularly interested in avoiding having `Par` objects that took as much time
-   * and space to build as the corresponding serial computation, and the `delay` combinator let us control this more
-   * carefully. Here, this isn't as much of a concern, and having to think carefully each time we `map2` to decide
-   * whether we need to call `wrap` seems like unnecessary friction for users of the API.
+   * In the parallelism chapter, we were particularly interested in avoiding having `Par` objects
+   * that took as much time and space to build as the corresponding serial computation, and the
+   * `delay` combinator let us control this more carefully. Here, this isn't as much of a concern,
+   * and having to think carefully each time we `map2` to decide whether we need to call `wrap`
+   * seems like unnecessary friction for users of the API.
    *
-   * = Handling context sensitivity =
+   * =Handling context sensitivity=
    *
    * <b>Exercise 9.6</b>
    *
-   * We're now going to try parse a single digit (i.e.: `4`), followed by `that many` `'a'` characters. For instance:
-   * `"0"`, `"1a"`, `"2aa"`, and so on. This is also called a context-sensitive grammar. It can't be expressed with
-   * `product` because what the second parser decides depends on the first parser's result. Similarly as we did in
-   * previous chapters, this problem calls for the use of a new primitive, `flatMap`:
+   * We're now going to try parse a single digit (i.e.: `4`), followed by `that many` `'a'`
+   * characters. For instance: `"0"`, `"1a"`, `"2aa"`, and so on. This is also called a
+   * context-sensitive grammar. It can't be expressed with `product` because what the second parser
+   * decides depends on the first parser's result. Similarly as we did in previous chapters, this
+   * problem calls for the use of a new primitive, `flatMap`:
    *
    * {{{
    *   def flatMap[A,B](p: Parser[A])(f: A => Parser[B]): Parser[B]
    * }}}
    *
-   * To parse the digits, we'll be using regular expressions. Note the use of the new primitive `regex` which converts
-   * any regular expression into a `Parser`. Complete the implementation with a regular expression to catch the digits
-   * in our parser's first step, and take a look on how we chain both operations:
+   * To parse the digits, we'll be using regular expressions. Note the use of the new primitive
+   * `regex` which converts any regular expression into a `Parser`. Complete the implementation with
+   * a regular expression to catch the digits in our parser's first step, and take a look on how we
+   * chain both operations:
    */
   def parseFlatMapAssert(res0: String): Unit = {
     val parser = for {
@@ -224,7 +231,8 @@ object ParserCombinatorsSection
    *
    * <b>Exercise 9.9</b>
    *
-   * Let's see an example of how a `Parser[JSON]` could be implemented using the primitives we've defined:
+   * Let's see an example of how a `Parser[JSON]` could be implemented using the primitives we've
+   * defined:
    *
    * {{{
    *   trait JSON
@@ -263,12 +271,12 @@ object ParserCombinatorsSection
    *   }
    * }}}
    *
-   * = Error reporting =
+   * =Error reporting=
    *
    * <b>Exercise 9.11</b>
    *
-   * Some useful primitives that could be useful to let programmers specify what error(s) get reported in an `or` chain
-   * could be:
+   * Some useful primitives that could be useful to let programmers specify what error(s) get
+   * reported in an `or` chain could be:
    *
    * {{{
    *   /** In the event of an error, returns the error that occurred after consuming the most number of characters. */
@@ -278,12 +286,12 @@ object ParserCombinatorsSection
    *   def latest[A](p: Parser[A]): Parser[A]
    * }}}
    *
-   * = One possible implementation =
+   * =One possible implementation=
    *
    * <b>Explore 9.13</b>
    *
-   * We'll be exploring an actual representation of `Parser`. Let's begin by implementing some of its methods, starting
-   * with `string`:
+   * We'll be exploring an actual representation of `Parser`. Let's begin by implementing some of
+   * its methods, starting with `string`:
    */
   def parserStringAssert(res0: String): Unit = {
     def string(w: String): Parser[String] = {
@@ -365,7 +373,8 @@ object ParserCombinatorsSection
    *
    * <b>Exercise 9.16</b>
    *
-   * `ParseError` can be improved by better formatting it for human consumption. Let's see how this could work:
+   * `ParseError` can be improved by better formatting it for human consumption. Let's see how this
+   * could work:
    *
    * {{{
    *   case class ParseError(stack: List[(Location,String)] = List()) {
@@ -403,18 +412,20 @@ object ParserCombinatorsSection
    *
    * <b>Exercise 9.17</b>
    *
-   * In order to make the `slice` combinator more efficient (i.e.: `many(char('a')).slice` will still create a
-   * `List[Char]`, only to discard it) we can create a different representation of the `Parser` type. The main change
-   * is to add another piece of state to `ParseState`, an `isSliced` flag, and an additional `Slice` constructor to
-   * `Result`. If the `isSliced` flag is set, parsers avoid building a meaningful result.
-   * You can take a look at the complete implementation
-   * <a href="https://github.com/fpinscala/fpinscala/blob/7c068281c0f534c5fe24b9d417a7ce7c193c2d0f/answers/src/main/scala/fpinscala/parsing/instances/Sliceable.scala">here</a>.
+   * In order to make the `slice` combinator more efficient (i.e.: `many(char('a')).slice` will
+   * still create a `List[Char]`, only to discard it) we can create a different representation of
+   * the `Parser` type. The main change is to add another piece of state to `ParseState`, an
+   * `isSliced` flag, and an additional `Slice` constructor to `Result`. If the `isSliced` flag is
+   * set, parsers avoid building a meaningful result. You can take a look at the complete
+   * implementation <a
+   * href="https://github.com/fpinscala/fpinscala/blob/7c068281c0f534c5fe24b9d417a7ce7c193c2d0f/answers/src/main/scala/fpinscala/parsing/instances/Sliceable.scala">here</a>.
    *
    * <b>Exercise 9.18</b>
    *
-   * Right now, we're missing error information when we combine several parsers with the `or` combinator. For instance,
-   * when both parsers fail we only take into account errors from the second parser. Maybe we could show both error
-   * messages, or choose the error from the branch that got furthest without failing. Let's sketch a way of doing that:
+   * Right now, we're missing error information when we combine several parsers with the `or`
+   * combinator. For instance, when both parsers fail we only take into account errors from the
+   * second parser. Maybe we could show both error messages, or choose the error from the branch
+   * that got furthest without failing. Let's sketch a way of doing that:
    *
    * {{{
    *   // We'll just give a sketch here. The basic idea is to add an additional field to `ParseError`
@@ -434,16 +445,16 @@ object ParserCombinatorsSection
    *       }
    * }}}
    *
-   * Of course, we have to decide how to print a `ParseError` for human consumption. We also can expose combinators for
-   * selecting which error(s) get reported in the event that a chain of `a | b | c` fails--we might choose to collect up
-   * all the errors for each of the three parsers, or perhaps only show the parser that got the furthest in the input
-   * before failing, etc.
+   * Of course, we have to decide how to print a `ParseError` for human consumption. We also can
+   * expose combinators for selecting which error(s) get reported in the event that a chain of `a |
+   * b | c` fails--we might choose to collect up all the errors for each of the three parsers, or
+   * perhaps only show the parser that got the furthest in the input before failing, etc.
    *
    * <b>Exercise 9.x</b>
    *
-   * To wrap this section up, here's a small exercise for you to test the aforementioned `JSON` parser with your own
-   * entries. Source code for this parser can be found
-   * <a href="https://raw.githubusercontent.com/fpinscala/fpinscala/44e01a7b5cc68cd681f182274b3a605db1bcff6c/answers/src/main/scala/fpinscala/parsing/JSON.scala">here</a>
+   * To wrap this section up, here's a small exercise for you to test the aforementioned `JSON`
+   * parser with your own entries. Source code for this parser can be found <a
+   * href="https://raw.githubusercontent.com/fpinscala/fpinscala/44e01a7b5cc68cd681f182274b3a605db1bcff6c/answers/src/main/scala/fpinscala/parsing/JSON.scala">here</a>
    * or in the source code of this section.
    */
   def parserJSONAssert(res0: String): Unit = {
